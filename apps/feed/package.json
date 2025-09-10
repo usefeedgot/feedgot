@@ -30,6 +30,7 @@
     "@cloudflare/workers-types": "^4.20250214.0",
     "@types/node": "^22.10.6",
     "@feedgot/ui": "workspace:*",
+    "@feedgot/db": "workspace:*",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "dotenv": "^16.4.5",
