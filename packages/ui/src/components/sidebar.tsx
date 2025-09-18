@@ -3,8 +3,11 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, VariantProps } from "class-variance-authority"
+import { PanelLeftIcon } from "lucide-react"
+
 import { useIsMobile } from "@feedgot/ui/hooks/use-mobile"
 import { cn } from "@feedgot/ui/lib/utils"
+import { Button } from "@feedgot/ui/components/button"
 import { Input } from "@feedgot/ui/components/input"
 import { Separator } from "@feedgot/ui/components/separator"
 import {
@@ -22,12 +25,30 @@ import {
   TooltipTrigger,
 } from "@feedgot/ui/components/tooltip"
 
+
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+
+// Helper function to read sidebar state from cookies
+const getSidebarStateFromCookie = (): boolean | null => {
+  if (typeof document === "undefined") return null
+  
+  const cookies = document.cookie.split(';')
+  const sidebarCookie = cookies.find(cookie => 
+    cookie.trim().startsWith(`${SIDEBAR_COOKIE_NAME}=`)
+  )
+  
+  if (sidebarCookie) {
+    const value = sidebarCookie.split('=')[1]?.trim()
+    return value === 'true'
+  }
+  
+  return null
+}
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed"
@@ -66,23 +87,34 @@ function SidebarProvider({
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
 
-  // This is the internal state of the sidebar.
-  // We use openProp and setOpenProp for control from outside the component.
+  // Start with defaultOpen, then update from cookie after mount
   const [_open, _setOpen] = React.useState(defaultOpen)
+  const [isInitialized, setIsInitialized] = React.useState(false)
+
+  // Initialize from cookie after component mounts (client-side only)
+  React.useEffect(() => {
+    const savedState = getSidebarStateFromCookie()
+    if (savedState !== null) {
+      _setOpen(savedState)
+    }
+    setIsInitialized(true)
+  }, [defaultOpen])
+
   const open = openProp ?? _open
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
       const openState = typeof value === "function" ? value(open) : value
+      
       if (setOpenProp) {
         setOpenProp(openState)
       } else {
         _setOpen(openState)
       }
 
-      // This sets the cookie to keep the sidebar state.
+      // Save to cookie
       document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
     },
-    [setOpenProp, open]
+    [setOpenProp, open, _setOpen]
   )
 
   // Helper to toggle the sidebar.
@@ -167,7 +199,7 @@ function Sidebar({
       <div
         data-slot="sidebar"
         className={cn(
-          "bg-sidebar content-center text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col",
+          "bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col",
           className
         )}
         {...props}
@@ -250,81 +282,54 @@ function Sidebar({
   )
 }
 
-function SidebarRail({ className, ...props }: React.ComponentProps<"div">) {
-  const { toggleSidebar, state, setOpen } = useSidebar()
-  const [isDragging, setIsDragging] = React.useState(false)
-  const [dragStartX, setDragStartX] = React.useState(0)
-  const railRef = React.useRef<HTMLDivElement>(null)
-
-  const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
-    setIsDragging(true)
-    setDragStartX(e.clientX)
-    e.preventDefault()
-  }, [])
-
-  const handleMouseMove = React.useCallback((e: MouseEvent) => {
-    if (!isDragging) return
-    
-    const deltaX = e.clientX - dragStartX
-    const threshold = 50 // Minimum drag distance to trigger toggle
-    
-    if (Math.abs(deltaX) > threshold) {
-      if (state === "collapsed" && deltaX > 0) {
-        // Dragging right when collapsed - open sidebar
-        setOpen(true)
-        setIsDragging(false)
-      } else if (state === "expanded" && deltaX < 0) {
-        // Dragging left when expanded - close sidebar
-        setOpen(false)
-        setIsDragging(false)
-      }
-    }
-  }, [isDragging, dragStartX, state, setOpen])
-
-  const handleMouseUp = React.useCallback(() => {
-    setIsDragging(false)
-  }, [])
-
-  React.useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-      
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove)
-        document.removeEventListener('mouseup', handleMouseUp)
-      }
-    }
-  }, [isDragging, handleMouseMove, handleMouseUp])
+function SidebarTrigger({
+  className,
+  onClick,
+  ...props
+}: React.ComponentProps<typeof Button>) {
+  const { toggleSidebar } = useSidebar()
 
   return (
-    <div
-      ref={railRef}
+    <Button
+      data-sidebar="trigger"
+      data-slot="sidebar-trigger"
+      variant="ghost"
+      size="icon"
+      className={cn("size-7", className)}
+      onClick={(event) => {
+        onClick?.(event)
+        toggleSidebar()
+      }}
+      {...props}
+    >
+      <PanelLeftIcon />
+      <span className="sr-only">Toggle Sidebar</span>
+    </Button>
+  )
+}
+
+function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
+  const { toggleSidebar } = useSidebar()
+
+  return (
+    <button
       data-sidebar="rail"
       data-slot="sidebar-rail"
-      aria-label="Drag to toggle sidebar"
-      title="Drag to toggle sidebar"
-      onMouseDown={handleMouseDown}
+      aria-label="Toggle Sidebar"
+      tabIndex={-1}
+      onClick={toggleSidebar}
+      title="Toggle Sidebar"
       className={cn(
-        "absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex items-center justify-center",
-        "cursor-col-resize select-none group",
-        "group-data-[collapsible=offcanvas]:translate-x-0",
+        "hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex",
+        "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
+        "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
+        "hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full",
         "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2",
         "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
-        isDragging && "bg-sidebar-accent/30",
         className
       )}
       {...props}
-    >
-      <div className={cn(
-        "bg-black w-1 h-8 rounded-full transition-all duration-200",
-        "opacity-0 group-hover:opacity-100",
-        "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-        "before:absolute before:inset-0 before:w-4 before:h-full before:-translate-x-1/2",
-        !isDragging && "hover:bg-black",
-        isDragging && "bg-black"
-      )} />
-    </div>
+    />
   )
 }
 
@@ -745,5 +750,6 @@ export {
   SidebarProvider,
   SidebarRail,
   SidebarSeparator,
+  SidebarTrigger,
   useSidebar,
 }
