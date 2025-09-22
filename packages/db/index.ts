@@ -4,5 +4,5 @@ import { neon } from "@neondatabase/serverless"
 
 export const db = drizzle(neon(process.env.DATABASE_URL ?? ""), { schema })
 
-// Export schema tables for Better Auth
-export const { user, session, account, verification, workspace } = schema
+// Export schema tables for Better Auth and application use
+export const { user, session, account, verification, workspace, workspaceMember } = schema

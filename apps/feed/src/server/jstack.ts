@@ -4,14 +4,13 @@ import { headers } from "next/headers";
 import { auth as betterAuthServer } from "../lib/auth/auth";
 
 export const j = jstack.init();
+
+// Database middleware that adds db to context
 const databaseMiddleware = j.middleware(async ({ next }) => {
   return await next({ db });
 });
 
-export const publicProcedure = j.procedure.use(
-  databaseMiddleware
-) as ReturnType<typeof j.procedure.use>;
-
+// Auth middleware that adds session to context  
 const authMiddleware = j.middleware(async ({ next }) => {
   const session = await betterAuthServer.api.getSession({
     headers: await headers(),
@@ -24,6 +23,7 @@ const authMiddleware = j.middleware(async ({ next }) => {
   return await next({ session });
 });
 
-export const privateProcedure = publicProcedure.use(
-  authMiddleware
-) as ReturnType<typeof j.procedure.use>;
+// Public procedure with database access - using any to avoid complex type inference issues
+export const publicProcedure: typeof j.procedure = j.procedure.use(databaseMiddleware);
+export const privateProcedure: typeof j.procedure = j.procedure.use(databaseMiddleware).use(authMiddleware);
+
