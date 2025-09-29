@@ -37,8 +37,8 @@ export function WorkspaceSwitcher() {
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton size="lg" className="rounded-sm">
-              <span className="truncate text-sm font-medium">
+            <SidebarMenuButton size="sm" className="rounded-sm h-8 px-2 w-auto">
+              <span className="truncate text-xs font-medium">
                 {activeWorkspace.name}
               </span>
               <IconChevronDown className="ml-auto size-4 opacity-60" />
