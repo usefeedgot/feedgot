@@ -15,6 +15,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@feedgot/ui/components/sidebar"
+import { Avatar, AvatarImage, AvatarFallback } from "@feedgot/ui/components/avatar"
+import { getInitials } from "@/lib/utils/user-utils"
 
 // Minimal workspace shape
 type Workspace = { id: string; name: string }
@@ -38,11 +40,15 @@ export function WorkspaceSwitcher() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton size="sm" className="rounded-sm h-8 px-2 w-auto">
-              <span className="truncate text-xs font-medium">
-                {activeWorkspace.name}
-              </span>
-              <IconChevronDown className="ml-auto size-4 opacity-60" />
-            </SidebarMenuButton>
+              <Avatar className="h-6 w-6 mr-2">
+                <AvatarImage src="" alt={activeWorkspace.name} />
+                <AvatarFallback>{getInitials(activeWorkspace.name)}</AvatarFallback>
+              </Avatar>
+               <span className="truncate text-xs font-medium">
+                 {activeWorkspace.name}
+               </span>
+               <IconChevronDown className="ml-auto size-4 opacity-60" />
+             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-56 p-1"
