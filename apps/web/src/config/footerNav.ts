@@ -14,44 +14,51 @@ export const footerNavigationConfig: FooterNavigationConfig = {
     {
       title: 'Product',
       items: [
-        { name: 'Features', href: '#' },
-        { name: 'Solution', href: '#' },
-        { name: 'Customers', href: '#' },
         { name: 'Pricing', href: '/pricing' },
-        { name: 'Help', href: '#' },
-        { name: 'About', href: '#' },
-      ],
-    },
-    {
-      title: 'Solution',
-      items: [
-        { name: 'Startup', href: '#' },
-        { name: 'Freelancers', href: '#' },
-        { name: 'Organizations', href: '#' },
-        { name: 'Students', href: '#' },
-        { name: 'Collaboration', href: '#' },
-        { name: 'Design', href: '#' },
-        { name: 'Management', href: '#' },
+        { name: 'Docs', href: '/docs' },
+        { name: 'Status page', href: '#' },
       ],
     },
     {
       title: 'Company',
       items: [
-        { name: 'About', href: '#' },
-        { name: 'Careers', href: '#' },
+        { name: 'About us', href: '#' },
+      ],
+    },
+    {
+      title: 'Solutions',
+      items: [
+        { name: 'Website visitor tracking', href: '#' },
+        { name: 'Shopify analytics', href: '#' },
+      ],
+    },
+    {
+      title: 'Compare',
+      items: [
+        { name: 'Google Analytics', href: '#' },
+        { name: 'PostHog', href: '#' },
+      ],
+    },
+    {
+      title: 'Resources',
+      items: [
         { name: 'Blog', href: '/blog' },
-        { name: 'Press', href: '#' },
-        { name: 'Contact', href: '#' },
-        { name: 'Help', href: '#' },
+        { name: 'Terms & definitions', href: '#' },
+      ],
+    },
+    {
+      title: 'Contact us',
+      items: [
+        { name: 'Email', href: '#' },
+        { name: 'Live chat', href: '#' },
       ],
     },
     {
       title: 'Legal',
       items: [
-        { name: 'Licence', href: '#' },
+        { name: 'Terms & conditions', href: '#' },
         { name: 'Privacy', href: '#' },
-        { name: 'Cookies', href: '#' },
-        { name: 'Security', href: '#' },
+        { name: 'GDPR', href: '#' },
       ],
     },
   ],
