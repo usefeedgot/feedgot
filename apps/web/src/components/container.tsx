@@ -6,7 +6,7 @@ type ContainerProps = {
   className?: string
   as?: React.ElementType
   withNavbarOffset?: boolean
-  maxWidth?: '4xl' | '5xl' | '6xl' | '7xl'
+  maxWidth?: '4xl' | '5xl' | '6xl' | '7xl' | 'full'
 }
 
 export function Container({
@@ -23,7 +23,9 @@ export function Container({
       ? 'max-w-5xl'
       : maxWidth === '6xl'
       ? 'max-w-6xl'
-      : 'max-w-7xl'
+      : maxWidth === '7xl'
+      ? 'max-w-7xl'
+      : 'w-full max-w-none'
 
   const paddingX = 'px-12 sm:px-16 lg:px-20 xl:px-24'
   const base = cn('mx-auto', widthClass, paddingX, withNavbarOffset && 'pt-16', className)
