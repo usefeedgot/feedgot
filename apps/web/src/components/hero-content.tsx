@@ -8,9 +8,9 @@ import { LiveDemo } from "./live-demo";
 
 export function HeroContent() {
   return (
-    <div className="max-w-4xl text-left">
+    <div className="mx-auto max-w-5xl lg:max-w-6xl px-2 sm:px-4 lg:px-8 text-left">
       {/* Main heading */}
-      <h1 className="text-3xl tracking-tight font-serif font-extrabold text-foreground sm:text-5xl">
+      <h1 className="text-3xl sm:text-5xl md:text-6xl leading-tight tracking-normal sm:tracking-tight font-serif font-extrabold text-foreground text-balance">
         The
         <span className="mx-2 inline-block rounded-md bg-primary/15 px-3 py-1 text-primary">
           simple and joyful
@@ -19,32 +19,36 @@ export function HeroContent() {
       </h1>
 
       {/* Subtitle */}
-      <p className="mt-6 max-w-xl text-md leading-7 font-lighter text-zinc-500 sm:text-md">
+      <p className="mt-6 max-w-3xl sm:max-w-4xl lg:max-w-5xl text-base sm:text-lg md:text-xl leading-relaxed text-muted-foreground text-balance">
         Feedgot is a complete SaaS feedback platform featuring organized
         feedback boards, auto-syncing roadmaps, self-writing changelogs, and
         automated engagement loops
       </p>
 
       {/* CTAs */}
-      <div className="mt-8 flex flex-col items-start justify-start gap-4 sm:flex-row sm:gap-6">
-        <HotkeyLink href="/signup" hotkeyHref="https://dashboard.feedbot.com" />
-        <LiveDemo />
+      <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 sm:gap-4">
+        <HotkeyLink
+          href="/signup"
+          hotkeyHref="https://dashboard.feedbot.com"
+          className="w-full sm:w-auto"
+        />
+        <LiveDemo className="w-full sm:w-auto text-gray-500" />
       </div>
 
       {/* Feature highlights row */}
       <div
-        className="mt-8 flex items-center gap-6 text-sm text-gray-500"
+        className="mt-8 flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm md:text-base text-gray-500"
         aria-label="Key highlights"
       >
         <span className="inline-flex items-center gap-2">
           <FreeIcon width={18} height={18} className="text-foreground" />
           Free forever
         </span>
-        <span className="inline-flex items-center gap-2">
+        <span className="hidden sm:inline-flex items-center gap-2">
           <SetupIcon width={18} height={18} className="text-foreground" />
           30-second setup
         </span>
-        <span className="inline-flex items-center gap-2">
+        <span className="hidden sm:inline-flex items-center gap-2">
           <UsersIcon width={18} height={18} className="text-foreground" />
           Unlimited users
         </span>
