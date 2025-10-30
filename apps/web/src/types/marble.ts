@@ -8,6 +8,8 @@ export type MarblePost = {
   content?: string | null
   author?: MarbleAuthor | null
   authors?: MarbleAuthor[] | null
+  tags?: MarbleTag[] | null
+  category?: MarbleCategory | null
 }
 
 export type MarblePostListResponse = {
