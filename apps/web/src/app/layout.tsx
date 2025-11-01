@@ -14,6 +14,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Seline analytics */}
+        <script
+          async
+          src="https://cdn.seline.com/seline.js"
+          data-token="1eadc8582cdf3ff"
+        ></script>
+      </head>
       <body className="">
         {children}
       </body>
