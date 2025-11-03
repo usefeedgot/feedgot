@@ -8,6 +8,7 @@ export type ToolItem = {
   slug: string
   name: string
   description: string
+  isNew?: boolean
   contentSections?: ToolContentSection[]
 }
 
@@ -29,11 +30,13 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
         slug: 'feature-adoption-calculator',
         name: 'Feature Adoption',
         description: 'Estimate feature adoption rates by cohort.',
+        isNew: true,
       },
       {
         slug: 'cohort-analysis',
         name: 'Cohort Analysis',
         description: 'Analyze retention by signup month and usage.',
+        isNew: true,
       },
     ],
   },

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tool = getToolBySlugs(category, toolSlug)
   if (!cat || !tool) return { title: "Tool" }
   return {
-    title: `${tool.name} (Coming Soon)`,
+    title: tool.name,
     description: tool.description,
   }
 }
