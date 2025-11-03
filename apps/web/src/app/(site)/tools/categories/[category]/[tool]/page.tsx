@@ -19,9 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: tool.description,
   }
 }
-
  
-
 export default async function ToolPage({ params }: Props) {
   const { category, tool: toolSlug } = await params
   const tool = getToolBySlugs(category, toolSlug)
@@ -51,8 +49,7 @@ export default async function ToolPage({ params }: Props) {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <h1 className="text-balance font-serif text-3xl font-bold md:text-4xl">{tool.name}</h1>
-          <p className="text-zinc-500 mt-3">{tool.description}</p>
+          {/* Page-level title and description omitted to avoid duplication; the tool component provides its own content. */}
           {ToolComponent ? <ToolComponent /> : <ToolTemplate tool={tool} />}
         </section>
       </Container>
