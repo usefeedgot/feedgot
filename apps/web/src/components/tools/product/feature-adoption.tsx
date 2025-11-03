@@ -8,13 +8,13 @@ import { Badge } from "@feedgot/ui/components/badge"
 import { Button } from "@feedgot/ui/components/button"
 import { Plus, Trash } from "lucide-react"
 
-type Cohort = { label: string; size: number; adopted: number }
+type Cohort = { size: number; adopted: number }
 
 export default function FeatureAdoptionTool() {
   const [cohorts, setCohorts] = useState<Cohort[]>([
-    { label: "This month", size: 100, adopted: 45 },
-    { label: "Last month", size: 80, adopted: 32 },
-    { label: "Two months ago", size: 60, adopted: 21 },
+    { size: 100, adopted: 45 },
+    { size: 80, adopted: 32 },
+    { size: 60, adopted: 21 },
   ])
 
   const totals = useMemo(() => {
@@ -42,18 +42,18 @@ export default function FeatureAdoptionTool() {
         </p>
       </div>
 
-      <div className="mt-6">
-        <Card> 
-          <CardHeader>
+      <div className="mt-6 grid grid-cols-1 gap-4">
+        <Card>
+          <CardHeader className="space-y-1">
             <CardTitle className="text-base">Cohort inputs</CardTitle>
             <CardDescription>
               Add cohorts and enter the number of eligible users and adopters. The summary updates instantly.
             </CardDescription>
             <CardAction>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                onClick={() => setCohorts((prev) => [...prev, { label: `Cohort ${prev.length + 1}`, size: 50, adopted: 20 }])}
+                onClick={() => setCohorts((prev) => [...prev, { size: 50, adopted: 20 }])}
               >
                 <Plus className="mr-1" /> Add cohort
               </Button>
@@ -62,16 +62,8 @@ export default function FeatureAdoptionTool() {
           <CardContent>
             <div className="space-y-4">
               {cohorts.map((c, i) => (
-                <div key={i} className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  <div>
-                    <Label htmlFor={`label-${i}`}>Label</Label>
-                    <Input
-                      id={`label-${i}`}
-                      value={c.label}
-                      onChange={(e) => updateCohort(i, { label: e.target.value })}
-                    />
-                  </div>
-                  <div>
+                <div key={i} className="grid grid-cols-4 sm:grid-cols-3 gap-3 items-end">
+                  <div className="space-y-1">
                     <Label htmlFor={`size-${i}`}>Cohort size</Label>
                     <Input
                       id={`size-${i}`}
@@ -81,7 +73,7 @@ export default function FeatureAdoptionTool() {
                       onChange={(e) => updateCohort(i, { size: Number(e.target.value) })}
                     />
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <Label htmlFor={`adopted-${i}`}>Adopted</Label>
                     <Input
                       id={`adopted-${i}`}
@@ -91,13 +83,13 @@ export default function FeatureAdoptionTool() {
                       onChange={(e) => updateCohort(i, { adopted: Number(e.target.value) })}
                     />
                   </div>
-                  <div className="col-span-2 sm:col-span-3 flex justify-end">
+                  <div className="flex justify-end self-end">
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
                       onClick={() => setCohorts((prev) => prev.filter((_, idx) => idx !== i))}
-                      aria-label={`Remove ${c.label}`}
+                      aria-label={`Remove cohort ${i + 1}`}
                     >
                       <Trash className="mr-1" /> Remove
                     </Button>
@@ -113,32 +105,30 @@ export default function FeatureAdoptionTool() {
             <Badge variant="outline">{totals.status}</Badge>
           </CardFooter>
         </Card>
-      </div>
 
-      {/* Interactive summary card below inputs */}
-      <div className="mt-6">
+      {/* Summary card stacked below inputs */}
         <Card>
-          <CardHeader>
+          <CardHeader className="space-y-1">
             <CardTitle className="text-base">Summary</CardTitle>
             <CardDescription>Overall adoption across cohorts. Tiles show key metrics.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="rounded-md border p-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-stretch">
+              <div className="rounded-md border p-3 text-center flex flex-col items-center justify-center min-h-[72px]">
                 <div className="text-xs text-zinc-500">Adoption rate</div>
-                <div className="mt-1 font-mono text-sm text-foreground">{formatPct(totals.rate)}</div>
+                <div className="mt-1 font-mono text-base leading-tight text-foreground">{formatPct(totals.rate)}</div>
               </div>
-              <div className="rounded-md border p-3">
+              <div className="rounded-md border p-3 text-center flex flex-col items-center justify-center min-h-[72px]">
                 <div className="text-xs text-zinc-500">Status</div>
-                <div className="mt-1 text-sm">{totals.status}</div>
+                <div className="mt-1 text-base leading-tight">{totals.status}</div>
               </div>
-              <div className="rounded-md border p-3">
+              <div className="rounded-md border p-3 text-center flex flex-col items-center justify-center min-h-[72px]">
                 <div className="text-xs text-zinc-500">Adopters</div>
-                <div className="mt-1 font-mono text-sm tabular-nums">{totals.adopted.toLocaleString()}</div>
+                <div className="mt-1 font-mono text-base leading-tight tabular-nums">{totals.adopted.toLocaleString()}</div>
               </div>
-              <div className="rounded-md border p-3">
+              <div className="rounded-md border p-3 text-center flex flex-col items-center justify-center min-h-[72px]">
                 <div className="text-xs text-zinc-500">Eligible users</div>
-                <div className="mt-1 font-mono text-sm tabular-nums">{totals.size.toLocaleString()}</div>
+                <div className="mt-1 font-mono text-base leading-tight tabular-nums">{totals.size.toLocaleString()}</div>
               </div>
             </div>
           </CardContent>
@@ -159,9 +149,6 @@ export default function FeatureAdoptionTool() {
 
         <h4>What each input means</h4>
         <ul>
-          <li>
-            <strong>Label</strong>: The cohort name (for example, “This month” or a segment like “Self‑serve EU”).
-          </li>
           <li>
             <strong>Cohort size</strong>: Number of <em>eligible</em> users in the cohort. Eligibility means the user could
             reasonably access the feature (correct plan, permissions, platform, etc.).
