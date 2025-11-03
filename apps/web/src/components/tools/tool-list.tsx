@@ -1,49 +1,33 @@
 import Link from 'next/link'
 import type { ToolItem } from '@/types/tools'
-import { Card, CardHeader, CardTitle, CardDescription, CardAction } from '@feedgot/ui/components/card'
-import { PieChart, TrendingDown, Smile, FileText, CornerUpRight } from 'lucide-react'
-
-function getToolIcon(slug: string) {
-  switch (slug) {
-    case 'mrr-calculator':
-      return PieChart
-    case 'churn-calculator':
-      return TrendingDown
-    case 'nps-calculator':
-      return Smile
-    case 'feedback-templates':
-      return FileText
-    default:
-      return FileText
-  }
-}
+import { isToolNew } from '@/config/toolsFlags'
+import { ChevronRight } from 'lucide-react'
 
 export default function ToolList({ categorySlug, tools }: { categorySlug: string; tools: ToolItem[] }) {
   return (
-    <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {tools.map((tool) => (
-        <Link key={tool.slug} href={`/tools/categories/${categorySlug}/${tool.slug}`} className="group block">
-          <Card className="h-full overflow-hidden transition group hover:shadow-sm hover:ring-border bg-background">
-            <CardHeader className="p-6 sm:p-8">
-              {(() => {
-                const Icon = getToolIcon(tool.slug)
-                return <Icon className="size-5 text-black mb-3" />
-              })()}
-              <CardTitle className="font-medium text-lg">{tool.name}</CardTitle>
-              <CardDescription className="mt-1 text-zinc-500">{tool.description}</CardDescription>
-            </CardHeader>
-            <div className="px-6 sm:px-8 pb-6">
-              {/* spacer to balance content height if needed */}
+    <div className="mt-8">
+      <div className="space-y-3">
+        {tools.map((tool) => (
+          <Link
+            key={tool.slug}
+            href={`/tools/categories/${categorySlug}/${tool.slug}`}
+            className="group flex items-start justify-between gap-4 py-2.5 sm:py-3 px-2.5 sm:px-3 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-ring"
+          >
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h3 className="text-[15px] md:text-base font-medium text-foreground truncate">{tool.name}</h3>
+                {(tool.isNew || isToolNew(tool.slug)) && (
+                  <span className="inline-flex items-center rounded-sm px-1.5 py-0.5 text-[10px] bg-primary/10 text-primary">
+                    New
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-sm text-zinc-500 line-clamp-2">{tool.description}</p>
             </div>
-            <div className="px-6 sm:px-8 pt-0 flex items-center">
-              <span className="inline-flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity ml-auto">
-                Explore
-                <CornerUpRight className="ml-1 h-4 w-4" />
-              </span>
-            </div>
-          </Card>
-        </Link>
-      ))}
+            <ChevronRight className="mt-0.5 size-4 shrink-0 text-zinc-400 group-hover:text-black transition-colors" />
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }
