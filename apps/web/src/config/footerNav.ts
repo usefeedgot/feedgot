@@ -21,11 +21,11 @@ export const footerNavigationConfig: FooterNavigationConfig = {
     {
       title: 'Alternatives',
       items: [
-        { name: 'UserJot', href: '#' },
-        { name: 'Featurebase', href: '#' },
-        { name: 'Nolt', href: '#' },
-        { name: 'Canny', href: '#' },
-        { name: 'Upvoty', href: '#' },
+        { name: 'UserJot', href: '/alternatives/userjot' },
+        { name: 'Featurebase', href: '/alternatives/featurebase' },
+        { name: 'Nolt', href: '/alternatives/nolt' },
+        { name: 'Canny', href: '/alternatives/canny' },
+        { name: 'Upvoty', href: '/alternatives/upvoty' },
       ],
     },
     {
