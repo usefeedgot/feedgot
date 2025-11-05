@@ -1,11 +1,13 @@
 import type { Metadata } from "next"
 import Faq from "@/components/home/faq"
 import Pricing from "@/components/home/pricing"
+import { createPageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Pricing",
-  description: "Choose a plan that fits your team.",
-}
+export const metadata: Metadata = createPageMetadata({
+  title: "Pricing — Transparent plans for teams",
+  description: "Simple, honest pricing with a free tier and startup‑friendly plans.",
+  path: "/pricing",
+})
 
 export default function PricingPage() {
   return (

@@ -3,13 +3,15 @@ import { Container } from "@/components/global/container"
 import { getPosts } from "@/lib/query"
 import { BlogCard } from "@/components/blog/blog-card"
 import type { MarblePostListResponse } from "@/types/marble"
+import { createPageMetadata } from "@/lib/seo"
 
 export const dynamic = "force-dynamic"
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description: "Insights, updates, and engineering stories from the team.",
-}
+export const metadata: Metadata = createPageMetadata({
+  title: "Blog — Product leadership, feedback, and building in public",
+  description: "Essays on customer‑driven development, alignment, and shipping with clarity.",
+  path: "/blog",
+})
 
 export default async function BlogPage() {
   const res = (await getPosts()) as MarblePostListResponse | undefined

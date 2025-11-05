@@ -5,6 +5,7 @@ import { getSinglePost } from "@/lib/query"
 import type { MarblePostResponse } from "@/types/marble"
 import { SinglePost } from "@/components/blog/single-post"
 import CTA from "@/components/home/cta"
+import { createArticleMetadata } from "@/lib/seo"
 
 export const dynamic = "force-dynamic"
 
@@ -15,10 +16,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const res = (await getSinglePost(slug)) as MarblePostResponse | undefined
   const post = res?.post
   if (!post) return { title: "Post not found" }
-  return {
+  return createArticleMetadata({
     title: post.title,
-    description: post.excerpt || undefined,
-  }
+    description: post.excerpt || post.title,
+    path: `/blog/${slug}`,
+  })
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Container } from "@/components/global/container"
 import { getCategoryBySlug, getToolBySlugs, getAllToolParams } from "@/types/tools"
 import { TOOL_COMPONENTS } from "@/types/registry"
 import ToolTemplate from "@/components/tools/global/template"
+import { createArticleMetadata } from "@/lib/seo"
 
 
 type Props = { params: Promise<{ category: string; tool: string }> }
@@ -14,10 +14,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = getCategoryBySlug(category)
   const tool = getToolBySlugs(category, toolSlug)
   if (!cat || !tool) return { title: "Tool" }
-  return {
+  return createArticleMetadata({
     title: tool.name,
     description: tool.description,
-  }
+    path: `/tools/categories/${category}/${toolSlug}`,
+  })
 }
  
 export default async function ToolPage({ params }: Props) {

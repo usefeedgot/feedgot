@@ -1,9 +1,12 @@
 import { Container } from "@/components/global/container"
+import type { Metadata } from "next"
+import { createPageMetadata } from "@/lib/seo"
 
-export const metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "GDPR Compliance",
   description: "feedgot’s approach to GDPR and data protection obligations.",
-}
+  path: "/gdpr",
+})
 
 export default function GdprPage() {
   return (

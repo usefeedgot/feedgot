@@ -6,6 +6,7 @@ import ComparisonBento from "@/components/alternatives/comparison-bento";
 import ComparisonFeature from "@/components/alternatives/comparison-feature";
 import StatsSection from "@/components/home/cta";
 import { getAltDescription } from "@/components/alternatives/descriptions";
+import { createArticleMetadata } from "@/lib/seo";
 import {
   getAlternativeBySlug,
   getAlternativeSlugs,
@@ -26,20 +27,11 @@ export async function generateMetadata({
   const title = `${alt.name} vs Feedgot`;
   const rawDescription = getAltDescription(slug, 'first');
   const description = rawDescription.length > 160 ? `${rawDescription.slice(0, 157)}…` : rawDescription;
-  return {
+  return createArticleMetadata({
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      type: "article",
-    },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
-  };
+    path: `/alternatives/${slug}`,
+  });
 }
 
 export default async function AlternativePage({
