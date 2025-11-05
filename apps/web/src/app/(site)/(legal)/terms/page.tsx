@@ -1,9 +1,12 @@
 import { Container } from "@/components/global/container"
+import type { Metadata } from "next"
+import { createPageMetadata } from "@/lib/seo"
 
-export const metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Terms of Service",
   description: "feedgot terms and conditions for using our services.",
-}
+  path: "/terms",
+})
 
 export default function TermsPage() {
   return (

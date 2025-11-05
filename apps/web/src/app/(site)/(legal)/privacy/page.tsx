@@ -1,9 +1,12 @@
 import { Container } from "@/components/global/container"
+import type { Metadata } from "next"
+import { createPageMetadata } from "@/lib/seo"
 
-export const metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Privacy Policy",
   description: "How feedgot collects, uses, and protects personal data in line with GDPR.",
-}
+  path: "/privacy",
+})
 
 export default function PrivacyPage() {
   return (

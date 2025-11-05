@@ -1,11 +1,13 @@
 import type { Metadata } from "next"
 import { Container } from "@/components/global/container"
 import CategoryList from "@/components/tools/global/category-list"
+import { createPageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "All Tool Categories",
-  description: "Browse every category of tools including revenue, retention, and customer feedback.",
-}
+export const metadata: Metadata = createPageMetadata({
+  title: "All Tool Categories — Revenue, retention, feedback",
+  description: "Browse tool categories including revenue, retention, and customer feedback calculators.",
+  path: "/tools/categories",
+})
 
 export default function ToolsCategoriesPage() {
   return (

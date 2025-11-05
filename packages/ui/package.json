@@ -26,6 +26,7 @@
     "next-themes": "^0.4.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-scan": "^0.4.3",
     "tailwind-merge": "^3.3.1",
     "tw-animate-css": "^1.3.6",
     "zod": "^3.25.76"
@@ -54,6 +55,7 @@
     "./hooks/*": "./src/hooks/*.ts",
     "./icons": "./src/icons/index.tsx",
     "./icons/*": "./src/icons/*.tsx",
+    "./global/*": "./src/global/*.tsx",
     "./ui": "./src/ui/*.tsx",
     "./ui/*": "./src/ui/*.tsx"
   }

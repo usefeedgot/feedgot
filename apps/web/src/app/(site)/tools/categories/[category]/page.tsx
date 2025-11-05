@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { Container } from "@/components/global/container"
 import { getCategoryBySlug, getAllCategorySlugs } from "@/types/tools"
 import ToolList from "@/components/tools/global/tool-list"
+import { createPageMetadata } from "@/lib/seo"
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@feedgot/ui/components/breadcrumb"
 
 type Props = { params: Promise<{ category: string }> }
@@ -12,10 +13,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params
   const cat = getCategoryBySlug(category)
   if (!cat) return { title: "Tools Category" }
-  return {
+  return createPageMetadata({
     title: `${cat.name} Tools`,
     description: cat.description,
-  }
+    path: `/tools/categories/${category}`,
+  })
 }
 
 export default async function CategoryPage({ params }: Props) {

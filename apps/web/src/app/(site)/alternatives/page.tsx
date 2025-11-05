@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import { Container } from '@/components/global/container'
 import { alternatives } from '@/config/alternatives'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata = {
-  title: 'Feedgot Alternatives & Comparisons',
+export const metadata = createPageMetadata({
+  title: 'Alternatives — Compare Feedgot with Canny, Featurebase, Nolt, Upvoty, UserJot',
   description:
-    'Explore comparisons between Feedgot and popular alternatives like Canny, Featurebase, Nolt, Upvoty, and UserJot.',
-}
+    'Side‑by‑side comparisons covering features, privacy, and hosting differences to help you choose confidently.',
+  path: '/alternatives',
+})
 
 export default function AlternativesIndexPage() {
   return (
