@@ -8,6 +8,8 @@ import Faq from '@/components/home/faq'
 import BentoFeature from '@/components/home/bento-feature'
 // import Pricing from '@/components/home/pricing'
 import StatsSection from '@/components/home/cta'
+import Setup from '@/components/home/setup'
+import Create from '@/components/home/create'
 
 
 export const metadata: Metadata = createPageMetadata({
@@ -23,6 +25,8 @@ export default function Home() {
       <Hero />
       <BentoFeature />
       <Feature />
+      <Setup />
+      <Create />
       <Faq />
       <StatsSection />
     </main>
