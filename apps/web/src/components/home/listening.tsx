@@ -6,59 +6,78 @@ import { SetupIcon } from "@feedgot/ui/icons/setup";
 
 export default function Listening() {
   return (
-    <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
+    <Container maxWidth="6xl" className="px-6 sm:px-16 lg:px-20 xl:px-24">
       <section className="py-16">
-        <div className="mx-auto w-full max-w-6xl px-0 sm:px-6">
-          <h2 className="text-foreground text-balance text-2xl sm:text-3xl font-semibold">
-            Your users are telling you what to build.
-            <span className="block mt-1">Are you listening?</span>
+        <div className="mx-auto w-full max-w-6xl px-2 sm:px-4">
+          <h2 className="text-foreground text-balance text-2xl sm:text-3xl font-bold">
+            Build what your users actually need.
+            <span className="block mt-1">Listen and act.</span>
           </h2>
-          <p className="mt-4 text-zinc-500 text-base leading-7 text-balance sm:max-w-4xl">
-            Teams using Feedgot see 40% more feedback submissions because users finally have a place where
-            their voice matters. No more scattered emails, lost Slack messages, or ignored feature requests.
+          <p className="mt-4 text-zinc-500 text-md leading-6 text-balance sm:max-w-4xl">
+            Feedgot gives every request a single homecaptured, organized, and
+            ready to ship. No more buried DMs, scattered emails, or forgotten
+            ideas.
           </p>
 
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
-            {/* Benefit 1 */}
+          <div className="mt-10 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
             <div className="flex flex-col items-start gap-2">
-              <LoveIcon aria-hidden className="size-[40px] text-rose-400 flex-shrink-0" />
+              <LoveIcon
+                aria-hidden
+                className="size-[30px] text-rose-400 flex-shrink-0"
+              />
               <div>
-                <h3 className="text-foreground text-base font-semibold">200+ votes on one idea</h3>
-                <p className="text-zinc-500 mt-1 text-sm leading-7 sm:max-w-[34ch]">
-                  See what users really want, not just who shouts loudest.
+                <h3 className="text-foreground text-base font-medium">
+                  Prioritize what users love
+                </h3>
+                <p className="text-zinc-500 mt-1 text-sm leading-6 sm:max-w-[34ch]">
+                  Spot ideas with real momentum, not just the loudest voices.
                 </p>
               </div>
             </div>
 
-            {/* Benefit 2 */}
             <div className="flex flex-col items-start gap-2">
-              <ChartIcon aria-hidden className="size-[40px] text-emerald-400 flex-shrink-0" />
+              <ChartIcon
+                aria-hidden
+                className="size-[30px] text-emerald-400 flex-shrink-0"
+              />
               <div>
-                <h3 className="text-foreground text-base font-semibold">10% lower churn</h3>
-                <p className="text-zinc-500 mt-1 text-sm leading-7 sm:max-w-[34ch]">
-                  Users stay when they see you building their requests.
+                <h3 className="text-foreground text-base font-medium">
+                  Reduce churn
+                </h3>
+                <p className="text-zinc-500 mt-1 text-sm leading-6 sm:max-w-[34ch]">
+                  Show progress on requests so customers stay and engage.
                 </p>
               </div>
             </div>
 
-            {/* Benefit 3 */}
+
             <div className="flex flex-col items-start gap-2">
-              <SetupIcon aria-hidden className="size-[40px] text-blue-400 flex-shrink-0" opacity={1} />
+              <SetupIcon
+                aria-hidden
+                className="size-[30px] text-blue-400 flex-shrink-0"
+                opacity={1}
+              />
               <div>
-                <h3 className="text-foreground text-base font-semibold">5 hours/week saved</h3>
-                <p className="text-zinc-500 mt-1 text-sm leading-7 sm:max-w-[34ch]">
-                  Stop managing feedback in spreadsheets and emails.
+                <h3 className="text-foreground text-base font-medium">
+                  Save hours each week
+                </h3>
+                <p className="text-zinc-500 mt-1 text-sm leading-6 sm:max-w-[34ch]">
+                  Stop chasing feedback across docs, spreadsheets, and emails.
                 </p>
               </div>
             </div>
 
-            {/* Benefit 4 */}
             <div className="flex flex-col items-start gap-2">
-              <UsersIcon aria-hidden className="size-[40px] text-violet-600 flex-shrink-0" />
+              <UsersIcon
+                aria-hidden
+                className="size-[30px] text-violet-600 flex-shrink-0"
+              />
               <div>
-                <h3 className="text-foreground text-base font-semibold">Entire team aligned</h3>
-                <p className="text-zinc-500 mt-1 text-sm leading-7 sm:max-w-[34ch]">
-                  Everyone sees the same priorities — no more debates.
+                <h3 className="text-foreground text-base font-medium">
+                  Team aligned
+                </h3>
+                <p className="text-zinc-500 mt-1 text-sm leading-6 sm:max-w-[34ch]">
+                  Shared priorities keep everyone focused—no endless debates.
                 </p>
               </div>
             </div>

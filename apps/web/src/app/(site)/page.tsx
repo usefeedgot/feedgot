@@ -24,11 +24,11 @@ export default function Home() {
   return (
     <main className="min-h-screen pt-16">
       <Hero />
+      <Listening />
       <BentoFeature />
       <Setup />
       <Feature />
       <Create />
-      <Listening />
       <Faq />
       <StatsSection />
     </main>

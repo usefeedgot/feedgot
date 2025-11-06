@@ -5,7 +5,7 @@ export default function Create() {
   return (
     <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
       <section className="py-16">
-        <div className="mx-auto w-full max-w-6xl px-0 sm:px-6">
+        <div className="mx-auto w-full max-w-6xl px-2 sm:px-4">
           <CollectIcon aria-hidden className="size-5 text-primary mb-2 sm:mb-3" />
           <h2 className=" mt-6 text-foreground text-balance text-xl sm:text-2xl font-semibold">
             Up and running in 30 seconds
@@ -14,7 +14,7 @@ export default function Create() {
           <div className="mt-8 flex flex-col sm:flex-row sm:items-stretch gap-8 sm:gap-12">
             {/* Step 1 */}
             <div className="sm:flex-1">
-              <span className="inline-flex items-center justify-center size-7 rounded-full bg-blue-400 text-white text-[12px] font-semibold">
+              <span className="inline-flex items-center justify-center size-7 rounded-full bg-blue-600 text-white text-[12px] font-semibold">
                 1
               </span>
               <h3 className="mt-4 text-foreground text-lg font-medium">
@@ -29,7 +29,7 @@ export default function Create() {
 
             {/* Step 2 */}
             <div className="sm:flex-1 sm:px-6">
-              <span className="inline-flex items-center justify-center size-7 rounded-full bg-purple-400 text-white text-[12px] font-semibold">
+              <span className="inline-flex items-center justify-center size-7 rounded-full bg-purple-600 text-white text-[12px] font-semibold">
                 2
               </span>
               <h3 className="mt-4 text-foreground text-lg font-medium">
@@ -44,7 +44,7 @@ export default function Create() {
 
             {/* Step 3 */}
             <div className="sm:flex-1 sm:px-6">
-              <span className="inline-flex items-center justify-center size-7 rounded-full bg-green-500 text-white text-[12px] font-semibold">
+              <span className="inline-flex items-center justify-center size-7 rounded-full bg-green-600 text-white text-[12px] font-semibold">
                 3
               </span>
               <h3 className="mt-4 text-foreground text-lg font-medium">
@@ -59,7 +59,7 @@ export default function Create() {
 
           <div className="mt-10 flex items-start gap-3">
             <div className="h-5 w-[4px] bg-primary rounded-full" aria-hidden />
-            <p className="text-zinc-500 text-base">
+            <p className="text-zinc-500 text-sm sm:text-base">
               Seriously, it’s that simple. Our average customer is collecting feedback within 2 minutes of signing up.
             </p>
           </div>
