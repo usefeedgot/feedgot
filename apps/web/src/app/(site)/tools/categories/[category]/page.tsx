@@ -29,28 +29,30 @@ export default async function CategoryPage({ params }: Props) {
     <main className="min-[height:calc(100vh-64px)]  pt-16 bg-background">
       <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
         <section className="py-12 sm:py-16">
-          <Breadcrumb className="mb-6">
-            <BreadcrumbList className="text-accent">
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/tools">Tools</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/tools/categories">Categories</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{cat.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-          <h1 className="text-balance text-3xl font-bold md:text-4xl">{cat.name}</h1>
-          <p className="text-accent mt-4">{cat.description}</p>
-          <ToolList categorySlug={cat.slug} tools={cat.tools} />
+          <div className="mx-auto w-full max-w-6xl px-0 sm:px-6">
+            <Breadcrumb className="mb-6">
+              <BreadcrumbList className="text-accent">
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/tools">Tools</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/tools/categories">Categories</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{cat.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+            <h1 className="text-balance text-3xl font-bold md:text-4xl">{cat.name}</h1>
+            <p className="text-accent mt-4">{cat.description}</p>
+            <ToolList categorySlug={cat.slug} tools={cat.tools} />
+          </div>
         </section>
       </Container>
     </main>
