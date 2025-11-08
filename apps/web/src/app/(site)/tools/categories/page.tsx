@@ -14,9 +14,11 @@ export default function ToolsCategoriesPage() {
     <main className="min-[height:calc(100vh-64px)] pt-16">
       <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
         <section className="py-12 sm:py-16">
-          <h1 className="text-balance text-3xl font-bold md:text-4xl">Categories</h1>
-          <p className="text-accent mt-4">Find calculators and templates grouped by topic.</p>
-          <CategoryList />
+          <div className="mx-auto w-full max-w-6xl px-0 sm:px-6">
+            <h1 className="text-balance text-3xl font-bold md:text-4xl">Categories</h1>
+            <p className="text-accent mt-4">Find calculators and templates grouped by topic.</p>
+            <CategoryList />
+          </div>
         </section>
       </Container>
     </main>

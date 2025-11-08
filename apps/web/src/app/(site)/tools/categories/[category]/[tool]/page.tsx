@@ -53,24 +53,26 @@ export default async function ToolPage({ params }: Props) {
     <main className="min-h-screen pt-16 bg-background">
       <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
         <section className="py-12 sm:py-16">
-          {/* JSON-LD for SEO: FAQ and Breadcrumbs */}
-          <Script
-            id="tool-faq-jsonld"
-            type="application/ld+json"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-          />
-          <Script
-            id="tool-breadcrumb-jsonld"
-            type="application/ld+json"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(breadcrumbSchema),
-            }}
-          />
-          {/* Breadcrumb removed for a cleaner tool detail page. */}
-          {/* Page-level title and description omitted to avoid duplication; the tool component provides its own content. */}
-          {ToolComponent ? <ToolComponent /> : <ToolTemplate tool={tool} />}
+          <div className="mx-auto w-full max-w-6xl px-0 sm:px-6">
+            {/* JSON-LD for SEO: FAQ and Breadcrumbs */}
+            <Script
+              id="tool-faq-jsonld"
+              type="application/ld+json"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
+            <Script
+              id="tool-breadcrumb-jsonld"
+              type="application/ld+json"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(breadcrumbSchema),
+              }}
+            />
+            {/* Breadcrumb removed for a cleaner tool detail page. */}
+            {/* Page-level title and description omitted to avoid duplication; the tool component provides its own content. */}
+            {ToolComponent ? <ToolComponent /> : <ToolTemplate tool={tool} />}
+          </div>
         </section>
       </Container>
     </main>
