@@ -4,7 +4,7 @@ import { Container } from "../global/container";
 import Image from "next/image";
 import { HeroContent } from "./hero-content";
 import { PreviewSwitchPill } from "@/components/home/preview-switch";
-import { usePreviewHint } from "@/components/home/hooks/usePreviewHint";
+import { usePreviewHint } from "../../hooks/usePreviewHint";
 
 export function Hero() {
   const [active, setActive] = useState<"dashboard" | "roadmap" | "changelog">(

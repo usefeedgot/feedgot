@@ -2,6 +2,7 @@
 import { cn } from "@feedgot/ui/lib/utils"
 import type { TocItem } from "@/lib/toc"
 import { useEffect, useState } from "react"
+import { usePrefersReducedMotion } from "../../hooks/use-prefers-reduced-motion"
 
 type TableOfContentsProps = {
   items: TocItem[]
@@ -12,6 +13,7 @@ type TableOfContentsProps = {
 export function TableOfContents({ items, className, title = "Table of content" }: TableOfContentsProps) {
   if (!items?.length) return null
   const [activeId, setActiveId] = useState<string | null>(items[0]?.id ?? null)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const headings = items
@@ -41,10 +43,7 @@ export function TableOfContents({ items, className, title = "Table of content" }
   }, [items])
 
   function onAnchorClick(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
-    // Allow reduced-motion users to avoid smooth animations
-    const prefersReducedMotion = typeof window !== "undefined" &&
-      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
+    
     const el = document.getElementById(id)
     if (!el) return
 
