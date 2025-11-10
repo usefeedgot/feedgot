@@ -12,6 +12,9 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@feedgot/ui/components/toggle-group";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
+import { ChartIcon } from "@feedgot/ui/icons/chart";
+import { UsersIcon } from "@feedgot/ui/icons/users";
+import { SetupIcon } from "@feedgot/ui/icons/setup";
 
 const CardAccent = ({ children }: { children: ReactNode }) => (
   <p className="text-accent mt-1 text-sm sm:text-base">{children}</p>
@@ -42,12 +45,15 @@ export default function Create() {
             <div className="grid grid-cols-2 gap-2">
               <Card className="relative p-6">
                 <CardTag />
+                <div className="absolute left-3 top-3 z-10 space-y-1">
+                  <ChartIcon className="size-4" aria-hidden />
+                  <CardAccent>Plan, track, and optimize campaigns.</CardAccent>
+                </div>
                 <div className="flex aspect-video items-center justify-center">
                   <CodeIllustration className="w-full" />
                 </div>
                 <div className="text-center">
                   <h3 className="text-foreground text-xl font-semibold">Marketing Campaigns</h3>
-                  <CardAccent>Plan, track, and optimize campaigns.</CardAccent>
                   <p className="text-muted-foreground mt-4 text-balance text-lg">
                     Effortlessly plan and execute your marketing campaigns
                     organized.
@@ -56,12 +62,15 @@ export default function Create() {
               </Card>
               <Card className="relative p-6">
                 <CardTag />
+                <div className="absolute left-3 top-3 z-10 space-y-1">
+                  <UsersIcon className="size-4" aria-hidden />
+                  <CardAccent>Auto-schedule and manage meetings with AI.</CardAccent>
+                </div>
                 <div className="flex aspect-video items-center justify-center">
                   <ScheduleIllustation className="border" variant="mixed" />
                 </div>
                 <div className="text-center">
                   <h3 className="text-foreground text-xl font-semibold">AI Meeting Scheduler</h3>
-                  <CardAccent>Auto-schedule and manage meetings with AI.</CardAccent>
                   <p className="text-muted-foreground mt-4 text-balance text-lg">
                     Effortlessly book and manage your meetings. Stay on top of
                     your schedule.
@@ -70,12 +79,15 @@ export default function Create() {
               </Card>
               <Card className="relative p-6 col-span-2">
                 <CardTag />
+                <div className="absolute left-3 top-3 z-10 space-y-1">
+                  <SetupIcon className="size-4" aria-hidden />
+                  <CardAccent>Get started in seconds.</CardAccent>
+                </div>
                 <div className="flex h-32 sm:h-40 items-center justify-center">
                   <ScheduleIllustation className="border" variant="mixed" />
                 </div>
                 <div className="text-center">
                   <h3 className="text-foreground text-xl font-semibold">Create workspace</h3>
-                  <CardAccent>Get started in seconds.</CardAccent>
                   <p className="text-muted-foreground mt-4 text-balance text-lg">
                     Sign up with just an email and pick a name — that’s it.
                   </p>
