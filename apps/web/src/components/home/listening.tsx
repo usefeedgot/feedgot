@@ -1,15 +1,15 @@
 import { Container } from "../global/container";
-import { UsersIcon } from "@feedgot/ui/icons/users";
 import { ChartIcon } from "@feedgot/ui/icons/chart";
 import { LoveIcon } from "@feedgot/ui/icons/love";
 import { SetupIcon } from "@feedgot/ui/icons/setup";
+import { Card } from "@feedgot/ui/components/card";
 
 export default function Listening() {
   return (
     <Container maxWidth="6xl" className="px-6 sm:px-16 lg:px-20 xl:px-24">
-      <section className="py-16" data-component="Listening">
+      <section className="" data-component="Listening">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <h2 className="text-foreground text-balance text-2xl sm:text-3xl font-bold">
+          <h2 className="text-foreground text-balance text-3xl sm:text-4xl font-bold">
             Build what your users actually need.
             <span className="block mt-1">Listen and act.</span>
           </h2>
@@ -19,8 +19,8 @@ export default function Listening() {
             ideas.
           </p>
 
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
-            <div className="flex flex-col items-start gap-2">
+          <div className="mt-10 grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+            <Card className="overflow-hidden p-6 flex flex-col items-start gap-2">
               <LoveIcon
                 aria-hidden
                 className="size-[30px] text-rose-400 flex-shrink-0"
@@ -33,9 +33,9 @@ export default function Listening() {
                   Spot ideas with real momentum, not just the loudest voices.
                 </p>
               </div>
-            </div>
+            </Card>
 
-            <div className="flex flex-col items-start gap-2">
+            <Card className="overflow-hidden p-6 flex flex-col items-start gap-2">
               <ChartIcon
                 aria-hidden
                 className="size-[30px] text-emerald-400 flex-shrink-0"
@@ -48,10 +48,9 @@ export default function Listening() {
                   Show progress on requests so customers stay and engage.
                 </p>
               </div>
-            </div>
+            </Card>
 
-
-            <div className="flex flex-col items-start gap-2">
+            <Card className="overflow-hidden p-6 flex flex-col items-start gap-2">
               <SetupIcon
                 aria-hidden
                 className="size-[30px] text-blue-400 flex-shrink-0"
@@ -65,22 +64,7 @@ export default function Listening() {
                   Stop chasing feedback across docs, spreadsheets, and emails.
                 </p>
               </div>
-            </div>
-
-            <div className="flex flex-col items-start gap-2">
-              <UsersIcon
-                aria-hidden
-                className="size-[30px] text-violet-600 flex-shrink-0"
-              />
-              <div>
-                <h3 className="text-foreground text-base font-medium">
-                  Team aligned
-                </h3>
-                <p className="text-accent mt-1 text-sm leading-6 sm:max-w-[34ch]">
-                  Shared priorities keep everyone focused—no endless debates.
-                </p>
-              </div>
-            </div>
+            </Card>
           </div>
         </div>
       </section>
