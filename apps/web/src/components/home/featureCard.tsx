@@ -4,12 +4,12 @@ import LoveIcon from "@feedgot/ui/icons/love";
 import FaceIcon from "@feedgot/ui/icons/face";
 import FoundedIcon from "@feedgot/ui/icons/founded";
 
-export default function BentoFeature() {
+export default function FeatureCard() {
   return (
     <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
       <section>
         <div>
-          <div className="mx-auto w-full max-w-6xl px-2 sm:px-4">
+          <div className="mx-auto w-full max-w-6xl px-6">
             <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               <Card className="overflow-hidden p-6 flex flex-col items-start gap-2">
                 <LoveIcon className="text-primary size-5" />
