@@ -1,7 +1,7 @@
 "use client"
 import { cn } from "@feedgot/ui/lib/utils"
 import type { TocItem } from "@/lib/toc"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { usePrefersReducedMotion } from "../../hooks/use-prefers-reduced-motion"
 import { ScrollArea } from "@feedgot/ui/components/scroll-area"
 
@@ -16,7 +16,6 @@ export function TableOfContents({ items, className, title = "Table of content" }
   const [activeId, setActiveId] = useState<string | null>(items[0]?.id ?? null)
   const prefersReducedMotion = usePrefersReducedMotion()
   const [expanded, setExpanded] = useState(false)
-  const [collapsedHeight, setCollapsedHeight] = useState<number | undefined>(undefined)
   const navRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -68,42 +67,7 @@ export function TableOfContents({ items, className, title = "Table of content" }
     }
   }, [activeId, expanded])
 
-  // Dynamically size collapsed ScrollArea to exactly 5 items
-  useLayoutEffect(() => {
-    if (expanded) return
-    const container = navRef.current
-    if (!container) return
-    const viewport = container.querySelector<HTMLElement>('[data-slot="scroll-area-viewport"]')
-    const list = viewport?.querySelector<HTMLUListElement>('ul')
-    if (!viewport || !list) return
-
-    const compute = () => {
-      const nodes = Array.from(list.children) as HTMLElement[]
-      const count = Math.min(5, nodes.length)
-      if (count === 0) return
-      const first = nodes[0]
-      const last = nodes[count - 1]
-      // Include spacing introduced by Tailwind's space-y utilities by using offsets
-      if (!last) return
-      const height = (last.offsetTop + last.offsetHeight) - (first?.offsetTop ?? 0)
-      // Add a small buffer to avoid clipping due to rounding/scrollbar
-      setCollapsedHeight(Math.ceil(height) + 2)
-    }
-
-    // Initial compute and a microtask to catch font/layout changes
-    compute()
-    const t = setTimeout(compute, 0)
-
-    // Observe viewport and first 5 items for responsive recalculation
-    const ro = new ResizeObserver(() => compute())
-    ro.observe(viewport)
-    Array.from(list.children).slice(0, 5).forEach((el) => ro.observe(el as HTMLElement))
-
-    return () => {
-      clearTimeout(t)
-      ro.disconnect()
-    }
-  }, [items, expanded])
+  // Removed dynamic measurement to avoid refresh flicker; use a fixed height that fits five items
 
   function onAnchorClick(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
     
@@ -183,9 +147,7 @@ export function TableOfContents({ items, className, title = "Table of content" }
           ))}
         </ul>
       ) : (
-        <ScrollArea className={cn("pr-1", collapsedHeight ? undefined : "h-44")}
-          style={collapsedHeight ? { height: collapsedHeight } : undefined}
-        >
+        <ScrollArea className="pr-1 h-[8.75rem]">
           <ul className="space-y-1 list-none pl-0 m-0">
             {items.map((item, i) => (
               <li key={item.id} className={cn("leading-snug text-left")}> 
@@ -193,7 +155,7 @@ export function TableOfContents({ items, className, title = "Table of content" }
                   href={`#${item.id}`}
                   onClick={(e) => onAnchorClick(e, item.id)}
                   className={cn(
-                    "block py-1 text-left text-xs text-accent hover:text-primary hover:underline underline-offset-2 decoration-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-sm",
+                    "block py-1 text-left text-xs text-accent truncate hover:text-primary hover:underline underline-offset-2 decoration-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-sm",
                     item.level === 2 ? "font-light" : "font-normal",
                     activeId === item.id && "text-primary font-light"
                   )}
