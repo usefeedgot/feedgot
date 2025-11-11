@@ -41,5 +41,10 @@ export function getWebsiteJsonLd() {
     '@type': 'WebSite',
     url: SITE_URL,
     name: DEFAULT_TITLE,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${SITE_URL}/tools?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
   }
 }
