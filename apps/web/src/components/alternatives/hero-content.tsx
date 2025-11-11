@@ -32,10 +32,7 @@ export function AlternativeHeroContent({
       <div className="mt-8 w-full sm:w-fit">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 sm:gap-4">
           <HotkeyLink
-            href="/signup"
-            hotkeyHref="https://dashboard.feedbot.com"
             className="w-full sm:w-auto"
-            label="Add to your website"
           />
           <LiveDemo className="w-full sm:w-auto text-accent" />
         </div>
