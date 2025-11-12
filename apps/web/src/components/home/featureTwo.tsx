@@ -27,29 +27,29 @@ export default function FeaturesSection() {
     <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
       <section>
         <div className="bg-background py-16 sm:py-24">
-          <div className="mx-auto w-full max-w-5xl px-6">
+          <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
             <div>
-              <h2 className="text-foreground mt-4 text-3xl sm:text-4xl font-semibold">
+              <h2 className="text-foreground mt-4 text-3xl sm:text-4xl lg:text-5xl font-semibold">
                 Personal AI, with you Anywhere
               </h2>
-              <p className="text-accent mb-8 sm:mb-12 mt-4 text-balance text-base sm:text-md">
+              <p className="text-accent mb-8 sm:mb-12 mt-4 text-balance text-base sm:text-md md:text-lg">
                 Quick AI lives a single hotkey away - ready to quickly appear as
                 a floating window above your other apps. Get instant assistance
                 whether you're browsing, coding, or writing documents.
               </p>
             </div>
-            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 lg:gap-6 md:grid-cols-2">
               {/* Long top card (1) */}
               <Card className="relative p-4 sm:p-6 md:p-8 md:col-span-2">
                 <CardTag />
                 <div className="absolute left-3 top-3 z-10 space-y-1">
-                  <AiIcon className="size-4 text-primary opacity-100" opacity={1} aria-hidden />
+                  <AiIcon className="size-4 sm:size-5 text-primary opacity-100" opacity={1} aria-hidden />
                   <h3 className="text-foreground text-sm sm:text-base font-semibold">Quick AI</h3>
                   <CardAccent>Always ready with a single hotkey.</CardAccent>
                 </div>
                 <div className="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-center">
                   <div className="flex-1 mt-12 sm:mt-16 text-left">
-                    <p className="text-muted-foreground mt-3 text-base sm:text-lg">
+                    <p className="text-muted-foreground mt-3 text-base sm:text-lg sm:max-w-[50ch]">
                       Summon a focused assistant with a single hotkey. Draft content,
                       schedule meetings, and move work forward without context switching.
                     </p>
@@ -59,7 +59,7 @@ export default function FeaturesSection() {
                     </div>
                   </div>
                   <div className="flex-1">
-                    <div className="mx-auto max-w-[18rem] sm:max-w-sm">
+                    <div className="mx-auto max-w-[18rem] sm:max-w-sm md:max-w-md">
                       <ScheduleIllustation className="w-full" variant="mixed" />
                     </div>
                   </div>
@@ -70,7 +70,7 @@ export default function FeaturesSection() {
               <Card className="relative p-4 sm:p-6">
                 <CardTag />
                 <div className="absolute left-3 top-3 z-10 space-y-1">
-                  <ChartIcon className="size-4 text-primary opacity-100" opacity={1} aria-hidden />
+                  <ChartIcon className="size-4 sm:size-5 text-primary opacity-100" opacity={1} aria-hidden />
                   <h3 className="text-foreground text-sm sm:text-base font-semibold">Marketing Campaigns</h3>
                   <CardAccent>Plan, track, and optimize campaigns.</CardAccent>
                 </div>
@@ -78,7 +78,7 @@ export default function FeaturesSection() {
                   <CodeIllustration className="w-full" />
                 </div>
                 <div className="text-center">
-                  <p className="text-muted-foreground mt-4 text-balance text-lg">
+                  <p className="text-muted-foreground mt-4 text-balance text-base sm:text-lg sm:max-w-[50ch] mx-auto">
                     Plan and execute campaigns with briefs, assets, and timelines in one view.
                   </p>
                 </div>
@@ -86,7 +86,7 @@ export default function FeaturesSection() {
               <Card className="relative p-4 sm:p-6">
                 <CardTag />
                 <div className="absolute left-3 top-3 z-10 space-y-1">
-                  <UsersIcon className="size-4 text-primary opacity-100" opacity={1} aria-hidden />
+                  <UsersIcon className="size-4 sm:size-5 text-primary opacity-100" opacity={1} aria-hidden />
                   <h3 className="text-foreground text-sm sm:text-base font-semibold">AI Meeting Scheduler</h3>
                   <CardAccent>Auto-schedule and manage meetings with AI.</CardAccent>
                 </div>
@@ -94,7 +94,7 @@ export default function FeaturesSection() {
                   <ScheduleIllustation className="border" variant="outlined" />
                 </div>
                 <div className="text-center">
-                  <p className="text-muted-foreground mt-4 text-balance text-lg">
+                  <p className="text-muted-foreground mt-4 text-balance text-base sm:text-lg sm:max-w-[50ch] mx-auto">
                     Book, manage, and prep meetings. Auto-summarize agendas and follow-ups.
                   </p>
                 </div>
@@ -104,13 +104,13 @@ export default function FeaturesSection() {
               <Card className="relative p-4 sm:p-6">
                 <CardTag />
                 <div className="absolute left-3 top-3 z-10 space-y-1">
-                  <SetupIcon className="size-4 text-primary opacity-100" opacity={1} aria-hidden />
+                  <SetupIcon className="size-4 sm:size-5 text-primary opacity-100" opacity={1} aria-hidden />
                   <h3 className="text-foreground text-sm sm:text-base font-semibold">Content Planner</h3>
                   <CardAccent>Keep ideas, drafts, and cadence organized.</CardAccent>
                 </div>
                 <div className="flex aspect-video items-center justify-center">
                   <div className="text-center">
-                    <ul className="text-muted-foreground mx-auto w-fit font-mono text-base sm:text-lg font-medium">
+                    <ul className="text-muted-foreground mx-auto w-fit font-mono text-base sm:text-lg md:text-xl font-medium">
                       <li>Blog post outline</li>
                       <li>Social content calendar</li>
                       <li>Landing page copy</li>
@@ -118,7 +118,7 @@ export default function FeaturesSection() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="text-muted-foreground mt-4 text-balance text-lg">
+                  <p className="text-muted-foreground mt-4 text-balance text-base sm:text-lg sm:max-w-[50ch] mx-auto">
                     Keep ideas, drafts, and publishing cadence organized.
                   </p>
                 </div>
@@ -126,7 +126,7 @@ export default function FeaturesSection() {
               <Card className="relative p-4 sm:p-6">
                 <CardTag>optional</CardTag>
                 <div className="absolute left-3 top-3 z-10 space-y-1">
-                  <SetupIcon className="size-4 text-primary opacity-100" opacity={1} aria-hidden />
+                  <SetupIcon className="size-4 sm:size-5 text-primary opacity-100" opacity={1} aria-hidden />
                   <h3 className="text-foreground text-sm sm:text-base font-semibold">Knowledge Base Assistant</h3>
                   <CardAccent>Search and summarize from your docs.</CardAccent>
                 </div>
@@ -153,7 +153,7 @@ export default function FeaturesSection() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="text-muted-foreground mt-4 text-balance text-lg">
+                  <p className="text-muted-foreground mt-4 text-balance text-base sm:text-lg sm:max-w-[50ch] mx-auto">
                     Search, summarize, and draft accurate answers from your docs.
                   </p>
                 </div>
@@ -162,8 +162,8 @@ export default function FeaturesSection() {
           </div>
         </div>
       </section>
-    </Container>
-  );
+      </Container>
+      );
 }
 
 type IllustrationProps = {
@@ -232,7 +232,7 @@ export const CodeIllustration = ({ className }: { className?: string }) => {
         className
       )}
     >
-      <ul className="text-muted-foreground mx-auto w-fit font-mono text-xl sm:text-2xl font-medium">
+      <ul className="text-muted-foreground mx-auto w-fit font-mono text-xl sm:text-2xl md:text-3xl font-medium">
         {["Images", "Variables", "Pages", "Components", "Styles"].map(
           (item, index) => (
             <li
