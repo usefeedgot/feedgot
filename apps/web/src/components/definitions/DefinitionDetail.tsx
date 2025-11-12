@@ -2,9 +2,11 @@ import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 import { Container } from "@/components/global/container"
 import type { Definition } from "@/types/definitions"
+import { getDefinitionContent } from "@/types/definitions"
 
 export default function DefinitionDetail({ def }: { def: Definition }) {
   const overview = def.overview ?? `${def.practical} ${def.expert}`
+  const full = getDefinitionContent(def)
   return (
     <main className="min-h-screen pt-16">
       <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
@@ -27,18 +29,8 @@ export default function DefinitionDetail({ def }: { def: Definition }) {
               </section>
 
               <section>
-                <h2 className="text-foreground text-lg font-semibold">ELI5</h2>
-                <p className="text-accent mt-2 text-sm sm:text-base leading-7">{def.eli5}</p>
-              </section>
-
-              <section>
-                <h2 className="text-foreground text-lg font-semibold">Practical</h2>
-                <p className="text-accent mt-2 text-sm sm:text-base leading-7">{def.practical}</p>
-              </section>
-
-              <section>
-                <h2 className="text-foreground text-lg font-semibold">Expert</h2>
-                <p className="text-accent mt-2 text-sm sm:text-base leading-7">{def.expert}</p>
+                <h2 className="text-foreground text-lg font-semibold">Definition</h2>
+                <p className="text-accent mt-2 text-sm sm:text-base leading-7">{full}</p>
               </section>
 
               {def.formula ? (
@@ -55,13 +47,6 @@ export default function DefinitionDetail({ def }: { def: Definition }) {
                 <section>
                   <h2 className="text-foreground text-lg font-semibold">{def.example.title}</h2>
                   <p className="text-accent mt-2 text-sm sm:text-base leading-7">{def.example.body}</p>
-                </section>
-              ) : null}
-
-              {def.why ? (
-                <section>
-                  <h2 className="text-foreground text-lg font-semibold">Why it matters</h2>
-                  <p className="text-accent mt-2 text-sm sm:text-base leading-7">{def.why}</p>
                 </section>
               ) : null}
 

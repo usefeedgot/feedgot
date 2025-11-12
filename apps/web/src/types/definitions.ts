@@ -5,6 +5,7 @@ export type Definition = {
   name: string;
   synonyms?: string[];
   short: string;
+  content?: string;
   eli5: string;
   practical: string;
   expert: string;
@@ -18,6 +19,17 @@ export type Definition = {
   faqs?: DefinitionFaq[];
   related?: string[];
 };
+
+export const getDefinitionContent = (d: Definition): string => {
+  if (d.content) return d.content
+  const parts: string[] = []
+  if (d.overview) parts.push(d.overview)
+  if (d.why) parts.push(d.why)
+  if (d.eli5) parts.push(d.eli5)
+  if (d.practical) parts.push(d.practical)
+  if (d.expert) parts.push(d.expert)
+  return parts.join(" ")
+}
 
 export const DEFINITIONS: Definition[] = [
   {
