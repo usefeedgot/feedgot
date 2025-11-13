@@ -47,8 +47,8 @@ export default function DefinitionDetail({ def }: { def: Definition }) {
                 <ChevronLeft className="size-4" />
                 Back
               </Link>
-              <span className="text-xs uppercase tracking-wide text-accent/80">
-                Definition
+              <span className="text-xs mt-0.5 uppercase tracking-wide text-accent">
+                {def.eli5}
               </span>
             </div>
 
@@ -210,7 +210,7 @@ export default function DefinitionDetail({ def }: { def: Definition }) {
                   </section>
                 ) : null}
               </div>
-              <aside className="mt-6 lg:mt-0 lg:self-start">
+              <aside className="mt-0 lg:self-start">
                 <div className="space-y-2 text-sm text-accent">
                   <p className="text-xs uppercase tracking-wide">
                     Published on
