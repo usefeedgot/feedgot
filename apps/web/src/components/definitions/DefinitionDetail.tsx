@@ -1,8 +1,10 @@
+"use client";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Container } from "@/components/global/container";
 import type { Definition } from "@/types/definitions";
 import { getDefinitionContent } from "@/types/definitions";
+import { useIsMobile } from "@feedgot/ui/hooks/use-mobile";
 
 export default function DefinitionDetail({ def }: { def: Definition }) {
   const overview = def.overview ?? `${def.practical} ${def.expert}`;
@@ -34,6 +36,7 @@ export default function DefinitionDetail({ def }: { def: Definition }) {
   };
   const publishedLabel = formatPublishedLabel(def.publishedAt);
   const author = def.author ?? "Jean Daly";
+  const isMobile = useIsMobile();
   return (
     <main className="min-h-screen pt-16">
       <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
@@ -47,10 +50,17 @@ export default function DefinitionDetail({ def }: { def: Definition }) {
                 <ChevronLeft className="size-4" />
                 Back
               </Link>
-              <span className="text-xs mt-0.5 uppercase tracking-wide text-accent">
+              <span className="flex-1 min-w-0 truncate text-[11px] sm:text-xs mt-0.5 uppercase tracking-wide text-accent">
                 {def.eli5}
               </span>
             </div>
+            {isMobile && (
+              <div className="mt-1 text-xs text-accent">
+                <span>Published on {publishedLabel}</span>
+                <span className="mx-2">•</span>
+                <span>Written by {author}</span>
+              </div>
+            )}
 
             <div className="lg:grid lg:grid-cols-[1fr_280px] lg:gap-12">
               <div className="space-y-10">
@@ -210,7 +220,7 @@ export default function DefinitionDetail({ def }: { def: Definition }) {
                   </section>
                 ) : null}
               </div>
-              <aside className="mt-0 lg:self-start">
+              <aside className="mt-0 lg:self-start hidden lg:block">
                 <div className="space-y-2 text-sm text-accent">
                   <p className="text-xs uppercase tracking-wide">
                     Published on
