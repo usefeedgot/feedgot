@@ -97,6 +97,8 @@ export const DEFINITIONS: Definition[] = ([
     slug: "arr",
     name: "Annual Recurring Revenue (ARR)",
     synonyms: ["annualized recurring revenue"],
+    author:"Jean daly",
+    publishedAt:"2026-01-01",
     short: "Annualized subscription revenue based on current contracts.",
     content: "Annual Recurring Revenue is the annualized value of all active subscriptions. Most teams compute ARR as 12×MRR, but enterprise contracts may be summed by their contracted annual values. ARR smooths short‑term monthly swings and communicates scale to investors and leadership. Keep ARR strict by excluding non‑recurring revenue and pipeline. When ARR grows consistently, your run‑rate business is scaling in a durable way.",
     eli5: "Your subscription money for a whole year.",
