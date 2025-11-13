@@ -5,6 +5,7 @@ import Image from "next/image";
 import { HeroContent } from "./hero-content";
 import { PreviewSwitchPill } from "@/components/home/preview-switch";
 import { usePreviewHint } from "../../hooks/usePreviewHint";
+import Pointer from "../global/pointer";
 
 export function Hero() {
   const [active, setActive] = useState<"dashboard" | "roadmap" | "changelog">(
@@ -41,6 +42,7 @@ export function Hero() {
               </div>
             </div>
           </div>
+              <Pointer />
         </div>
       </Container>
     </section>
