@@ -48,8 +48,8 @@ export default async function AlternativePage({
     <main className="min-h-screen pt-16">
       <AlternativeHero alt={alt} />
       <TLDR alt={alt} />
-      <WhyBetter alt={alt} />
       <Compare alt={alt} />
+      <WhyBetter alt={alt} />
       <AlternativeFAQs alt={alt} />
       <StatsSection />
     </main>
