@@ -14,15 +14,15 @@ export default function Benefits() {
     <Container maxWidth="6xl" className="px-6 sm:px-16 lg:px-20 xl:px-24">
       <section data-component="Benefits">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <h2 className="text-foreground text-balance text-2xl sm:text-3xl font-semibold">
+          <h2 className="text-foreground text-balance text-2xl sm:text-3xl font-semibold text-center">
             Opinionated feedback for customer‑driven teams
           </h2>
 
-          <div className="mt-6 sm:mt-8 rounded-2xl border border-foreground/10 bg-white p-5 sm:p-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              <div>
+          <div className="mt-6 sm:mt-8 rounded-2xl border border-foreground/10 bg-white p-5 sm:p-8 shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 auto-rows-fr">
+              <div className="flex h-full flex-col">
                 <div className="flex items-start gap-3">
-                  <span className="inline-flex size-7 sm:size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1 sm:p-1.5">
+                  <span className="inline-flex size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1.5">
                     <UsersIcon aria-hidden className="size-4" />
                   </span>
                   <h3 className="text-foreground text-base sm:text-lg font-medium">Customer‑centric</h3>
@@ -33,9 +33,9 @@ export default function Benefits() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex h-full flex-col">
                 <div className="flex items-start gap-3">
-                  <span className="inline-flex size-7 sm:size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1 sm:p-1.5">
+                  <span className="inline-flex size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1.5">
                     <FreeIcon aria-hidden className="size-4" />
                   </span>
                   <h3 className="text-foreground text-base sm:text-lg font-medium">Fair free plan</h3>
@@ -46,9 +46,9 @@ export default function Benefits() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex h-full flex-col">
                 <div className="flex items-start gap-3">
-                  <span className="inline-flex size-7 sm:size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1 sm:p-1.5">
+                  <span className="inline-flex size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1.5">
                     <SetupIcon aria-hidden className="size-4" opacity={1} />
                   </span>
                   <h3 className="text-foreground text-base sm:text-lg font-medium">Easy to integrate</h3>
@@ -59,9 +59,9 @@ export default function Benefits() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex h-full flex-col">
                 <div className="flex items-start gap-3">
-                  <span className="inline-flex size-7 sm:size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1 sm:p-1.5">
+                  <span className="inline-flex size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1.5">
                     <FeatherIcon aria-hidden className="size-4" />
                   </span>
                   <h3 className="text-foreground text-base sm:text-lg font-medium">Lightweight</h3>
@@ -72,9 +72,9 @@ export default function Benefits() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex h-full flex-col">
                 <div className="flex items-start gap-3">
-                  <span className="inline-flex size-7 sm:size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1 sm:p-1.5">
+                  <span className="inline-flex size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1.5">
                     <ShieldIcon aria-hidden className="size-4" opacity={1} />
                   </span>
                   <h3 className="text-foreground text-base sm:text-lg font-medium">Secure</h3>
@@ -85,9 +85,9 @@ export default function Benefits() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex h-full flex-col">
                 <div className="flex items-start gap-3">
-                  <span className="inline-flex size-7 sm:size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1 sm:p-1.5">
+                  <span className="inline-flex size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1.5">
                     <SettingIcon className="size-4" />
                   </span>
                   <h3 className="text-foreground text-base sm:text-lg font-medium">Privacy‑first</h3>
@@ -98,9 +98,9 @@ export default function Benefits() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex h-full flex-col">
                 <div className="flex items-start gap-3">
-                  <span className="inline-flex size-7 sm:size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1 sm:p-1.5">
+                  <span className="inline-flex size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1.5">
                     <BoardIcon aria-hidden className="size-4" />
                   </span>
                   <h3 className="text-foreground text-base sm:text-lg font-medium">Feedback boards</h3>
@@ -111,9 +111,9 @@ export default function Benefits() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex h-full flex-col">
                 <div className="flex items-start gap-3">
-                  <span className="inline-flex size-7 sm:size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1 sm:p-1.5">
+                  <span className="inline-flex size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1.5">
                     <RoadmapIcon aria-hidden className="size-4" />
                   </span>
                   <h3 className="text-foreground text-base sm:text-lg font-medium">Public roadmap</h3>
@@ -124,9 +124,9 @@ export default function Benefits() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex h-full flex-col">
                 <div className="flex items-start gap-3">
-                  <span className="inline-flex size-7 sm:size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1 sm:p-1.5">
+                  <span className="inline-flex size-8 items-center justify-center rounded-md bg-foreground/5 text-primary ring-1 ring-foreground/10 p-1.5">
                     <ChangelogIcon aria-hidden className="size-4" />
                   </span>
                   <h3 className="text-foreground text-base sm:text-lg font-medium">Changelogs</h3>
