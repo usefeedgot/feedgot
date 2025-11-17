@@ -95,7 +95,7 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
-            <Button asChild size="sm" className="font-semibold">
+            <Button asChild size="sm" className="font-light ">
               <Link href="/signup" data-sln-event="cta: start for free clicked">
                 Start for free
               </Link>
