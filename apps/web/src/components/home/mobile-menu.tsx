@@ -38,13 +38,12 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         <button
           type="button"
           aria-label="Close menu"
-          className="inline-flex items-center justify-center rounded-lg p-2 bg-muted"
+          className="inline-flex items-center justify-center rounded-lg p-2 bg-muted/70"
           onClick={onClose}
         >
-          <MenuIcon width={22} height={22} className="text-foreground" />
+          <MenuIcon width={20} height={20} className="text-accent" />
         </button>
       </div>
-      {/* Sheet body */}
       <Container maxWidth="6xl" className="px-4 sm:px-12 lg:px-16 xl:px-18">
         <nav className="py-4 grid gap-2">
           {navigationConfig.main.map((item) => (

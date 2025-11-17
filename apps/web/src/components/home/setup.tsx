@@ -6,7 +6,7 @@ export default function Setup() {
   return (
     <Container maxWidth="6xl" className="px-4 sm:px-12 lg:px-16 xl:px-18">
       <section className="" data-component="Setup">
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="mx-auto w-full max-w-6xl px-1 sm:px-6">
           <SetupIcon aria-hidden className="size-5 text-primary mb-2 sm:mb-3" opacity={1} />
           <h2 className="mt-6 text-foreground text-balance text-2xl sm:text-3xl font-semibold">
             Set up in minutes

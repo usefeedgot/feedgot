@@ -15,8 +15,8 @@ export function ConversionHero() {
   return (
     <section className="relative" data-component="ConversionHero">
       <Container maxWidth="6xl" className="px-4 sm:px-12 lg:px-16 xl:px-18">
-        <div className="mx-auto w-full px-0 sm:px-6">
-          <div className="pt-5 pb-10 sm:pt-8 sm:pb-14">
+        <div className="mx-auto w-full px-1 sm:px-6">
+          <div className="pt-6 pb-8 sm:pt-8 sm:pb-14">
             <h1 className="text-foreground text-balance max-w-5xl sm:max-w-6xl text-xl sm:text-2xl md:text-3xl font-semibold leading-snug">
               Build better products with customer feedback.
               <span className="block mt-1 text-accent/80">
