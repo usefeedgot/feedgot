@@ -14,9 +14,9 @@ export function ConversionHero() {
       <Container maxWidth="6xl" className="px-4 sm:px-16 lg:px-20 xl:px-24">
         <div className="w-full px-0 sm:px-6">
           <div className="pt-5 pb-10 sm:pt-8 sm:pb-14">
-            <h1 className="text-foreground text-xl sm:text-2xl md:text-3xl font-semibold leading-snug w-full max-w-none">
+            <h1 className="text-foreground text-base sm:text-lg md:text-xl lg:text-2xl font-semibold leading-snug w-full max-w-none">
               Customer feedback that helps you prioritize and ship faster.
-              <span className="block mt-1 text-foreground/90 w-full max-w-none">
+              <span className="text-foreground/90 inline whitespace-nowrap align-baseline">
                 Works with a
                 <span className="mx-1 inline-flex items-center gap-1 rounded-md bg-foreground/5 px-1 py-0 text-foreground/60 ring-1 ring-foreground/10 align-baseline">
                   <BoardIcon className="size-3" />

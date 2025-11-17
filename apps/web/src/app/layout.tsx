@@ -74,7 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <ReactScan />
+        {/* <ReactScan /> */}
         <Script
           src="https://cdn.seline.com/seline.js"
           data-token={process.env.NEXT_PUBLIC_SELINE_TOKEN}
