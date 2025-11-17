@@ -7,6 +7,7 @@ import { Button } from "@feedgot/ui/components/button";
 import { BoardIcon } from "@feedgot/ui/icons/board";
 import { RoadmapIcon } from "@feedgot/ui/icons/roadmap";
 import { ChangelogIcon } from "@feedgot/ui/icons/changelog";
+import { ArrowIcon } from "@feedgot/ui/icons/arrow";
 import { useIsMobile } from "@feedgot/ui/hooks/use-mobile";
 
 export function ConversionHero() {
@@ -54,7 +55,10 @@ export function ConversionHero() {
                 className="w-full sm:w-auto h-9 px-3 rounded-sm text-accent"
               >
                 <Link href="#demo" aria-label="Get a demo">
-                  Get a demo
+                  <span className="inline-flex items-center gap-1.5">
+                    Get a demo
+                    <ArrowIcon aria-hidden className={isMobile ? "size-3" : "size-4"} />
+                  </span>
                 </Link>
               </Button>
             </div>
