@@ -5,6 +5,9 @@ import DefinedTermJsonLd from "@/components/seo/DefinedTermJsonLd"
 import FaqJsonLd from "@/components/seo/FaqJsonLd"
 import { createPageMetadata } from "@/lib/seo"
 import { getDefinitionBySlug, getAllDefinitionParams, getPrimarySlug } from "@/types/definitions"
+import { SITE_URL } from "@/config/seo"
+import { buildDefinitionBreadcrumbSchema } from "@/lib/structured-data"
+import Script from "next/script"
 
 export async function generateStaticParams() {
   return getAllDefinitionParams()
@@ -33,6 +36,12 @@ export default async function DefinitionPage({ params }: { params: Promise<{ ter
       <DefinitionDetail def={def} />
       <DefinedTermJsonLd name={def.name} description={def.short} path={`/definitions/${def.slug}`} alternateNames={def.synonyms} />
       {def.faqs && def.faqs.length ? <FaqJsonLd faqs={def.faqs} /> : null}
+      <Script
+        id="definition-breadcrumb-jsonld"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildDefinitionBreadcrumbSchema({ siteUrl: SITE_URL, slug: def.slug, name: def.name })) }}
+      />
     </>
   )
 }

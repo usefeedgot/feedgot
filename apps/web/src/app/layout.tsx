@@ -7,6 +7,9 @@ import { fontsClassName } from "./fonts";
 import "./globals.css";
 import { SITE_URL, DEFAULT_TITLE, TITLE_TEMPLATE, DEFAULT_DESCRIPTION, DEFAULT_KEYWORDS } from "@/config/seo";
 import OrganizationJsonLd from "@/components/seo/OrganizationJsonLd";
+import { buildSiteNavigationSchema, buildSoftwareApplicationSchema } from "@/lib/structured-data";
+import { navigationConfig } from "@/config/homeNav";
+import { footerNavigationConfig } from "@/config/footerNav";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -81,6 +84,31 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
         <OrganizationJsonLd />
+        <Script
+          id="site-navigation-jsonld"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              buildSiteNavigationSchema(
+                SITE_URL,
+                [
+                  { name: "Home", href: "/" },
+                  ...navigationConfig.main.filter((i) => ["/pricing", "/blog"].includes(i.href)),
+                  ...footerNavigationConfig.groups
+                    .flatMap((g) => g.items)
+                    .filter((i) => ["/tools", "/definitions", "/alternatives"].includes(i.href)),
+                ]
+              )
+            ),
+          }}
+        />
+        <Script
+          id="software-app-jsonld"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildSoftwareApplicationSchema(SITE_URL)) }}
+        />
       </head>
       <body className={fontsClassName}>
         {children}
