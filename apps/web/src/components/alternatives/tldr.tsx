@@ -11,7 +11,7 @@ export default function TLDR({ alt }: { alt: Alternative }) {
       <section className="py-16" data-component="TLDR">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <BookmarkIcon aria-hidden className="size-5 text-primary mb-2 sm:mb-3" opacity={1} />
-          <h2 className="mt-6 text-foreground text-balance text-2xl sm:text-3xl font-semibold">
+          <h2 className="mt-6 text-foreground text-balance text-2xl sm:text-3xl lg:text-3xl font-semibold">
             TL;DR comparison summary
           </h2>
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">

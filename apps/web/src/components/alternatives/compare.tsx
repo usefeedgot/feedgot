@@ -11,7 +11,7 @@ export default function Compare({ alt }: { alt: Alternative }) {
       <section className="py-16">
         <div className="mx-auto  w-full max-w-6xl px-0 sm:px-6">
           <SquareIcon aria-hidden className="size-5 text-primary" />
-          <h2 className="mt-6 text-foreground text-balance text-3xl sm:text-4xl font-semibold">
+          <h2 className="mt-6 text-foreground text-balance text-2xl sm:text-3xl lg:text-3xl font-semibold">
             Side‑by‑side features
           </h2>
           <p className="text-accent mt-3">

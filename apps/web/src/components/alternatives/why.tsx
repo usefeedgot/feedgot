@@ -13,7 +13,7 @@ export default function WhyBetter({ alt }: { alt: Alternative }) {
     <Container maxWidth="6xl" className="px-4 sm:px-12 lg:px-16 xl:px-18">
       <section className="py-16" data-component="WhyBetter">
         <div className="mx-auto w-full max-w-5xl px-0 sm:px-6">
-          <h2 className="text-foreground text-balance text-3xl sm:text-4xl font-semibold">
+          <h2 className="text-foreground text-balance text-2xl sm:text-3xl lg:text-3xl font-semibold">
             What makes Feedgot different
           </h2>
 
