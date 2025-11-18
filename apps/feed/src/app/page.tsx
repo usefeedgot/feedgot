@@ -1,5 +1,5 @@
-import Login from "@/app/components/auth/login"
+import { redirect } from "next/navigation"
 
-export default function AuthPage() {
-  return <Login />
+export default function Page() {
+  redirect("/auth/sign-up")
 }
