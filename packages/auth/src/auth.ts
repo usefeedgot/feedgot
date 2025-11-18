@@ -27,7 +27,8 @@ export const auth = betterAuth({
 
   plugins: [
     organization(),
-    lastLoginMethod()
+    lastLoginMethod(),
   ],
- 
 })
+
+export type AuthServer = typeof auth

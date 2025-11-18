@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { authClient } from "@/lib/auth/client"
+import { authClient } from "@feedgot/auth/client"
 import { Button } from "@feedgot/ui/components/button"
 import { Badge } from "@feedgot/ui/components/badge"
 import { GoogleIcon } from '@feedgot/ui/icons/google';

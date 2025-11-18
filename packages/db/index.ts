@@ -2,7 +2,12 @@ import { drizzle } from "drizzle-orm/neon-http"
 import * as schema from "./schema"
 import { neon } from "@neondatabase/serverless"
 
-export const db = drizzle(neon(process.env.DATABASE_URL ?? ""), { schema })
+const DATABASE_URL = process.env.DATABASE_URL
+if (!DATABASE_URL) {
+  throw new Error("DATABASE_URL is not set. Add it to your environment (e.g., apps/feed/.env.local)")
+}
+
+export const db = drizzle(neon(DATABASE_URL), { schema })
 
 // Export schema tables for Better Auth and application use
 export const { user, session, account, verification, workspace, workspaceMember } = schema

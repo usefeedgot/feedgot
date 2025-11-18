@@ -1,4 +1,4 @@
-import { config } from "@feedgot/eslint-config/react-internal"
-
 /** @type {import("eslint").Linter.Config} */
-export default config
+export default {
+  ignores: ["dist/**", "node_modules/**"],
+}

@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import { auth } from "@/lib/auth/auth";
+import { auth } from "./auth";
 import { authClient } from "./client";
 
 export async function setActiveWorkspace(slug: string) {

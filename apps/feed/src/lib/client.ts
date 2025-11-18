@@ -1,5 +1,5 @@
 import { createClient } from 'jstack'
-import type { AppRouter } from '@/server'
+import type { AppRouter } from '@feedgot/api'
 
 /**
  * Your type-safe API client

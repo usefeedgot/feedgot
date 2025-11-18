@@ -1,0 +1,19 @@
+{
+  "name": "@feedgot/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "echo 'no lint in api package yet'"
+  },
+  "dependencies": {
+    "jstack": "^1.1.1"
+  },
+  "devDependencies": {
+    "@feedgot/tsconfig": "workspace:*",
+    "typescript": "^5.7.3"
+  }
+}
