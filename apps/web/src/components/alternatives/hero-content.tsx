@@ -36,7 +36,7 @@ export function AlternativeHeroContent({
         </div>
 
         {/* Reassurance microcopy centered to match button row width */}
-        <p className="mt-4 text-left text-xs sm:text-sm text-accent">
+        <p className="mt-4 text-left text-xs  text-accent/70">
           <span className="block sm:inline text-black">
             no credit card required.
           </span>
