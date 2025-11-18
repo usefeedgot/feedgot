@@ -27,8 +27,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@feedgot/ui/components/sidebar"
-import { useSession } from "@/lib/auth/client"
-import { getDisplayUser, getInitials } from "@/lib/utils/user-utils"
+import { useSession } from "@feedgot/auth/client"
+import { getDisplayUser, getInitials } from "@/utils/user-utils"
 
 export function UserDropdown() {
   const { isMobile } = useSidebar()
@@ -61,7 +61,7 @@ export function UserDropdown() {
   const displayUser = getDisplayUser(session.user)
 
   const handleSignOut = async () => {
-    const { signOut } = await import("@/lib/auth/client")
+    const { signOut } = await import("@feedgot/auth/client")
     await signOut()
   }
 
