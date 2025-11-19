@@ -1,29 +1,28 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { authClient } from "@feedgot/auth/client"
 import { Button } from "@feedgot/ui/components/button"
 import { Input } from "@feedgot/ui/components/input"
 import { Label } from "@feedgot/ui/components/label"
 import { GoogleIcon } from "@feedgot/ui/icons/google"
-import { Badge } from "@feedgot/ui/components/badge"
 import GitHubIcon from "@feedgot/ui/icons/github"
+import { Badge } from "@feedgot/ui/components/badge"
 import Link from "next/link"
 
-export default function Login() {
+export default function SignIn() {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
-
-
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
     setError("")
     try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/dashboard",
-      })
+      await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" })
     } catch (err) {
       setError("Failed to sign in with Google")
       setIsLoading(false)
@@ -34,22 +33,38 @@ export default function Login() {
     setIsLoading(true)
     setError("")
     try {
-      await authClient.signIn.social({
-        provider: "github",
-        callbackURL: "/dashboard",
-      })
+      await authClient.signIn.social({ provider: "github", callbackURL: "/dashboard" })
     } catch (err) {
       setError("Failed to sign in with GitHub")
       setIsLoading(false)
     }
   }
 
+  const handleEmailSignIn = async () => {
+    setIsLoading(true)
+    setError("")
+    try {
+      await authClient.signIn.email({ email, password, callbackURL: "/dashboard" }, {
+        onError: (ctx) => {
+          if (ctx.error.status === 403) {
+            router.push(`/auth/verify?email=${encodeURIComponent(email)}`)
+            return
+          }
+          setError(ctx.error.message)
+        },
+        onSuccess: () => {
+          router.push("/dashboard")
+        },
+        onRequest: () => {},
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <section className="flex min-h-screen bg-background">
-      <form
-        action="#"
-        className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
-      >
+      <form className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]" onSubmit={(e) => { e.preventDefault(); handleEmailSignIn() }}>
         <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
           <div className="text-center">
             <Link href="/" aria-label="go home" className="mx-auto block w-fit">
@@ -83,8 +98,8 @@ export default function Login() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="block text-sm">Username</Label>
-              <Input type="email" required name="email" id="email" />
+              <Label htmlFor="email" className="block text-sm">Email</Label>
+              <Input type="email" required name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
 
             <div className="space-y-0.5">
@@ -94,10 +109,10 @@ export default function Login() {
                   <Link href="#" className="text-sm">Forgot your Password ?</Link>
                 </Button>
               </div>
-              <Input type="password" required name="pwd" id="pwd" className="input sz-md variant-mixed" />
+              <Input type="password" required name="pwd" id="pwd" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
 
-            <Button className="w-full" type="button" disabled={isLoading}>Sign In</Button>
+            <Button className="w-full" type="submit" disabled={isLoading}>Sign In</Button>
           </div>
         </div>
 
@@ -105,7 +120,7 @@ export default function Login() {
           <p className="text-accent-foreground text-center text-sm">
             Don't have an account ?
             <Button asChild variant="ghost" className="px-2">
-              <Link href="#">Create account</Link>
+              <Link href="/auth/sign-up">Create account</Link>
             </Button>
           </p>
         </div>

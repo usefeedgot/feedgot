@@ -1,5 +1,5 @@
-import Login from "@/components/auth/login"
+import SignIn from "@/components/auth/SignIn"
 
 export default function SignInPage() {
-  return <Login />
+  return <SignIn />
 }

@@ -4,6 +4,7 @@ import {
   organizationClient,
   lastLoginMethodClient,
 } from "better-auth/client/plugins"
+import { emailOTPClient } from "better-auth/client/plugins"
 import type { AuthServer } from "./auth"
 
 export const authClient = createAuthClient({
@@ -11,6 +12,7 @@ export const authClient = createAuthClient({
   plugins: [
     organizationClient({ schema: inferOrgAdditionalFields<AuthServer>() }),
     lastLoginMethodClient(),
+    emailOTPClient(),
   ],
 })
 
