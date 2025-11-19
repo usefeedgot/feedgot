@@ -17,18 +17,21 @@ export default function Verify() {
   const initialEmail = useMemo(() => params.get("email") || "", [params])
   const [email, setEmail] = useState(initialEmail)
   const [code, setCode] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [isResending, setIsResending] = useState(false)
   const [error, setError] = useState("")
   const [info, setInfo] = useState("")
+  const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
     if (initialEmail) setEmail(initialEmail)
   }, [initialEmail])
 
   const resend = async () => {
-    setIsLoading(true)
+    setIsResending(true)
     setError("")
     setInfo("")
+    setSubmitted(false)
     try {
       await authClient.emailOtp.sendVerificationOtp({ email, type: "email-verification" })
       setInfo("Verification code sent")
@@ -37,14 +40,15 @@ export default function Verify() {
       setError(e?.message || "Failed to send code")
       toast.error(e?.message || "Failed to send code")
     } finally {
-      setIsLoading(false)
+      setIsResending(false)
     }
   }
 
   const verify = async () => {
-    setIsLoading(true)
+    setIsVerifying(true)
     setError("")
     setInfo("")
+    setSubmitted(true)
     try {
       const { error } = await authClient.emailOtp.verifyEmail({ email, otp: code })
       if (error) {
@@ -58,16 +62,16 @@ export default function Verify() {
       setError(e?.message || "Invalid or expired code")
       toast.error(e?.message || "Invalid or expired code")
     } finally {
-      setIsLoading(false)
+      setIsVerifying(false)
     }
   }
 
   return (
     <section className="flex min-h-screen bg-background">
-      <form className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]" onSubmit={(e) => { e.preventDefault(); verify() }}>
+      <form noValidate className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]" onSubmit={(e) => { e.preventDefault(); verify() }}>
         <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
           <div className="text-left">
-            <h1 className="mb-2 mt-4 text-xl font-semibold text-left">Verify your  email</h1>
+            <h1 className="mb-2 mt-4 text-xl font-semibold text-left">Verify your Feedgot email</h1>
             <p className="text-sm text-accent mb-2 text-left">Enter the code sent to your email</p>
           </div>
 
@@ -79,16 +83,33 @@ export default function Verify() {
 
             <div className="space-y-2">
               <Label htmlFor="code" className="block text-sm">Verification Code</Label>
-              <Input type="text" required id="code" value={code} onChange={(e) => setCode(e.target.value)} inputMode="numeric" pattern="^[0-9]{6}$" title="Enter the 6-digit code" />
+              <Input
+                type="text"
+                required
+                id="code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                inputMode="numeric"
+                pattern="^[0-9]{6}$"
+                title="Enter the 6-digit code"
+                aria-invalid={submitted && Boolean(error)}
+                aria-describedby={submitted && error ? "code-error" : undefined}
+              />
+              {submitted && error && (
+                <p id="code-error" className="text-destructive text-xs">{error}</p>
+              )}
+              {info && (
+                <p className="text-xs">{info}</p>
+              )}
             </div>
 
-            <LoadingButton className="w-full" type="submit" loading={isLoading}>Verify</LoadingButton>
-            <LoadingButton className="w-full" type="button" variant="outline" onClick={resend} loading={isLoading}>Resend Code</LoadingButton>
+            <LoadingButton className="w-full" type="submit" loading={isVerifying}>Verify</LoadingButton>
+            <LoadingButton className="w-full" type="button" variant="outline" onClick={resend} loading={isResending}>Resend Code</LoadingButton>
           </div>
         </div>
 
         <div className="p-3">
-          <p className="text-accent-foreground text-center text-sm">
+          <p className="text-accent-foreground text-left text-sm">
             Already verified?
             <Button asChild variant="link" className="px-2">
               <Link href="/auth/sign-in">Sign in</Link>
