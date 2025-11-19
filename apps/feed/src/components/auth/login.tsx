@@ -91,7 +91,7 @@ export default function Login() {
               <div className="flex items-center justify-between">
                 <Label htmlFor="pwd" className="text-sm">Password</Label>
                 <Button asChild variant="link" size="sm">
-                  <Link href="#" className="link intent-info variant-ghost text-sm">Forgot your Password ?</Link>
+                  <Link href="#" className="text-sm">Forgot your Password ?</Link>
                 </Button>
               </div>
               <Input type="password" required name="pwd" id="pwd" className="input sz-md variant-mixed" />
