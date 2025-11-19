@@ -25,7 +25,7 @@ export function HotkeyLink({
         e.preventDefault();
         // Navigate to the dashboard when the hotkey is pressed while focused on the link
         if (DASHBOARD_URL) {
-          window.location.assign(DASHBOARD_URL);
+          window.open(DASHBOARD_URL, "_blank", "noopener,noreferrer");
         }
       }
     },
@@ -47,7 +47,7 @@ export function HotkeyLink({
       if (e.key?.toLowerCase() === hotkey.toLowerCase()) {
         e.preventDefault();
         if (DASHBOARD_URL) {
-          window.location.assign(DASHBOARD_URL);
+          window.open(DASHBOARD_URL, "_blank", "noopener,noreferrer");
         }
       }
     };
@@ -59,6 +59,8 @@ export function HotkeyLink({
     <Button asChild variant="default" size="lg" className={className}>
       <Link
         href={DASHBOARD_URL ?? "#"}
+        target="_blank"
+        rel="noopener noreferrer"
         onKeyDown={handleKeyDown}
         aria-keyshortcuts={hotkey.toUpperCase()}
         data-sln-event="cta: get started free clicked"
