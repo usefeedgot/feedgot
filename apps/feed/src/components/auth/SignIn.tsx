@@ -8,7 +8,6 @@ import { Input } from "@feedgot/ui/components/input";
 import { Label } from "@feedgot/ui/components/label";
 import { GoogleIcon } from "@feedgot/ui/icons/google";
 import GitHubIcon from "@feedgot/ui/icons/github";
-import { Badge } from "@feedgot/ui/components/badge";
 import Link from "next/link";
 import { toast } from "sonner";
 import { LoadingButton } from "@/components/loading-button";
@@ -56,12 +55,12 @@ export default function SignIn() {
     setError("");
     try {
       await authClient.signIn.email(
-        { email, password, callbackURL: "/dashboard" },
+        { email: email.trim(), password, callbackURL: "/dashboard" },
         {
           onError: (ctx) => {
             if (ctx.error.status === 403) {
               toast.info("Please verify your email");
-              router.push(`/auth/verify?email=${encodeURIComponent(email)}`);
+              router.push(`/auth/verify?email=${encodeURIComponent(email.trim())}`);
               return;
             }
             setError(ctx.error.message);
@@ -71,7 +70,6 @@ export default function SignIn() {
             toast.success("Signed in");
             router.push("/dashboard");
           },
-          onRequest: () => {},
         }
       );
     } finally {
@@ -82,7 +80,8 @@ export default function SignIn() {
   return (
     <section className="flex min-h-screen bg-background">
       <form
-        className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
+        noValidate
+        className="bg-background m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
         onSubmit={(e) => {
           e.preventDefault();
           handleEmailSignIn();
@@ -137,6 +136,7 @@ export default function SignIn() {
                 required
                 name="email"
                 id="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -156,8 +156,9 @@ export default function SignIn() {
               <Input
                 type="password"
                 required
-                name="pwd"
+                name="password"
                 id="pwd"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -166,6 +167,7 @@ export default function SignIn() {
             <LoadingButton className="w-full" type="submit" loading={isLoading}>
               Sign In
             </LoadingButton>
+            {error && <p className="text-destructive text-xs mt-2">{error}</p>}
           </div>
         </div>
 

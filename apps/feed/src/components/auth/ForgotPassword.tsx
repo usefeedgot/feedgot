@@ -6,7 +6,6 @@ import { authClient } from "@feedgot/auth/client"
 import { Button } from "@feedgot/ui/components/button"
 import { Input } from "@feedgot/ui/components/input"
 import { Label } from "@feedgot/ui/components/label"
-import { Badge } from "@feedgot/ui/components/badge"
 import Link from "next/link"
 import { toast } from "sonner"
 import { LoadingButton } from "@/components/loading-button"
@@ -30,7 +29,7 @@ export default function ForgotPassword() {
     setInfo("")
     setSubmitted(false)
     try {
-      const { error } = await authClient.emailOtp.sendVerificationOtp({ email, type: "forget-password" })
+      const { error } = await authClient.emailOtp.sendVerificationOtp({ email: email.trim(), type: "forget-password" })
       if (error) {
         setError(error.message || "Failed to send reset code")
         toast.error(error.message || "Failed to send reset code")
@@ -59,7 +58,7 @@ export default function ForgotPassword() {
         toast.error(pwdErr)
         return
       }
-      const { error } = await authClient.emailOtp.resetPassword({ email, otp: code, password })
+      const { error } = await authClient.emailOtp.resetPassword({ email: email.trim(), otp: code.trim(), password })
       if (error) {
         setError(error.message || "Reset failed")
         toast.error(error.message || "Reset failed")
@@ -77,7 +76,7 @@ export default function ForgotPassword() {
 
   return (
     <section className="flex min-h-screen bg-background">
-      <form noValidate className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]" onSubmit={(e) => { e.preventDefault(); hasSent ? resetPassword() : sendResetCode() }}>
+      <form noValidate className="bg-background m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]" onSubmit={(e) => { e.preventDefault(); hasSent ? resetPassword() : sendResetCode() }}>
         <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
           <div className="text-left">
             <h1 className="mb-2 mt-4 text-xl font-semibold text-left">Forgot your password</h1>
@@ -87,7 +86,7 @@ export default function ForgotPassword() {
           <div className="mt-6 space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email" className="block text-sm">Email</Label>
-              <Input type="email" required id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input type="email" required id="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
 
             {hasSent && (
@@ -103,6 +102,7 @@ export default function ForgotPassword() {
                     inputMode="numeric"
                     pattern="^[0-9]{6}$"
                     title="Enter the 6-digit code"
+                    autoComplete="one-time-code"
                     aria-invalid={submitted && Boolean(error)}
                     aria-describedby={submitted && error ? "code-error" : undefined}
                   />
@@ -117,6 +117,7 @@ export default function ForgotPassword() {
                     type="password"
                     required
                     id="password"
+                    autoComplete="new-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     pattern={strongPasswordPattern}

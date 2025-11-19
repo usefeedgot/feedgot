@@ -3,7 +3,7 @@ import { auth } from "./auth";
 import { authClient } from "./client";
 
 export async function setActiveWorkspace(slug: string) {
-  auth.api.setActiveOrganization({
+  await auth.api.setActiveOrganization({
     headers: await headers(),
     body: {
       organizationSlug: slug,

@@ -6,7 +6,6 @@ import { authClient } from "@feedgot/auth/client";
 import { Button } from "@feedgot/ui/components/button";
 import { Input } from "@feedgot/ui/components/input";
 import { Label } from "@feedgot/ui/components/label";
-import { Badge } from "@feedgot/ui/components/badge";
 import { GoogleIcon } from "@feedgot/ui/icons/google";
 import GitHubIcon from "@feedgot/ui/icons/github";
 import Link from "next/link";
@@ -36,12 +35,12 @@ export default function SignUp() {
         setError(msg);
         return;
       }
-      const displayName = email.split("@")[0] || email;
+      const displayName = email.trim().split("@")[0] || email.trim();
       await authClient.signUp.email({
         name: displayName,
-        email,
+        email: email.trim(),
         password,
-        callbackURL: "/auth/verify?email=" + encodeURIComponent(email),
+        callbackURL: "/auth/verify?email=" + encodeURIComponent(email.trim()),
       });
       toast.success("Account created. Check your email for the code");
       router.push(`/auth/verify?email=${encodeURIComponent(email)}`);
@@ -87,7 +86,7 @@ export default function SignUp() {
     <section className="flex min-h-screen bg-background">
       <form
         noValidate
-        className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
+        className="bg-background m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
@@ -141,6 +140,7 @@ export default function SignUp() {
                 type="email"
                 required
                 id="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -154,6 +154,7 @@ export default function SignUp() {
                 type="password"
                 required
                 id="password"
+                autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 pattern={strongPasswordPattern}
@@ -175,6 +176,7 @@ export default function SignUp() {
             <LoadingButton className="w-full" type="submit" loading={isLoading}>
               Sign Up
             </LoadingButton>
+            {error && <p className="text-destructive text-xs mt-2">{error}</p>}
           </div>
         </div>
 

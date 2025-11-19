@@ -33,7 +33,7 @@ export default function Verify() {
     setSubmitted(false);
     try {
       await authClient.emailOtp.sendVerificationOtp({
-        email,
+        email: email.trim(),
         type: "email-verification",
       });
       setInfo("Verification code sent");
@@ -53,8 +53,8 @@ export default function Verify() {
     setSubmitted(true);
     try {
       const { error } = await authClient.emailOtp.verifyEmail({
-        email,
-        otp: code,
+        email: email.trim(),
+        otp: code.trim(),
       });
       if (error) {
         setError(error.message || "Verification failed");
@@ -75,7 +75,7 @@ export default function Verify() {
     <section className="flex min-h-screen bg-background">
       <form
         noValidate
-        className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
+        className="bg-background m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
         onSubmit={(e) => {
           e.preventDefault();
           verify();
@@ -100,6 +100,7 @@ export default function Verify() {
                 type="email"
                 required
                 id="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -118,6 +119,7 @@ export default function Verify() {
                 inputMode="numeric"
                 pattern="^[0-9]{6}$"
                 title="Enter the 6-digit code"
+                autoComplete="one-time-code"
                 aria-invalid={submitted && Boolean(error)}
                 aria-describedby={submitted && error ? "code-error" : undefined}
               />
