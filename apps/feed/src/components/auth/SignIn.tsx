@@ -11,6 +11,8 @@ import GitHubIcon from "@feedgot/ui/icons/github";
 import { Badge } from "@feedgot/ui/components/badge";
 import Link from "next/link";
 import { toast } from "sonner";
+import { LoadingButton } from "@/components/loading-button";
+
 
 export default function SignIn() {
   const router = useRouter();
@@ -94,11 +96,6 @@ export default function SignIn() {
             <p className="text-sm text-accent mb-2 text-left">
               Welcome back! Sign in to continue
             </p>
-            {error && (
-              <div className="mt-3 flex justify-start">
-                <Badge variant="destructive">{error}</Badge>
-              </div>
-            )}
           </div>
 
           <div className="mt-6 space-y-6">
@@ -151,7 +148,7 @@ export default function SignIn() {
                   Password
                 </Label>
                 <Button asChild variant="link" size="sm">
-                  <Link href="#" className="text-sm">
+                  <Link href="/auth/forgot-password" className="text-sm">
                     Forgot your Password ?
                   </Link>
                 </Button>
@@ -184,4 +181,3 @@ export default function SignIn() {
     </section>
   );
 }
-import { LoadingButton } from "@/components/loading-button";
