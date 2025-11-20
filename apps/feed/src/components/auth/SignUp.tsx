@@ -86,7 +86,7 @@ export default function SignUp() {
     <section className="flex min-h-screen bg-background px-4 sm:px-6 py-8 sm:py-12">
       <form
         noValidate
-        className="bg-background m-auto h-fit w-full max-w-sm sm:max-w-md md:max-w-lg overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
+        className="bg-background m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
