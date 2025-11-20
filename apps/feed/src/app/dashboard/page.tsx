@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { createPageMetadata } from '@/lib/seo'
+import UserInfo from '@/components/auth/UserInfo'
 
 export const metadata: Metadata = createPageMetadata({
   title: 'Dashboard',
@@ -12,7 +13,9 @@ export const metadata: Metadata = createPageMetadata({
 const Homepage = () => {
   return (
     <div className="">
-      hello there dashboard
+      <div className="p-4">
+        <UserInfo />
+      </div>
     </div>
   )
 }
