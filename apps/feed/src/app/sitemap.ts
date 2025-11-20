@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next"
+import { SITE_URL } from "@/config/seo"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://feedgot.com"
+  const now = new Date()
   return [
     {
-      url: `${baseUrl}/`,
-      lastModified: new Date(),
+      url: `${SITE_URL}/`,
+      lastModified: now,
       changeFrequency: "monthly",
       priority: 0.6,
     },

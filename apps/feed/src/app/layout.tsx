@@ -10,6 +10,7 @@ import {
   DEFAULT_DESCRIPTION,
   DEFAULT_KEYWORDS,
 } from "@/config/seo"
+import { buildSoftwareApplicationSchema } from "@/lib/structured-data"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -68,13 +69,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Feedgot",
-    url: SITE_URL,
-    logo: `${SITE_URL}/android-chrome-512x512.png`,
-  }
   return (
     <html lang="en">
       <head>
@@ -83,16 +77,7 @@ export default function RootLayout({
           id="software-app-jsonld"
           type="application/ld+json"
           strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "Feedgot",
-            url: SITE_URL,
-            applicationCategory: "Project planning and delivery",
-            operatingSystem: "Web",
-            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-            image: `${SITE_URL}/logo.png`,
-          }) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildSoftwareApplicationSchema(SITE_URL)) }}
         />
       </head>
       <body className="antialiased">

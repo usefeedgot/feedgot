@@ -3,10 +3,12 @@ import Verify from "@/components/auth/verify"
 import { Suspense } from "react"
 import { createPageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  ...createPageMetadata({ title: "Verify Email", description: "Verify your Feedgot email.", path: "/auth/verify" }),
-  robots: { index: false, follow: false },
-}
+export const metadata: Metadata = createPageMetadata({
+  title: "Verify Email",
+  description: "Verify your Feedgot email.",
+  path: "/auth/verify",
+  indexable: false,
+})
 
 export default function VerifyPage() {
   return (
