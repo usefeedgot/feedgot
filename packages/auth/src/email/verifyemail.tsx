@@ -21,7 +21,7 @@ export function VerifyEmail({ otp, type, brand }: { otp: string; type: VerifyTyp
       : "Enter the code below to complete sign in.",
   ]
   const outro = "This code expires in 5 minutes."
-  const ctaText = type === "forget-password" ? "Reset password →" : "Open Feedgot →"
+  const ctaText = type === "forget-password" ? "Reset password" : "Open Feedgot"
   const ctaUrl = type === "forget-password" ? "https://feedgot.com/reset" : "https://feedgot.com/dashboard"
   const psText = "If you need help, reply to this email — we’re here to help."
   const signatureName = "Feedgot Security Team"

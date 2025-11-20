@@ -9,7 +9,7 @@ export function ForgetEmail({ otp, brand }: { otp: string; brand?: Brand }) {
   const body = "Use this code to reset your password."
   const paragraphs = ["For your protection, we need to confirm this password reset."]
   const outro = "This code expires in 5 minutes."
-  const ctaText = "Reset password →"
+  const ctaText = "Reset password"
   const psText = "If you didn’t request a reset, please ignore this message."
   const signatureName = "Feedgot Security Team"
   const addressLines = ["267 Kentlands Boulevard PMB #5123", "Gaithersburg, MD 20878, United States"]

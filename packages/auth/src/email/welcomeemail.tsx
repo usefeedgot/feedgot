@@ -12,7 +12,7 @@ export function WelcomeEmail({ name, brand }: { name?: string; brand?: Brand }) 
     `${brand?.name || "Feedgot"} is built by a small team who deeply care about helping you build better products. We’re always here if you need anything, and we’d love to hear your feedback and ideas as you explore the platform.`,
   ]
   const body = "Thanks for signing up. We’re excited to have you on board."
-  const ctaText = "Go to your dashboard →"
+  const ctaText = "Go to your dashboard"
   const ctaUrl = "https://feedgot.com/dashboard"
   const psText = "P.S. Need any help getting started? Just reply to this email — we read every message and we’re happy to help!"
   const signatureName = brand?.name ? `${brand.name} Team` : "Feedgot Team"
