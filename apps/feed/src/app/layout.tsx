@@ -12,6 +12,7 @@ import {
 } from "@/config/seo";
 import { buildSoftwareApplicationSchema } from "@/lib/structured-data";
 
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -71,6 +72,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <OrganizationJsonLd />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
         <Script
           id="software-app-jsonld"
           type="application/ld+json"
@@ -80,7 +84,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
+      <body>
         <Providers>{children}</Providers>
       </body>
     </html>

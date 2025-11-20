@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { ReactScan } from "@feedgot/ui/global/react-scan";
 import { DebugTools } from "@/components/dev/debug-tools";
-
-import { fontsClassName } from "./fonts";
 import "./globals.css";
 import { SITE_URL, DEFAULT_TITLE, TITLE_TEMPLATE, DEFAULT_DESCRIPTION, DEFAULT_KEYWORDS } from "@/config/seo";
 import OrganizationJsonLd from "@/components/seo/OrganizationJsonLd";
@@ -77,7 +75,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* <ReactScan /> */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
         <Script
           src="https://cdn.seline.com/seline.js"
           data-token={process.env.NEXT_PUBLIC_SELINE_TOKEN}
@@ -110,7 +110,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildSoftwareApplicationSchema(SITE_URL)) }}
         />
       </head>
-      <body className={fontsClassName}>
+      <body>
         {children}
         {((process.env.NODE_ENV !== "production") || process.env.NEXT_PUBLIC_ENABLE_DEBUG === "true") && <DebugTools />}
       </body>
