@@ -1,5 +1,5 @@
 import React from "react"
-import { Html, Head, Preview, Body, Container, Section, Text, Heading, Button } from "@react-email/components"
+import { Html, Head, Preview, Body, Container, Section, Text, Heading, Button, Hr } from "@react-email/components"
 
 export type Brand = {
   name?: string
@@ -72,17 +72,28 @@ export function BrandedEmail(props: Props) {
                 </>
               )}
             </Section>
+            <Hr style={{ borderColor: "#e5e7eb", margin: 0 }} />
             <Section style={{ padding: 16 }}>
-              {props.addressLines && props.addressLines.length > 0 ? (
-                <>
-                  <Text style={{ color: "#6b7280", fontSize: 12, margin: "0 0 4px 0" }}>{b.name}</Text>
-                  {props.addressLines.map((line, i) => (
-                    <Text key={i} style={{ color: "#9ca3af", fontSize: 12, margin: 0 }}>{line}</Text>
-                  ))}
-                </>
-              ) : (
-                <Text style={{ color: "#6b7280", fontSize: 12, margin: 0 }}>© {new Date().getFullYear()} {b.name}</Text>
-              )}
+              <table width="100%" role="presentation" style={{ width: "100%", borderSpacing: 0 }}>
+                <tbody>
+                  <tr>
+                    <td style={{ width: "50%", verticalAlign: "top", textAlign: "left" }}>
+                      {props.addressLines && props.addressLines.length > 0 ? (
+                        <>
+                          {props.addressLines.map((line, i) => (
+                            <Text key={i} style={{ color: "#9ca3af", fontSize: 12, margin: 0 }}>{line}</Text>
+                          ))}
+                        </>
+                      ) : (
+                        <Text style={{ color: "#6b7280", fontSize: 12, margin: 0 }}>© {new Date().getFullYear()} {b.name}</Text>
+                      )}
+                    </td>
+                    <td style={{ width: "50%", verticalAlign: "top", textAlign: "right" }}>
+                      <Text style={{ color: "#6b7280", fontSize: 12, margin: 0 }}>{b.name}</Text>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </Section>
           </Section>
         </Container>

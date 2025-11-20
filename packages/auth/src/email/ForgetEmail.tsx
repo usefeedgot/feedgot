@@ -10,6 +10,7 @@ export function ForgetEmail({ otp, brand }: { otp: string; brand?: Brand }) {
   const paragraphs = ["For your protection, we need to confirm this password reset."]
   const outro = "This code expires in 5 minutes."
   const ctaText = "Reset password"
+  const ctaUrl = "https://feedgot.com/reset"
   const psText = "If you didn’t request a reset, please ignore this message."
   const signatureName = "Feedgot Security Team"
   const addressLines = ["267 Kentlands Boulevard PMB #5123", "Gaithersburg, MD 20878, United States"]
@@ -23,6 +24,7 @@ export function ForgetEmail({ otp, brand }: { otp: string; brand?: Brand }) {
       outro={outro}
       highlight={otp}
       ctaText={ctaText}
+      ctaUrl={ctaUrl}
       psText={psText}
       signatureName={signatureName}
       addressLines={addressLines}
