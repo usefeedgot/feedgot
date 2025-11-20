@@ -1,13 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-//     rewrites: async () => {
-//     return [
-//       {
-//         source: "/((?!api|_next/static|_next/image|favicon.ico|robots.txt).*)",
-//         destination: "/shell",
-//       },
-//     ];
-//   },
   turbopack: {
     rules: {
       '*.svg': {
