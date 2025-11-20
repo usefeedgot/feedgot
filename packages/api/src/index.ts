@@ -29,7 +29,7 @@ export function createAppRouter(opts: { db: any; auth: any; getHeaders: () => an
     .use(j.defaults.cors)
     .onError(j.defaults.errorHandler)
 
-  const workspaceRouter = createWorkspaceRouter(j, privateProcedure, publicProcedure)
+  const workspaceRouter = createWorkspaceRouter(j, privateProcedure)
 
   const appRouter = j.mergeRouters(api, {
     workspace: workspaceRouter,

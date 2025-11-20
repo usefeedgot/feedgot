@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { workspace, workspaceMember } from "@feedgot/db"
 
-export function createWorkspaceRouter(j: ReturnType<any>, privateProcedure: any, publicProcedure: any) {
+export function createWorkspaceRouter(j: ReturnType<any>, privateProcedure: any) {
   const slugSchema = z
     .string()
     .min(3)
@@ -18,7 +18,7 @@ export function createWorkspaceRouter(j: ReturnType<any>, privateProcedure: any,
   })
 
   return j.router({
-    checkSlug: publicProcedure
+    checkSlug: privateProcedure
       .input(z.object({ slug: slugSchema }))
       .query(async ({ ctx, input, c }) => {
         const existing = await ctx.db
