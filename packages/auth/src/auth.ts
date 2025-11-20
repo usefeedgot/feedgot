@@ -2,9 +2,7 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { organization, lastLoginMethod, emailOTP } from "better-auth/plugins"
 import { db, user, session, account, verification } from "@feedgot/db"
-import { sendEmail } from "./email"
-import { renderVerifyEmail } from "./email/verifyemail"
-import { renderWelcomeEmail } from "./email/welcomeemail"
+import { sendVerificationOtpEmail, sendWelcome } from "./email"
 import { createAuthMiddleware, APIError } from "better-auth/api"
 import { getPasswordError } from "./password"
 
@@ -48,12 +46,25 @@ export const auth = betterAuth({
     emailOTP({
       overrideDefaultEmailVerification: true,
       async sendVerificationOTP({ email, otp, type }) {
-        const subject = type === "email-verification" ? "Verify your Feedgot email" : type === "forget-password" ? "Reset your Feedgot password" : "Your Feedgot sign-in code"
-        const { html, text } = await renderVerifyEmail(otp, type)
-        await sendEmail({ to: email, subject, html, text })
+        await sendVerificationOtpEmail(email, otp, type)
       },
     }),
   ],
+
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (created) => {
+          const to = String(created.email || "")
+          if (!to) return
+          const name = String(created.name || "") || undefined
+          try {
+            await sendWelcome(to, name)
+          } catch (e) {}
+        },
+      },
+    },
+  },
 
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
@@ -64,19 +75,6 @@ export const auth = betterAuth({
       if (msg) {
         throw new APIError("BAD_REQUEST", { message: msg })
       }
-    }),
-    after: createAuthMiddleware(async (ctx) => {
-      const newSession = ctx.context.newSession
-      const path = ctx.path || ""
-      if (!newSession) return
-      const isEmailVerification = path.includes("verify") && (path.includes("email-otp") || path.includes("email-verification"))
-      const isSocialSignUp = path.startsWith("/sign-up")
-      if (!isEmailVerification && !isSocialSignUp) return
-      const to = String(newSession.user?.email || "")
-      if (!to) return
-      const name = String(newSession.user?.name || "") || undefined
-      const { html, text } = await renderWelcomeEmail(name)
-      await sendEmail({ to, subject: "Welcome to Feedgot", html, text })
     }),
   },
 })

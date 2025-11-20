@@ -2,7 +2,7 @@ import React from "react"
 import { render, toPlainText } from "@react-email/render"
 import { BrandedEmail, Brand } from "./brandedemail"
 
-type VerifyType = "email-verification" | "forget-password" | "sign-in"
+export type VerifyType = "email-verification" | "forget-password" | "sign-in"
 
 export function VerifyEmail({ otp, type, brand }: { otp: string; type: VerifyType; brand?: Brand }) {
   const eyebrow = "Security"
