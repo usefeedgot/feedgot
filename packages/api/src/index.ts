@@ -1,27 +1,18 @@
-import { createWorkspaceRouter } from "./router/workspace"
-import { createJ } from "./jstack"
-import { jstack } from "jstack"
+import { j, privateProcedure } from "./jstack"
 
-export function createAppRouter(opts: { db: any; auth: any; getHeaders: () => any }) {
-  const { j, publicProcedure, privateProcedure } = createJ(opts)
+const api = j
+  .router()
+  .basePath("/api")
+  .use(j.defaults.cors)
+  .onError(j.defaults.errorHandler)
 
-  const api = j
-    .router()
-    .basePath("/api")
-    .use(j.defaults.cors)
-    .onError(j.defaults.errorHandler)
-
-  const workspaceRouter = createWorkspaceRouter(j, privateProcedure)
-
-  const appRouter = j.mergeRouters(api, {
-    workspace: workspaceRouter,
-  })
-
-  return appRouter
+const routerImports = {
+  workspace: () => import("./router/workspace").then((m) => m.createWorkspaceRouter()),
 }
 
-const _j = jstack.init()
-const _api = _j.router()
-const _workspaceRouter = createWorkspaceRouter(_j, _j.procedure)
-const _appRouter = _j.mergeRouters(_api, { workspace: _workspaceRouter })
-export type AppRouter = typeof _appRouter
+const appRouter = j.mergeRouters(api, {
+  workspace: routerImports.workspace,
+})
+
+export type AppRouter = typeof appRouter
+export default appRouter

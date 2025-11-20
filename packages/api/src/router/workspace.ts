@@ -1,9 +1,10 @@
 import { HTTPException } from "hono/http-exception"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
+import { j, privateProcedure } from "../jstack";
 import { workspace, workspaceMember } from "@feedgot/db"
 
-export function createWorkspaceRouter(j: any, privateProcedure: any) {
+export function createWorkspaceRouter() {
   const slugSchema = z
     .string()
     .min(3)
@@ -20,7 +21,7 @@ export function createWorkspaceRouter(j: any, privateProcedure: any) {
   return j.router({
     checkSlug: privateProcedure
       .input(z.object({ slug: slugSchema }))
-      .mutation(async ({ ctx, input, c }: any) => {
+      .post(async ({ ctx, input, c }: any) => {
         const existing = await ctx.db
           .select({ id: workspace.id })
           .from(workspace)
@@ -29,7 +30,7 @@ export function createWorkspaceRouter(j: any, privateProcedure: any) {
         return c.json({ available: existing.length === 0 })
       }),
 
-    exists: privateProcedure.query(async ({ ctx, c }: any) => {
+    exists: privateProcedure.get(async ({ ctx, c }: any) => {
       const userId = ctx.session.user.id
       const owned = await ctx.db
         .select({ id: workspace.id })
@@ -46,7 +47,7 @@ export function createWorkspaceRouter(j: any, privateProcedure: any) {
 
     create: privateProcedure
       .input(createInput)
-      .mutation(async ({ ctx, input, c }: any) => {
+      .post(async ({ ctx, input, c }: any) => {
         const slug = input.slug.toLowerCase()
         const exists = await ctx.db
           .select({ id: workspace.id })
