@@ -3,6 +3,7 @@
 import { Label } from "@feedgot/ui/components/label"
 import { Input } from "@feedgot/ui/components/input"
 import { AlertCircle } from "lucide-react"
+import { suggestDomainFix } from "./validators"
 
 export default function StepDomain({ domain, onChange, isValid }: { domain: string; onChange: (v: string) => void; isValid: boolean }) {
   return (
@@ -19,6 +20,14 @@ export default function StepDomain({ domain, onChange, isValid }: { domain: stri
           {!isValid && domain.length > 0 ? (
             <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 text-destructive size-4" />
           ) : null}
+          {(() => {
+            const suggested = suggestDomainFix(domain)
+            return !isValid && suggested ? (
+              <div className="absolute left-3 -bottom-6 text-xs text-accent">
+                Did you mean <button type="button" className="underline" onClick={() => onChange(suggested)}>{suggested}</button>?
+              </div>
+            ) : null
+          })()}
         </div>
       </div>
     </div>

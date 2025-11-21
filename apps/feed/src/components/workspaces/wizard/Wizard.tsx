@@ -11,6 +11,7 @@ import RightInfo from "./RightInfo"
 import { client } from "@feedgot/api/client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { workspaceSchema, isNameValid, isDomainValid, isSlugValid, isTimezoneValid, cleanSlug, slugifyFromName } from "./validators"
 
 export default function WorkspaceWizard({ className = "" }: { className?: string }) {
   const router = useRouter()
@@ -39,12 +40,7 @@ export default function WorkspaceWizard({ className = "" }: { className?: string
 
   useEffect(() => {
     if (slugDirty) return
-    const s = name
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
+    const s = slugifyFromName(name)
     setSlug(s)
   }, [name, slugDirty])
 
@@ -69,17 +65,13 @@ export default function WorkspaceWizard({ className = "" }: { className?: string
     return () => clearTimeout(id)
   }, [slug])
 
-  const domainValid = useMemo(() => {
-    const v = domain.trim()
-    if (!v) return false
-    return /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(v)
-  }, [domain])
+  const domainValid = useMemo(() => isDomainValid(domain), [domain])
 
   const canNext = useMemo(() => {
-    if (step === 0) return name.trim().length > 0
+    if (step === 0) return isNameValid(name)
     if (step === 1) return domainValid
-    if (step === 2) return slug.length >= 5 && slugAvailable === true
-    if (step === 3) return !!timezone
+    if (step === 2) return isSlugValid(slug) && slugAvailable === true
+    if (step === 3) return isTimezoneValid(timezone)
     return false
   }, [step, name, domainValid, slug, slugAvailable, timezone])
 
@@ -89,12 +81,17 @@ export default function WorkspaceWizard({ className = "" }: { className?: string
   const create = async () => {
     setIsCreating(true)
     try {
-      const res = await client.workspace.create.$post({
+      const parsed = workspaceSchema.safeParse({
         name: name.trim(),
         domain: domain.trim(),
         slug: slug.trim(),
         timezone,
       })
+      if (!parsed.success) {
+        toast.error("Invalid workspace details")
+        return
+      }
+      const res = await client.workspace.create.$post(parsed.data)
       if (!res.ok) {
         const err = await res.json()
         toast.error(err?.message || "Failed to create workspace")
@@ -128,8 +125,7 @@ export default function WorkspaceWizard({ className = "" }: { className?: string
                   slug={slug}
                   onChange={(v) => {
                     setSlugDirty(true)
-                    const clean = v.toLowerCase().replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-")
-                    setSlug(clean)
+                    setSlug(cleanSlug(v))
                   }}
                   checking={slugChecking}
                   available={slugAvailable}

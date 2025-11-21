@@ -29,6 +29,11 @@ export default function TimezonePicker({ value, onChange, now }: { value: string
 
   const formatTime = (tz: string) => new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: tz }).format(now)
   const friendlyTZ = (tz: string) => tz.split("/").slice(-1)[0]?.replace(/_/g, " ") ?? tz
+  const formatTimeWithDate = (tz: string) => {
+    const t = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: tz }).format(now)
+    const d = new Intl.DateTimeFormat(undefined, { month: "short", day: "2-digit", timeZone: tz }).format(now)
+    return `${t}, ${d}`
+  }
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return timezones
@@ -46,7 +51,6 @@ export default function TimezonePicker({ value, onChange, now }: { value: string
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0 w-[360px]">
-        <div className="text-xs text-accent border-b px-3 py-2">Your local time - {timeString}, {now.toLocaleDateString()}</div>
         <div className="p-2">
           <Input placeholder="Search by city or country..." value={query} onChange={(e) => setQuery(e.target.value)} className="placeholder:text-accent/70" />
         </div>
@@ -59,10 +63,10 @@ export default function TimezonePicker({ value, onChange, now }: { value: string
                 onChange(tz)
                 setOpen(false)
               }}
-              className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2"
+              className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-4"
             >
-              <span className="flex-1 truncate">{tz}</span>
-              <span className="text-xs">{formatTime(tz)}</span>
+              <span className="text-sm">{formatTimeWithDate(tz)}</span>
+              <span className="ml-auto text-sm text-accent truncate">{friendlyTZ(tz)}</span>
             </button>
           ))}
         </div>
