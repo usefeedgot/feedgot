@@ -6,17 +6,18 @@ import { getServerSession } from "@feedgot/auth/session"
 import { db, workspace, workspaceMember } from "@feedgot/db"
 import { eq } from "drizzle-orm"
 
+export const dynamic = "force-dynamic"
 export const metadata: Metadata = createPageMetadata({
   title: "New Project",
   description: "Create a new project in Feedgot.",
-  path: "/workspace/new",
+  path: "/workspaces/new",
   indexable: false,
 })
 
 export default async function NewWorkspacePage() {
   const session = await getServerSession()
   if (!session?.user) {
-    redirect("/auth/sign-in?redirect=/workspace/new")
+    redirect("/auth/sign-in?redirect=/workspaces/new")
   }
   const userId = session.user.id
 

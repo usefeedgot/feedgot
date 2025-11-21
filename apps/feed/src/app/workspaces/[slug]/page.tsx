@@ -4,16 +4,19 @@ import { getServerSession } from "@feedgot/auth/session"
 import { db, workspace } from "@feedgot/db"
 import { eq } from "drizzle-orm"
 
-export default async function WorkspacePage({ params }: { params: { slug: string } }) {
+export const dynamic = "force-dynamic"
+
+export default async function WorkspacePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const session = await getServerSession()
   if (!session?.user) {
-    redirect(`/auth/sign-in?redirect=/workspaces/${params.slug}`)
+    redirect(`/auth/sign-in?redirect=/workspaces/${slug}`)
   }
 
   const [ws] = await db
     .select({ id: workspace.id, name: workspace.name, slug: workspace.slug })
     .from(workspace)
-    .where(eq(workspace.slug, params.slug))
+    .where(eq(workspace.slug, slug))
     .limit(1)
 
   if (!ws) notFound()
