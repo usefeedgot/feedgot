@@ -1,0 +1,155 @@
+02:06:02.837 Running build in Washington, D.C., USA (East) – iad1
+02:06:02.838 Build machine configuration: 4 cores, 8 GB
+02:06:02.951 Cloning github.com/usefeedgot/feedgot (Branch: staging, Commit: 4fd4a7a)
+02:06:03.530 Cloning completed: 579.000ms
+02:06:05.727 Restored build cache from previous deployment (9TMmwqG6spn79g7SHXV8HeWM2Bnf)
+02:06:07.320 Running "vercel build"
+02:06:07.728 Vercel CLI 48.10.3
+02:06:07.891 > Detected Turbo. Adjusting default settings...
+02:06:08.050 Running "install" command: `bun install`...
+02:06:08.090 bun install v1.3.2 (b131639c)
+02:06:08.197 Resolving dependencies
+02:06:09.258 Resolved, downloaded and extracted [140]
+02:06:10.063 Saved lockfile
+02:06:10.063 
+02:06:10.063 Checked 1149 installs across 1152 packages (no changes) [2.00s]
+02:06:10.085 Detected Next.js version: 15.5.2
+02:06:10.086 Running "turbo run build"
+02:06:10.279 
+02:06:10.279 Attention:
+02:06:10.279 Turborepo now collects completely anonymous telemetry regarding usage.
+02:06:10.279 This information is used to shape the Turborepo roadmap and prioritize features.
+02:06:10.279 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+02:06:10.280 https://turborepo.com/docs/telemetry
+02:06:10.280 
+02:06:10.304  WARNING  An issue occurred while attempting to parse /vercel/path0/bun.lock. Turborepo will still function, but some features may not be available:
+02:06:10.305    x Could not resolve workspaces.
+02:06:10.305   `-> Lockfile not found at /vercel/path0/bun.lock
+02:06:10.305 
+02:06:10.307 • Packages in scope: @feedgot/web
+02:06:10.308 • Running build in 1 packages
+02:06:10.308 • Remote caching enabled
+02:06:10.632 @feedgot/web:build: cache miss, executing 2c4d22f193b99961
+02:06:10.636 @feedgot/web:build: $ next build
+02:06:11.427 @feedgot/web:build:    ▲ Next.js 15.5.2
+02:06:11.427 @feedgot/web:build: 
+02:06:11.509 @feedgot/web:build:    Creating an optimized production build ...
+02:06:24.615 @feedgot/web:build:  ✓ Compiled successfully in 10.2s
+02:06:24.618 @feedgot/web:build:    Skipping validation of types
+02:06:24.619 @feedgot/web:build:    Skipping linting
+02:06:24.896 @feedgot/web:build:    Collecting page data ...
+02:06:25.554 @feedgot/web:build: [2m2025-11-21T02:06:25.550Z[0m [33mWARN[0m [1m[Better Auth]:[0m Social provider github is missing clientId or clientSecret
+02:06:25.637 @feedgot/web:build: [2m2025-11-21T02:06:25.636Z[0m [33mWARN[0m [1m[Better Auth]:[0m Social provider github is missing clientId or clientSecret
+02:06:25.639 @feedgot/web:build: [2m2025-11-21T02:06:25.637Z[0m [33mWARN[0m [1m[Better Auth]:[0m Social provider github is missing clientId or clientSecret
+02:06:27.949 @feedgot/web:build:    Generating static pages (0/10) ...
+02:06:28.700 @feedgot/web:build: [2m2025-11-21T02:06:28.683Z[0m [33mWARN[0m [1m[Better Auth]:[0m Social provider github is missing clientId or clientSecret
+02:06:28.701 @feedgot/web:build: Error getting server session Error: Dynamic server usage: Route /_not-found couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+02:06:28.701 @feedgot/web:build:     at s (.next/server/chunks/819.js:19:19629)
+02:06:28.701 @feedgot/web:build:     at m (.next/server/chunks/57.js:1:3482)
+02:06:28.701 @feedgot/web:build:     at h (.next/server/chunks/578.js:1:9026)
+02:06:28.701 @feedgot/web:build:     at l (.next/server/chunks/578.js:1:5416)
+02:06:28.702 @feedgot/web:build:     at stringify (<anonymous>) {
+02:06:28.702 @feedgot/web:build:   description: "Route /_not-found couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+02:06:28.702 @feedgot/web:build:   digest: 'DYNAMIC_SERVER_USAGE'
+02:06:28.702 @feedgot/web:build: }
+02:06:28.727 @feedgot/web:build: Error getting server session Error: Dynamic server usage: Route /_not-found couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+02:06:28.727 @feedgot/web:build:     at s (.next/server/chunks/819.js:19:19629)
+02:06:28.728 @feedgot/web:build:     at m (.next/server/chunks/57.js:1:3482)
+02:06:28.728 @feedgot/web:build:     at h (.next/server/chunks/578.js:1:9026)
+02:06:28.728 @feedgot/web:build:     at l (.next/server/chunks/578.js:1:5416)
+02:06:28.728 @feedgot/web:build:     at stringify (<anonymous>) {
+02:06:28.728 @feedgot/web:build:   description: "Route /_not-found couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+02:06:28.728 @feedgot/web:build:   digest: 'DYNAMIC_SERVER_USAGE'
+02:06:28.728 @feedgot/web:build: }
+02:06:28.942 @feedgot/web:build: Error getting server session Error: Dynamic server usage: Route /auth/forgot-password couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+02:06:28.942 @feedgot/web:build:     at s (.next/server/chunks/819.js:19:19629)
+02:06:28.943 @feedgot/web:build:     at m (.next/server/chunks/57.js:1:3482)
+02:06:28.943 @feedgot/web:build:     at h (.next/server/chunks/578.js:1:9026)
+02:06:28.943 @feedgot/web:build:     at l (.next/server/chunks/578.js:1:5416)
+02:06:28.943 @feedgot/web:build:     at stringify (<anonymous>) {
+02:06:28.943 @feedgot/web:build:   description: "Route /auth/forgot-password couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+02:06:28.943 @feedgot/web:build:   digest: 'DYNAMIC_SERVER_USAGE'
+02:06:28.943 @feedgot/web:build: }
+02:06:28.943 @feedgot/web:build: Error getting server session Error: Dynamic server usage: Route /auth/sign-in couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+02:06:28.943 @feedgot/web:build:     at s (.next/server/chunks/819.js:19:19629)
+02:06:28.943 @feedgot/web:build:     at m (.next/server/chunks/57.js:1:3482)
+02:06:28.943 @feedgot/web:build:     at h (.next/server/chunks/578.js:1:9026)
+02:06:28.943 @feedgot/web:build:     at l (.next/server/chunks/578.js:1:5416)
+02:06:28.943 @feedgot/web:build:     at stringify (<anonymous>) {
+02:06:28.943 @feedgot/web:build:   description: "Route /auth/sign-in couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+02:06:28.944 @feedgot/web:build:   digest: 'DYNAMIC_SERVER_USAGE'
+02:06:28.944 @feedgot/web:build: }
+02:06:28.944 @feedgot/web:build: Error getting server session Error: Dynamic server usage: Route /auth/sign-up couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+02:06:28.944 @feedgot/web:build:     at s (.next/server/chunks/819.js:19:19629)
+02:06:28.944 @feedgot/web:build:     at m (.next/server/chunks/57.js:1:3482)
+02:06:28.944 @feedgot/web:build:     at h (.next/server/chunks/578.js:1:9026)
+02:06:28.944 @feedgot/web:build:     at l (.next/server/chunks/578.js:1:5416)
+02:06:28.944 @feedgot/web:build:     at stringify (<anonymous>) {
+02:06:28.944 @feedgot/web:build:   description: "Route /auth/sign-up couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+02:06:28.944 @feedgot/web:build:   digest: 'DYNAMIC_SERVER_USAGE'
+02:06:28.944 @feedgot/web:build: }
+02:06:28.944 @feedgot/web:build: Error getting server session Error: Dynamic server usage: Route /auth/verify couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+02:06:28.944 @feedgot/web:build:     at s (.next/server/chunks/819.js:19:19629)
+02:06:28.944 @feedgot/web:build:     at m (.next/server/chunks/57.js:1:3482)
+02:06:28.944 @feedgot/web:build:     at h (.next/server/chunks/578.js:1:9026)
+02:06:28.945 @feedgot/web:build:     at l (.next/server/chunks/578.js:1:5416)
+02:06:28.945 @feedgot/web:build:     at stringify (<anonymous>) {
+02:06:28.945 @feedgot/web:build:   description: "Route /auth/verify couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+02:06:28.945 @feedgot/web:build:   digest: 'DYNAMIC_SERVER_USAGE'
+02:06:28.945 @feedgot/web:build: }
+02:06:28.945 @feedgot/web:build: Error getting server session Error: Dynamic server usage: Route / couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+02:06:28.945 @feedgot/web:build:     at s (.next/server/chunks/819.js:19:19629)
+02:06:28.945 @feedgot/web:build:     at m (.next/server/chunks/57.js:1:3482)
+02:06:28.945 @feedgot/web:build:     at h (.next/server/chunks/578.js:1:9026)
+02:06:28.945 @feedgot/web:build:     at l (.next/server/chunks/578.js:1:5416)
+02:06:28.945 @feedgot/web:build:     at stringify (<anonymous>) {
+02:06:28.945 @feedgot/web:build:   description: "Route / couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+02:06:28.946 @feedgot/web:build:   digest: 'DYNAMIC_SERVER_USAGE'
+02:06:28.946 @feedgot/web:build: }
+02:06:28.946 @feedgot/web:build:    Generating static pages (2/10) 
+02:06:28.946 @feedgot/web:build:    Generating static pages (4/10) 
+02:06:28.946 @feedgot/web:build:    Generating static pages (7/10) 
+02:06:28.946 @feedgot/web:build:  ✓ Generating static pages (10/10)
+02:06:30.016 @feedgot/web:build:    Finalizing page optimization ...
+02:06:30.016 @feedgot/web:build:    Collecting build traces ...
+02:06:37.158 @feedgot/web:build: 
+02:06:37.165 @feedgot/web:build: Route (app)                                 Size  First Load JS
+02:06:37.165 @feedgot/web:build: ┌ ƒ /                                      138 B         102 kB
+02:06:37.166 @feedgot/web:build: ├ ƒ /_not-found                            138 B         102 kB
+02:06:37.166 @feedgot/web:build: ├ ƒ /api/[[...route]]                      138 B         102 kB
+02:06:37.166 @feedgot/web:build: ├ ƒ /api/auth/[...all]                     138 B         102 kB
+02:06:37.166 @feedgot/web:build: ├ ƒ /auth/forgot-password                4.12 kB         189 kB
+02:06:37.166 @feedgot/web:build: ├ ƒ /auth/sign-in                        4.74 kB         190 kB
+02:06:37.166 @feedgot/web:build: ├ ƒ /auth/sign-up                        4.99 kB         190 kB
+02:06:37.166 @feedgot/web:build: ├ ƒ /auth/verify                         3.59 kB         189 kB
+02:06:37.166 @feedgot/web:build: ├ ○ /robots.txt                            138 B         102 kB
+02:06:37.166 @feedgot/web:build: ├ ○ /sitemap.xml                           138 B         102 kB
+02:06:37.166 @feedgot/web:build: ├ ƒ /workspaces/[slug]                   3.25 kB         176 kB
+02:06:37.166 @feedgot/web:build: └ ƒ /workspaces/new                      67.8 kB         189 kB
+02:06:37.166 @feedgot/web:build: + First Load JS shared by all             102 kB
+02:06:37.166 @feedgot/web:build:   ├ chunks/18-0cb4b36b532721b7.js        46.1 kB
+02:06:37.166 @feedgot/web:build:   ├ chunks/87c73c54-24122e7b92478d00.js  54.2 kB
+02:06:37.166 @feedgot/web:build:   └ other shared chunks (total)          1.93 kB
+02:06:37.166 @feedgot/web:build: 
+02:06:37.166 @feedgot/web:build: 
+02:06:37.167 @feedgot/web:build: ƒ Middleware                               35 kB
+02:06:37.167 @feedgot/web:build: 
+02:06:37.167 @feedgot/web:build: ○  (Static)   prerendered as static content
+02:06:37.167 @feedgot/web:build: ƒ  (Dynamic)  server-rendered on demand
+02:06:37.167 @feedgot/web:build: 
+02:06:37.194 
+02:06:37.194   Tasks:    1 successful, 1 total
+02:06:37.195  Cached:    0 cached, 1 total
+02:06:37.195    Time:    26.902s 
+02:06:37.195 Summary:    /vercel/path0/.turbo/runs/35lhvkBxghzP09gBEHBtz0BsLoM.json
+02:06:37.195 
+02:06:37.524 Traced Next.js server files in: 79.678ms
+02:06:37.678 Created all serverless functions in: 153.203ms
+02:06:37.722 Collected static files (public/, static/, .next/static): 5.99ms
+02:06:37.813 Build Completed in /vercel/output [30s]
+02:06:37.959 Deploying outputs...
+02:06:49.041 Deployment completed
+02:06:49.677 Creating build cache...
+02:07:31.445 Created build cache: 41.764s
+02:07:31.445 Uploading build cache [334.55 MB]
+02:07:35.339 Build cache uploaded: 3.896s
