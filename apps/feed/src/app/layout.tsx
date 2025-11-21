@@ -75,14 +75,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
-        <Script
-          id="software-app-jsonld"
-          type="application/ld+json"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(buildSoftwareApplicationSchema(SITE_URL)),
-          }}
-        />
+        <Script id="software-app-jsonld" type="application/ld+json" strategy="beforeInteractive">
+          {JSON.stringify(buildSoftwareApplicationSchema(SITE_URL))}
+        </Script>
       </head>
       <body>
         <Providers>{children}</Providers>
