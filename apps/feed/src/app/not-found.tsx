@@ -3,6 +3,8 @@ import { getServerSession } from "@feedgot/auth/session"
 import { db, workspace, workspaceMember } from "@feedgot/db"
 import { eq } from "drizzle-orm"
 
+export const dynamic = "force-dynamic"
+
 export default async function NotFound() {
   const session = await getServerSession()
   let href = "/workspace/new"

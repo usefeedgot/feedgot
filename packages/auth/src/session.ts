@@ -7,8 +7,7 @@ export async function getServerSession() {
       headers: await headers(),
     });
     return session;
-  } catch (error) {
-    console.error("Error getting server session", error);
+  } catch {
     return null;
   }
 }
