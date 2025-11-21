@@ -1,7 +1,9 @@
 "use client"
 
 import { Input } from "@feedgot/ui/components/input"
-import { Link2 } from "lucide-react"
+import { Link2, Loader2 } from "lucide-react"
+import { CompleteIcon } from "@feedgot/ui/icons/complete"
+import { CloseIcon } from "@feedgot/ui/icons/close"
 
 export default function StepSlug({ slug, onChange, checking, available }: { slug: string; onChange: (v: string) => void; checking: boolean; available: boolean | null }) {
   return (
@@ -11,18 +13,28 @@ export default function StepSlug({ slug, onChange, checking, available }: { slug
         <p className="text-xs sm:text-sm text-accent">This will be used for your workspace URL.</p>
       </div>
       <div className="space-y-2">
-        <div className="relative">
-          <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-accent" />
-          <Input
-            id="slug"
-            value={slug}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="mywebsite"
-            className="placeholder:text-accent/70 pr-28 sm:pr-36 pl-9 sm:pl-10"
-            aria-invalid={available === false || (!!slug && slug.length < 5)}
-          />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs sm:text-sm text-accent select-none">.feedgot.com</span>
-          <div className={"absolute left-3 -bottom-6 text-xs " + (slug && slug.length < 5 ? "text-destructive" : checking ? "text-accent" : available === true ? "text-emerald-600" : available === false ? "text-destructive" : "text-accent")}>{slug && slug.length < 5 ? "Min 5 chars" : checking ? "Checking..." : available === true ? "Available" : available === false ? "Taken" : ""}</div>
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1">
+            <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-accent" />
+            <Input
+              id="slug"
+              value={slug}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder="mywebsite"
+              className="w-full placeholder:text-accent/70 pl-9 sm:pl-10 pr-16 sm:pr-24"
+              aria-invalid={available === false || (!!slug && slug.length < 5)}
+            />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs sm:text-sm text-accent select-none pointer-events-none">.feedgot.com</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {checking ? (
+              <Loader2 className="size-4 text-accent animate-spin" />
+            ) : available === true ? (
+              <CompleteIcon size={16} className="text-emerald-600" />
+            ) : available === false || (!!slug && slug.length < 5) ? (
+              <CloseIcon size={16} className="text-destructive" />
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
