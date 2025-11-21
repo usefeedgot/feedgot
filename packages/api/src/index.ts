@@ -1,4 +1,4 @@
-import { j, privateProcedure } from "./jstack"
+import { j } from "./jstack"
 
 const api = j
   .router()

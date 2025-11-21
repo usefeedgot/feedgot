@@ -4,6 +4,7 @@ import { Input } from "@feedgot/ui/components/input"
 import { Link2, Loader2 } from "lucide-react"
 import { CompleteIcon } from "@feedgot/ui/icons/complete"
 import { CloseIcon } from "@feedgot/ui/icons/close"
+import { isSlugValid } from "./validators"
 
 export default function StepSlug({ slug, onChange, checking, available }: { slug: string; onChange: (v: string) => void; checking: boolean; available: boolean | null }) {
   return (
@@ -22,7 +23,7 @@ export default function StepSlug({ slug, onChange, checking, available }: { slug
               onChange={(e) => onChange(e.target.value)}
               placeholder="mywebsite"
               className="w-full placeholder:text-accent/70 pl-9 sm:pl-10 pr-16 sm:pr-24"
-              aria-invalid={available === false || (!!slug && slug.length < 5)}
+              aria-invalid={available === false || (!!slug && !isSlugValid(slug))}
             />
             <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs sm:text-sm text-accent select-none pointer-events-none">.feedgot.com</span>
           </div>
@@ -31,11 +32,20 @@ export default function StepSlug({ slug, onChange, checking, available }: { slug
               <Loader2 className="size-4 text-accent animate-spin" />
             ) : available === true ? (
               <CompleteIcon size={16} className="text-emerald-600" />
-            ) : available === false || (!!slug && slug.length < 5) ? (
+            ) : available === false || (!!slug && !isSlugValid(slug)) ? (
               <CloseIcon size={16} className="text-destructive" />
             ) : null}
           </div>
         </div>
+        {(() => {
+          if (!!slug && !isSlugValid(slug)) {
+            return <p className="text-xs text-destructive">Only lowercase letters, minimum 5 characters.</p>
+          }
+          if (available === false) {
+            return <p className="text-xs text-destructive">This subdomain is already taken.</p>
+          }
+          return null
+        })()}
       </div>
     </div>
   )
