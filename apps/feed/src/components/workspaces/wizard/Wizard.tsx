@@ -112,43 +112,39 @@ export default function WorkspaceWizard({ className = "" }: { className?: string
   }
 
   return (
-    <section className="flex min-h-screen bg-background">
-      <div className={`w-full max-w-4xl m-auto ${className}`}>
+    <section className="flex min-h-[80vh] bg-background pr-6 md:pr-10 lg:pr-16">
+      <div className={`w-full max-w-3xl ml-auto my-auto ${className}`}>
         <div className="bg-card rounded-[calc(var(--radius)+.125rem)] border shadow-md overflow-hidden">
           <div className="flex">
-            <div className="w-1/2 p-8 border-r flex flex-col">
+            <div className="w-2/5 p-6 border-r flex flex-col">
               <div className="mb-6">
                 <Progress step={step} total={total} />
               </div>
 
-              <div className="flex-1">
-                <div className="mx-auto w-full max-w-sm">
-                  {step === 0 && <StepName name={name} onChange={setName} />}
-                  {step === 1 && <StepDomain domain={domain} onChange={setDomain} isValid={domainValid} />}
-                  {step === 2 && (
-                    <StepSlug
-                      slug={slug}
-                      onChange={(v) => {
-                        setSlugDirty(true)
-                        const clean = v.toLowerCase().replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-")
-                        setSlug(clean)
-                      }}
-                      checking={slugChecking}
-                      available={slugAvailable}
-                    />
-                  )}
-                  {step === 3 && (
-                    <div className="space-y-4">
-                      <div>
-                        <h2 className="text-xl font-semibold">Select your timezone.</h2>
-                        <p className="text-sm text-accent">We’ll use this to align dates and charts.</p>
-                      </div>
-                      <TimezonePicker value={timezone} onChange={setTimezone} now={now} />
-                      <p className="text-[12px] text-accent">All project graphs, ranges and timestamps will be matched to this timezone. Can be updated later.</p>
-                    </div>
-                  )}
+              {step === 0 && <StepName name={name} onChange={setName} />}
+              {step === 1 && <StepDomain domain={domain} onChange={setDomain} isValid={domainValid} />}
+              {step === 2 && (
+                <StepSlug
+                  slug={slug}
+                  onChange={(v) => {
+                    setSlugDirty(true)
+                    const clean = v.toLowerCase().replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-")
+                    setSlug(clean)
+                  }}
+                  checking={slugChecking}
+                  available={slugAvailable}
+                />
+              )}
+              {step === 3 && (
+                <div className="space-y-4">
+                  <div>
+                    <h2 className="text-xl font-semibold">Select your timezone.</h2>
+                    <p className="text-sm text-accent">We’ll use this to align dates and charts.</p>
+                  </div>
+                  <TimezonePicker value={timezone} onChange={setTimezone} now={now} />
+                  <p className="text-[12px] text-accent">All project graphs, ranges and timestamps will be matched to this timezone. Can be updated later.</p>
                 </div>
-              </div>
+              )}
 
               <div className="mt-auto pt-6 flex items-center gap-3">
                 <Button type="button" variant="outline" onClick={prev} disabled={step === 0}>
@@ -166,7 +162,7 @@ export default function WorkspaceWizard({ className = "" }: { className?: string
               </div>
             </div>
 
-            <div className="w-1/2 p-8 flex items-center justify-center">
+            <div className="w-3/5 p-6 flex items-center justify-center bg-muted">
               <RightInfo />
             </div>
           </div>
