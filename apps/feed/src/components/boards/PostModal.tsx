@@ -163,13 +163,6 @@ export default function PostModal({ open, onOpenChange, postId }: { open: boolea
                 <div className="text-xs text-muted-foreground">Author</div>
                 <div className="text-xs text-muted-foreground">{p.authorName || "Anonymous"}</div>
               </div>
-              <div className="pt-2">
-                <div className="text-xs text-muted-foreground">Subscribe to post</div>
-                <Button size="sm" variant="secondary" className="mt-2 h-7 text-xs px-3">
-                  <Bell className="size-3.5 mr-2" />
-                  Get notified
-                </Button>
-              </div>
             </aside>
           </div>
         )}
