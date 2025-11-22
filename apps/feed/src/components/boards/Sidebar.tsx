@@ -17,11 +17,7 @@ export default function Sidebar({ workspaceSlug, className = "" }: { workspaceSl
 
   return (
     <aside className={className + " space-y-4"}>
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-card p-4 shadow-sm">
-        <div className="text-sm font-medium">Got an idea?</div>
-        <Button className="mt-3 w-full" variant="default">Submit a Post</Button>
-      </div>
-
+     
       <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-card p-4 shadow-sm">
         <div className="text-sm font-medium mb-3">Boards</div>
         {!boardsQ.isSuccess ? (

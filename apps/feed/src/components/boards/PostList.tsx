@@ -35,6 +35,7 @@ export default function PostList({ workspaceSlug, boardSlug, className = "" }: {
               ? <span>{typeof p.publishedAt === "string" ? p.publishedAt : p.publishedAt?.toString() || ""}</span>
               : <div className="flex items-center gap-2"><span>▲ {p.upvotes ?? 0}</span><span>💬 {p.commentCount ?? 0}</span></div>
           }
+          badge={p.roadmapStatus ?? null}
           onClick={() => setSelectedId(p.id)}
         />
       ))}
