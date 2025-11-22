@@ -81,26 +81,6 @@ export default function PostModal({ open, onOpenChange, postId }: { open: boolea
                 </div>
               ) : null}
               {p.content ? <div className="mt-5 text-sm leading-6 text-foreground/90 whitespace-pre-wrap">{p.content}</div> : null}
-              <div className="mt-6 flex items-center justify-between rounded-lg bg-card p-3">
-                <div className="flex items-center gap-2">
-                  <Star className="size-4 text-primary" />
-                  <span className="text-xs text-muted-foreground">View all similar posts</span>
-                </div>
-                <Button variant="ghost" size="sm" className="text-xs">
-                  Explore
-                  <ChevronRight className="size-4 ml-1" />
-                </Button>
-              </div>
-              <div className="mt-3 flex items-center justify-between rounded-lg bg-muted/60 p-3">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="size-4 text-primary" />
-                  <span className="text-xs text-muted-foreground">Please authenticate to join the conversation.</span>
-                </div>
-                <a href="/auth/sign-in" className="text-xs inline-flex items-center gap-1 rounded-md bg-primary text-primary-foreground px-3 py-1">
-                  Sign in / Sign up
-                  <ChevronRight className="size-4" />
-                </a>
-              </div>
               <div className="mt-6 flex items-center justify-between border-b">
                 <div className="flex items-center gap-4">
                   <button
@@ -118,10 +98,6 @@ export default function PostModal({ open, onOpenChange, postId }: { open: boolea
                     Activity feed
                   </button>
                 </div>
-                <Button variant="ghost" size="sm" className="text-xs">
-                  New comments
-                  <ChevronRight className="size-4 ml-1" />
-                </Button>
               </div>
               {tab === "comments" ? (
                 comments.length === 0 ? (
