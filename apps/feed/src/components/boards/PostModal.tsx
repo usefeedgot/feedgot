@@ -127,15 +127,15 @@ export default function PostModal({ open, onOpenChange, postId }: { open: boolea
             <aside className="border-l bg-card p-6 md:p-7 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="text-xs text-muted-foreground">Upvotes</div>
-                <div className="text-xs font-medium">▲ {p.upvotes ?? 0}</div>
+                <span className="text-xs font-medium px-2 py-1 rounded-md bg-muted text-muted-foreground">▲ {p.upvotes ?? 0}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-xs text-muted-foreground">Status</div>
-                <span className="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs">{p.status || "Published"}</span>
+                <span className="px-2 py-1 rounded-md bg-muted text-muted-foreground text-xs">{p.status || "Published"}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-xs text-muted-foreground">Board</div>
-                <div className="text-xs">{b?.name}</div>
+                <span className="text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">{b?.name}</span>
               </div>
               {tags.length > 0 ? (
                 <div className="flex items-start justify-between">
@@ -151,17 +151,17 @@ export default function PostModal({ open, onOpenChange, postId }: { open: boolea
               ) : null}
               <div className="flex items-center justify-between">
                 <div className="text-xs text-muted-foreground">ETA</div>
-                <div className="text-xs text-muted-foreground">
+                <span className="text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">
                   {p.publishedAt ? new Date(p.publishedAt as any).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "—"}
-                </div>
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-xs text-muted-foreground">Date</div>
-                <div className="text-xs text-muted-foreground">{formatRelative(p.createdAt || null)}</div>
+                <span className="text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">{formatRelative(p.createdAt || null)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-xs text-muted-foreground">Author</div>
-                <div className="text-xs text-muted-foreground">{p.authorName || "Anonymous"}</div>
+                <span className="text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">{p.authorName || "Anonymous"}</span>
               </div>
             </aside>
           </div>
