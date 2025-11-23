@@ -13,6 +13,7 @@ export const SettingIcon: React.FC<SettingIconProps> = ({ className = '', size =
       height={size}
       viewBox="0 0 18 18"
       className={className}
+       opacity={0.4}
     >
       <title>gear-2</title>
       <g fill="currentColor" stroke="currentColor">

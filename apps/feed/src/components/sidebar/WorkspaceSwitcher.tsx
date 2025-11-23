@@ -84,11 +84,13 @@ export default function WorkspaceSwitcher({
         <DropdownMenuTrigger className="w-full cursor-pointer">
           <div className="group flex items-center gap-2 rounded-md px-2 py-2 text-sm text-accent hover:bg-muted cursor-pointer">
             {currentLogo ? (
-              <img
-                src={currentLogo}
-                alt={currentName}
-                className="w-6 h-6 rounded-sm bg-muted border ring-1 ring-border/40 shadow-sm"
-              />
+              <div className="relative w-6 h-6 rounded-sm bg-muted border ring-1 ring-border/40 shadow-sm overflow-hidden">
+                <img
+                  src={currentLogo}
+                  alt={currentName}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
             ) : (
               <div className="w-6 h-6 rounded-sm bg-muted border ring-1 ring-border/40" />
             )}
@@ -119,11 +121,13 @@ export default function WorkspaceSwitcher({
                     )}
                   >
                     {logoUrl ? (
-                      <img
-                        src={logoUrl}
-                        alt={w.name}
-                        className="w-6 h-6 rounded-sm bg-muted border ring-1 ring-border/40 shadow-sm"
-                      />
+                      <div className="relative w-6 h-6 rounded-sm bg-muted border ring-1 ring-border/40 shadow-sm overflow-hidden">
+                        <img
+                          src={logoUrl}
+                          alt={w.name}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      </div>
                     ) : (
                       <div className="w-6 h-6 rounded-sm bg-muted border ring-1 ring-border/40" />
                     )}

@@ -13,6 +13,7 @@ export const LogoutIcon: React.FC<LogoutIconProps> = ({ className = '', size = 1
       y="0px"
       width={size}
       height={size}
+      opacity={0.6}
       viewBox="0 0 18 18"
       className={className}
     >

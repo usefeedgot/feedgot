@@ -12,6 +12,7 @@ export const ChangelogIcon: React.FC<ChangelogIconProps> = ({ className = '', si
       width={size}
       height={size}
       viewBox="0 0 18 18"
+       opacity={0.6}
       className={className}
     >
       <title>folder</title>

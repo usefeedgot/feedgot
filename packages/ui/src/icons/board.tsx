@@ -12,6 +12,7 @@ export const BoardIcon: React.FC<BoardIconProps> = ({ className = '', size = 18 
       width={size}
       height={size}
       viewBox="0 0 18 18"
+      opacity={0.6}
       className={className}
     >
       <title>window-pointer</title>

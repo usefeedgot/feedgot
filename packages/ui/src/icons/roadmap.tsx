@@ -12,6 +12,7 @@ export const RoadmapIcon: React.FC<RoadmapIconProps> = ({ className = '', size =
       width={size}
       height={size}
       viewBox="0 0 18 18"
+       opacity={0.6}
       className={className}
     >
       <title>align-3-left</title>

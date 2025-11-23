@@ -13,6 +13,7 @@ export const DocIcon: React.FC<DocIconProps> = ({ className = '', size = 18 }) =
       y="0px"
       width={size}
       height={size}
+      opacity={0.6}
       viewBox="0 0 18 18"
       className={className}
    >
