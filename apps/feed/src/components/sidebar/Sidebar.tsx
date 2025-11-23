@@ -27,7 +27,7 @@ export default function Sidebar({ className = "" }: { className?: string }) {
   return (
     <aside
       className={cn(
-        "mt-4 flex md:h-screen h-auto w-full md:w-60 flex-col bg-background",
+        "mt-4 hidden md:flex md:h-screen w-full md:w-60 flex-col bg-background",
         "md:sticky md:top-4",
         className
       )}
