@@ -14,7 +14,6 @@ import {
 import { client } from "@feedgot/api/client";
 import { getSlugFromPath } from "../../config/nav";
 import { DropdownIcon } from "@feedgot/ui/icons/dropdown";
-import { Check } from "lucide-react";
 
 type Ws = {
   id: string;
@@ -99,7 +98,7 @@ export default function WorkspaceSwitcher({
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-56 max-w-[95vw] max-h-[80vh] overflow-auto p-2"
+          className="w-40 max-w-[95vw] max-h-[80vh] overflow-auto p-2"
           side="bottom"
           align="center"
           sideOffset={8}
@@ -132,21 +131,11 @@ export default function WorkspaceSwitcher({
                       <div className="w-6 h-6 rounded-sm bg-muted border ring-1 ring-border" />
                     )}
                     <span className="truncate text-sm">{w.name}</span>
-                    {isCurrent ? (
-                      <Check className="ml-auto size-4 text-primary" />
-                    ) : (
-                      <span className="ml-auto" />
-                    )}
                   </DropdownMenuItem>
                 );
               })}
-              <DropdownMenuItem
-                onSelect={handleCreateNew}
-                className="p-0"
-              >
-                <div className="w-full rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm text-center hover:bg-primary/90">
-                  Create new project
-                </div>
+              <DropdownMenuItem onSelect={handleCreateNew} className="text-sm">
+                Create new project
               </DropdownMenuItem>
             </div>
           )}
