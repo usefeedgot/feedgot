@@ -14,6 +14,7 @@ export function createWorkspaceRouter() {
           .from(workspace)
           .where(eq(workspace.slug, input.slug))
           .limit(1)
+        c.header("Cache-Control", "public, max-age=30, stale-while-revalidate=300")
         if (!ws) return c.json({ workspace: null })
         return c.superjson({ workspace: ws })
       }),
@@ -45,20 +46,22 @@ export function createWorkspaceRouter() {
 
     listMine: privateProcedure.get(async ({ ctx, c }: any) => {
       const userId = ctx.session.user.id
-      const owned = await ctx.db
-        .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
-        .from(workspace)
-        .where(eq(workspace.ownerId, userId))
-
-      const member = await ctx.db
-        .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
-        .from(workspace)
-        .innerJoin(workspaceMember, eq(workspaceMember.workspaceId, workspace.id))
-        .where(eq(workspaceMember.userId, userId))
+      const [owned, member] = await Promise.all([
+        ctx.db
+          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
+          .from(workspace)
+          .where(eq(workspace.ownerId, userId)),
+        ctx.db
+          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
+          .from(workspace)
+          .innerJoin(workspaceMember, eq(workspaceMember.workspaceId, workspace.id))
+          .where(eq(workspaceMember.userId, userId)),
+      ])
 
       const all = [...owned, ...member]
       const map = new Map<string, any>()
       for (const w of all) map.set(w.slug, w)
+      c.header("Cache-Control", "private, max-age=30, stale-while-revalidate=300")
       return c.superjson({ workspaces: Array.from(map.values()) })
     }),
 

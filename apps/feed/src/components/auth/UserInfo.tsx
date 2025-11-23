@@ -7,12 +7,11 @@ import { Button } from "@feedgot/ui/components/button"
 import { Avatar, AvatarImage, AvatarFallback } from "@feedgot/ui/components/avatar"
 import { getDisplayUser, getInitials } from "@/utils/user-utils"
 
-export default function UserInfo() {
+export default function UserInfo({ user: userProp }: { user?: any }) {
   const router = useRouter()
-  const session = authClient.useSession()
   const [loading, setLoading] = useState(false)
 
-  const user = getDisplayUser(session?.data?.user)
+  const user = getDisplayUser(userProp)
 
   const handleSignOut = async () => {
     setLoading(true)

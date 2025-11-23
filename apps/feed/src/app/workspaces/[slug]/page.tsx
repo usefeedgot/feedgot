@@ -35,7 +35,7 @@ export default async function WorkspacePage({ params }: { params: Promise<{ slug
               Open {ws.slug}.feedgot.com
             </a>
           </Button>
-          <UserInfo />
+          <UserInfo user={session.user} />
         </div>
       </div>
     </section>
