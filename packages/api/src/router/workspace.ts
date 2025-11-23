@@ -10,7 +10,7 @@ export function createWorkspaceRouter() {
       .input(checkSlugInputSchema)
       .get(async ({ ctx, input, c }: any) => {
         const [ws] = await ctx.db
-          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, domain: workspace.domain })
+          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, domain: workspace.domain, logo: workspace.logo })
           .from(workspace)
           .where(eq(workspace.slug, input.slug))
           .limit(1)
@@ -41,6 +41,25 @@ export function createWorkspaceRouter() {
         .where(eq(workspaceMember.userId, userId))
         .limit(1)
       return c.json({ hasWorkspace: owned.length > 0 || member.length > 0 })
+    }),
+
+    listMine: privateProcedure.get(async ({ ctx, c }: any) => {
+      const userId = ctx.session.user.id
+      const owned = await ctx.db
+        .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
+        .from(workspace)
+        .where(eq(workspace.ownerId, userId))
+
+      const member = await ctx.db
+        .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
+        .from(workspace)
+        .innerJoin(workspaceMember, eq(workspaceMember.workspaceId, workspace.id))
+        .where(eq(workspaceMember.userId, userId))
+
+      const all = [...owned, ...member]
+      const map = new Map<string, any>()
+      for (const w of all) map.set(w.slug, w)
+      return c.superjson({ workspaces: Array.from(map.values()) })
     }),
 
     create: privateProcedure

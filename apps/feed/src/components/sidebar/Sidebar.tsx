@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@feedgot/ui/lib/utils"
 import type { NavItem } from "./types"
 import { buildTopNav, buildMiddleNav, buildBottomNav, getSlugFromPath, workspaceBase } from "./nav"
+import WorkspaceSwitcher from "./WorkspaceSwitcher"
 const secondaryNav: NavItem[] = buildBottomNav()
 
 export default function Sidebar({ className = "" }: { className?: string }) {
@@ -35,8 +36,8 @@ export default function Sidebar({ className = "" }: { className?: string }) {
   return (
     <aside
       className={cn(
-        "flex md:h-screen h-auto w-full md:w-60 flex-col bg-background",
-        "md:sticky md:top-0",
+        "mt-4 flex md:h-screen h-auto w-full md:w-60 flex-col bg-background",
+        "md:sticky md:top-4",
         className,
       )}
     >
@@ -45,22 +46,19 @@ export default function Sidebar({ className = "" }: { className?: string }) {
           <img src="/logo.svg" alt="feedback" className="h-6 w-6" />
           <div className="text-sm font-semibold">feedback</div>
         </div>
+        <WorkspaceSwitcher className="mt-3" />
       </div>
       <nav className="p-3 space-y-1">
         {primaryNav.map(renderItem)}
       </nav>
 
-      <div className="p-3 mt-8">
-        <Link href={workspaceBase(slug)} className="block rounded-md px-3 py-2">
-          <div className="text-xs text-accent">Workspace</div>
-          <div className="text-sm font-medium truncate">{slug || "Current"}</div>
-        </Link>
-        <div className="mt-3 space-y-1">
+      <div className="p-3 mt-4">
+        <div className="space-y-1">
           {middleNav.map(renderItem)}
         </div>
       </div>
 
-      <div className="mt-auto p-3 space-y-1">
+      <div className="mt-auto p-3 pb-8 space-y-1">
         {secondaryNav.map(renderItem)}
       </div>
     </aside>
