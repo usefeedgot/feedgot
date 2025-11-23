@@ -10,7 +10,6 @@ import { BoardIcon } from "@feedgot/ui/icons/board"
 import { SettingIcon } from "@feedgot/ui/icons/setting"
 import { AiIcon } from "@feedgot/ui/icons/ai"
 import { DocIcon } from "@feedgot/ui/icons/doc"
-import { LogoutIcon } from "@feedgot/ui/icons/logout"
 import type { NavItem } from "./types"
 
 function w(slug: string, p: string) {
@@ -46,11 +45,9 @@ export function buildBottomNav(): NavItem[] {
   return [
     { label: "Show AI chat", href: "/chat", icon: AiIcon },
     { label: "Docs", href: "/docs", icon: DocIcon },
-    { label: "Sign out", href: "/auth/sign-in", icon: LogoutIcon },
   ]
 }
 
 export function workspaceBase(slug: string) {
   return w(slug, "")
 }
-
