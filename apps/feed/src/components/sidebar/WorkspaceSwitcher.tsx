@@ -135,7 +135,7 @@ export default function WorkspaceSwitcher({
                   </DropdownMenuItem>
                 );
               })}
-              <DropdownMenuItem onSelect={handleCreateNew} className="text-md flex items-center gap-2 px-2 py-2 rounded-md hover:bg-muted">
+              <DropdownMenuItem onSelect={handleCreateNew} className="text-sm flex items-center gap-2 px-2 py-2 rounded-md hover:bg-muted">
                 <PlusIcon className="size-4" />
                 Add workspace
               </DropdownMenuItem>
