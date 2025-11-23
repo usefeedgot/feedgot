@@ -1,6 +1,6 @@
 export * from "./auth"
 export * from "./workspace"
-export * from "./board"
+export * from "./feedback"
 export * from "./post"
 export * from "./comment"
 export * from "./vote"

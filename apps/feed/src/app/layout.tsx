@@ -69,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <OrganizationJsonLd />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -79,7 +79,7 @@ export default function RootLayout({
           {JSON.stringify(buildSoftwareApplicationSchema(SITE_URL))}
         </Script>
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

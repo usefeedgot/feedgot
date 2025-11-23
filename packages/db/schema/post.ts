@@ -1,5 +1,6 @@
 import { pgTable, text, timestamp, boolean, integer, json, uuid, uniqueIndex, foreignKey } from 'drizzle-orm/pg-core'
-import { board, boardCategory } from './board'
+import { board } from './feedback'
+import { workspace } from './workspace'
 import { user } from './auth'
 
 export const post = pgTable(
@@ -9,10 +10,9 @@ export const post = pgTable(
     boardId: uuid('board_id')
       .notNull()
       .references(() => board.id, { onDelete: 'cascade' }),
-    categoryId: uuid('category_id')
-      .references(() => boardCategory.id, { onDelete: 'set null' }),
     title: text('title').notNull(),
     content: text('content').notNull(),
+    image: text('image'),
     slug: text('slug').notNull(),
     authorId: text('author_id')
       .references(() => user.id, { onDelete: 'set null' }),
@@ -27,9 +27,7 @@ export const post = pgTable(
       .default('medium'),
     effort: text('effort', { enum: ['small', 'medium', 'large', 'extra_large'] }),
     upvotes: integer('upvotes').default(0),
-    downvotes: integer('downvotes').default(0),
     commentCount: integer('comment_count').default(0),
-    viewCount: integer('view_count').default(0),
     isPinned: boolean('is_pinned').default(false),
     isLocked: boolean('is_locked').default(false),
     isFeatured: boolean('is_featured').default(false),
@@ -65,9 +63,9 @@ export const tag = pgTable(
   'tag',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    boardId: uuid('board_id')
+    workspaceId: uuid('workspace_id')
       .notNull()
-      .references(() => board.id, { onDelete: 'cascade' }),
+      .references(() => workspace.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     slug: text('slug').notNull(),
     color: text('color').default('#6b7280'),
@@ -77,7 +75,7 @@ export const tag = pgTable(
     updatedAt: timestamp('updated_at').notNull().defaultNow().$onUpdate(() => new Date()),
   },
   (table) => ({
-    tagSlugBoardUnique: uniqueIndex('tag_slug_board_unique').on(table.boardId, table.slug),
+    tagSlugWorkspaceUnique: uniqueIndex('tag_slug_workspace_unique').on(table.workspaceId, table.slug),
   } as const)
 )
 
@@ -98,17 +96,6 @@ export const postTag = pgTable(
   } as const)
 )
 
-export const postView = pgTable('post_view', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  postId: uuid('post_id')
-    .notNull()
-    .references(() => post.id, { onDelete: 'cascade' }),
-  userId: text('user_id')
-    .references(() => user.id, { onDelete: 'cascade' }),
-  ipAddress: text('ip_address'),
-  userAgent: text('user_agent'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-})
 
 export const postUpdate = pgTable('post_update', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -127,5 +114,4 @@ export const postUpdate = pgTable('post_update', {
 export type Post = typeof post.$inferSelect
 export type PostTag = typeof postTag.$inferSelect
 export type Tag = typeof tag.$inferSelect
-export type PostView = typeof postView.$inferSelect
 export type PostUpdate = typeof postUpdate.$inferSelect

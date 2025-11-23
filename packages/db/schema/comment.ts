@@ -31,7 +31,6 @@ export const comment = pgTable(
       enum: ["published", "pending", "spam", "deleted", "hidden"],
     }).default("published"),
     upvotes: integer("upvotes").default(0),
-    downvotes: integer("downvotes").default(0),
     replyCount: integer("reply_count").default(0),
     depth: integer("depth").default(0),
     isPinned: boolean("is_pinned").default(false),

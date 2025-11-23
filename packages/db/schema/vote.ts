@@ -15,7 +15,7 @@ export const vote = pgTable(
     ipAddress: text('ip_address'),
     userAgent: text('user_agent'),
     fingerprint: text('fingerprint'),
-    type: text('type', { enum: ['upvote', 'downvote'] }).notNull(),
+    type: text('type', { enum: ['upvote'] }).notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow().$onUpdate(() => new Date()),
   },
@@ -40,9 +40,7 @@ export const voteAggregate = pgTable(
       .references(() => post.id, { onDelete: 'cascade' }),
     commentId: uuid('comment_id').references(() => comment.id, { onDelete: 'cascade' }),
     upvotes: integer('upvotes').default(0),
-    downvotes: integer('downvotes').default(0),
     totalVotes: integer('total_votes').default(0),
-    score: integer('score').default(0),
     updatedAt: timestamp('updated_at').notNull().defaultNow().$onUpdate(() => new Date()),
   },
   (table) => ({
@@ -60,7 +58,6 @@ export const userVoteHistory = pgTable('user_vote_history', {
   // Voting patterns
   totalVotes: integer('total_votes').default(0),
   upvotesGiven: integer('upvotes_given').default(0),
-  downvotesGiven: integer('downvotes_given').default(0),
   
   // Engagement metrics
   lastVotedAt: timestamp('last_voted_at'),

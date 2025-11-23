@@ -1,4 +1,4 @@
-// src/db/schema/board.ts
+// src/db/schema/feedback.ts
 import {
   pgTable,
   text,
@@ -21,16 +21,16 @@ export const board = pgTable(
       .references(() => workspace.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     slug: text('slug').notNull(),
-    description: text('description'),
-    type: text('type', { enum: ['feedback', 'updates', 'roadmap'] })
-      .notNull()
-      .default('feedback'),
+    systemType: text('system_type', { enum: ['roadmap', 'changelog'] }),
     isPublic: boolean('is_public').notNull().default(true),
+    isVisible: boolean('is_visible').notNull().default(true),
+    isSystem: boolean('is_system').notNull().default(false),
     isActive: boolean('is_active').notNull().default(true),
     allowAnonymous: boolean('allow_anonymous').notNull().default(true),
     requireApproval: boolean('require_approval').notNull().default(false),
     allowVoting: boolean('allow_voting').notNull().default(true),
     allowComments: boolean('allow_comments').notNull().default(true),
+    hidePublicMemberIdentity: boolean('hide_public_member_identity').notNull().default(false),
     sortOrder: integer('sort_order').notNull().default(0),
     createdBy: text('created_by')
       .notNull()
@@ -43,9 +43,6 @@ export const board = pgTable(
       .defaultNow()
       // If your Drizzle version supports it, this will auto-update the timestamp on UPDATE
       .$onUpdate(() => new Date()),
-    color: text('color').notNull().default('#3b82f6'),
-    icon: text('icon'),
-    welcomeMessage: text('welcome_message'),
     roadmapStatuses: json('roadmap_statuses')
       .$type<
         {
@@ -57,9 +54,12 @@ export const board = pgTable(
       >()
       .notNull()
       .default([
-        { id: 'planned', name: 'Planned', color: '#6b7280', order: 0 },
-        { id: 'in-progress', name: 'In Progress', color: '#f59e0b', order: 1 },
-        { id: 'completed', name: 'Completed', color: '#10b981', order: 2 },
+        { id: 'pending', name: 'Pending', color: '#6b7280', order: 0 },
+        { id: 'under-review', name: 'Under Review', color: '#a855f7', order: 1 },
+        { id: 'planned', name: 'Planned', color: '#6b7280', order: 2 },
+        { id: 'in-progress', name: 'In Progress', color: '#f59e0b', order: 3 },
+        { id: 'completed', name: 'Completed', color: '#10b981', order: 4 },
+        { id: 'closed', name: 'Closed', color: '#ef4444', order: 5 },
       ]),
   },
   (table) => ({
@@ -70,33 +70,6 @@ export const board = pgTable(
   }),
 )
 
-export const boardCategory = pgTable(
-  'board_category',
-  {
-    id: uuid('id').primaryKey().defaultRandom(),
-    boardId: uuid('board_id')
-      .notNull()
-      .references(() => board.id, { onDelete: 'cascade' }),
-    name: text('name').notNull(),
-    slug: text('slug').notNull(),
-    description: text('description'),
-    color: text('color').notNull().default('#6b7280'),
-    sortOrder: integer('sort_order').notNull().default(0),
-    isActive: boolean('is_active').notNull().default(true),
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .notNull()
-      .defaultNow()
-      .$onUpdate(() => new Date()),
-  },
-  (table) => ({
-    boardCategorySlugUnique: uniqueIndex(
-      'board_category_slug_board_unique',
-    ).on(table.boardId, table.slug),
-  }),
-)
 
 export const boardModerator = pgTable(
   'board_moderator',
@@ -136,5 +109,4 @@ export const boardModerator = pgTable(
 )
 
 export type Board = typeof board.$inferSelect
-export type BoardCategory = typeof boardCategory.$inferSelect
 export type BoardModerator = typeof boardModerator.$inferSelect

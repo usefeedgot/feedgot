@@ -22,8 +22,6 @@ export function createBoardRouter() {
             id: board.id,
             name: board.name,
             slug: board.slug,
-            type: board.type,
-            description: board.description,
             isPublic: board.isPublic,
             allowAnonymous: board.allowAnonymous,
             allowVoting: board.allowVoting,
@@ -31,7 +29,7 @@ export function createBoardRouter() {
             roadmapStatuses: board.roadmapStatuses,
           })
           .from(board)
-          .where(eq(board.workspaceId, ws.id))
+          .where(and(eq(board.workspaceId, ws.id), eq(board.isPublic, true)))
 
         const withCounts = await Promise.all(
           boardsList.map(async (b: typeof board.$inferSelect) => {
@@ -70,6 +68,7 @@ export function createBoardRouter() {
             title: post.title,
             slug: post.slug,
             content: post.content,
+            image: post.image,
             commentCount: post.commentCount,
             upvotes: post.upvotes,
             roadmapStatus: post.roadmapStatus,
@@ -91,8 +90,8 @@ export function createBoardRouter() {
             content: post.content,
             slug: post.slug,
             boardId: post.boardId,
+            image: post.image,
             upvotes: post.upvotes,
-            downvotes: post.downvotes,
             commentCount: post.commentCount,
             publishedAt: post.publishedAt,
             createdAt: post.createdAt,
@@ -109,7 +108,7 @@ export function createBoardRouter() {
         if (!p) return c.superjson({ post: null })
 
         const [b] = await ctx.db
-          .select({ id: board.id, name: board.name, slug: board.slug, type: board.type })
+          .select({ id: board.id, name: board.name, slug: board.slug })
           .from(board)
           .where(eq(board.id, p.boardId))
           .limit(1)
@@ -129,7 +128,6 @@ export function createBoardRouter() {
             authorEmail: comment.authorEmail,
             createdAt: comment.createdAt,
             upvotes: comment.upvotes,
-            downvotes: comment.downvotes,
           })
           .from(comment)
           .where(eq(comment.postId, p.id))
