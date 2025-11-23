@@ -27,15 +27,14 @@ export default async function WorkspacePage({ params }: { params: Promise<{ slug
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-2xl font-semibold">{ws.name}</h1>
-          <p className="text-sm text-accent">Workspace: {ws.slug}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button asChild>
+          {/* <Button asChild>
             <a href={`https://${ws.slug}.feedgot.com`} aria-label="Open workspace subdomain">
               Open {ws.slug}.feedgot.com
             </a>
-          </Button>
-          <UserInfo user={session.user} />
+          </Button> */}
+          {/* <UserInfo user={session.user} /> */}
         </div>
       </div>
     </section>
