@@ -1,0 +1,75 @@
+"use client";
+
+import React from "react";
+import { usePathname } from "next/navigation";
+import { cn } from "@feedgot/ui/lib/utils";
+import { client } from "@feedgot/api/client";
+import { getSlugFromPath } from "./nav";
+
+type Props = {
+  className?: string;
+};
+
+export default function Timezone({ className = "" }: Props) {
+  const pathname = usePathname();
+  const slug = getSlugFromPath(pathname || "");
+  const [tz, setTz] = React.useState<string | null>(null);
+  const [time, setTime] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    let active = true;
+    if (!slug) {
+      setTz(null);
+      return;
+    }
+    (async () => {
+      try {
+        const res = await client.workspace.bySlug.$get({ slug });
+        const data = await res.json();
+        const timezone = data?.workspace?.timezone || null;
+        if (active) setTz(timezone);
+      } catch {
+        if (active) setTz(null);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [slug]);
+
+  React.useEffect(() => {
+    if (!tz) return;
+    const format = () => {
+      try {
+        const parts = new Intl.DateTimeFormat(undefined, {
+          timeZone: tz,
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }).formatToParts(new Date());
+        const hour = parts.find((p) => p.type === "hour")?.value || "";
+        const minute = parts.find((p) => p.type === "minute")?.value || "";
+        const dayPeriodRaw = parts.find((p) => p.type === "dayPeriod")?.value || "";
+        const dayPeriod = dayPeriodRaw ? dayPeriodRaw.toUpperCase() : "";
+        const s = `${hour}:${minute} ${dayPeriod}`;
+        setTime(s.trim());
+      } catch {
+        setTime(null);
+      }
+    };
+    format();
+    const id = setInterval(format, 1000);
+    return () => clearInterval(id);
+  }, [tz]);
+
+  if (!tz || !time) return null;
+
+  return (
+    <div className={cn("px-3", className)}>
+      <div className="flex items-center justify-between">
+        <span className="text-xs text-accent">TIME</span>
+        <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-mono text-foreground">{time}</span>
+      </div>
+    </div>
+  );
+}

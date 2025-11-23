@@ -13,6 +13,7 @@ import {
 } from "./nav";
 import WorkspaceSwitcher from "./WorkspaceSwitcher";
 import SignOutButton from "@/components/auth/SignOutButton";
+import Timezone from "./Timezone";
 const secondaryNav: NavItem[] = buildBottomNav();
 
 export default function Sidebar({ className = "" }: { className?: string }) {
@@ -55,6 +56,7 @@ export default function Sidebar({ className = "" }: { className?: string }) {
           <div className="text-sm font-semibold">feedback</div>
         </div>
         <WorkspaceSwitcher className="mt-3" />
+        <Timezone className="mt-2" />
       </div>
       <nav className="p-3 space-y-1">{primaryNav.map(renderItem)}</nav>
 
