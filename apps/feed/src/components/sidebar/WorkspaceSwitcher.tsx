@@ -14,6 +14,7 @@ import {
 import { client } from "@feedgot/api/client";
 import { getSlugFromPath } from "../../config/nav";
 import { DropdownIcon } from "@feedgot/ui/icons/dropdown";
+import { PlusIcon } from "@feedgot/ui/icons/plus";
 
 type Ws = {
   id: string;
@@ -134,8 +135,9 @@ export default function WorkspaceSwitcher({
                   </DropdownMenuItem>
                 );
               })}
-              <DropdownMenuItem onSelect={handleCreateNew} className="text-sm">
-                Create new project
+              <DropdownMenuItem onSelect={handleCreateNew} className="text-sm flex items-center gap-2 px-2 py-2 rounded-md hover:bg-muted">
+                <PlusIcon className="size-4" />
+                Add workspace
               </DropdownMenuItem>
             </div>
           )}
