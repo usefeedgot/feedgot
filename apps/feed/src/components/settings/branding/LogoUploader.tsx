@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import { Button } from "@feedgot/ui/components/button"
 import { toast } from "sonner"
 import { getLogoUploadUrl, saveBranding } from "./service"
 import { setWorkspaceLogo } from "@/lib/branding-store"
@@ -13,7 +12,6 @@ type Props = {
 }
 
 export default function LogoUploader({ slug, value = "", onChange }: Props) {
-  const [fileName, setFileName] = React.useState("")
   const [preview, setPreview] = React.useState<string>(value || "")
   const [uploading, setUploading] = React.useState(false)
 
@@ -40,7 +38,6 @@ export default function LogoUploader({ slug, value = "", onChange }: Props) {
       toast.error("File too large")
       return
     }
-    setFileName(file.name)
     const reader = new FileReader()
     reader.onload = () => setPreview(typeof reader.result === "string" ? reader.result : "")
     reader.readAsDataURL(file)
@@ -81,28 +78,18 @@ export default function LogoUploader({ slug, value = "", onChange }: Props) {
   }
 
   return (
-    <div className="space-y-2">
-      <div
-        className="relative flex items-center gap-3 rounded-md border bg-muted/30 p-3"
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-      >
-        <div className="relative w-14 h-14 rounded-md bg-muted border ring-1 ring-border overflow-hidden">
-          {preview ? (
-            <img src={preview} alt="Logo preview" className="absolute inset-0 w-full h-full object-cover" />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-accent text-xs">No logo</div>
-          )}
-        </div>
-        <div className="flex-1">
-          <div className="text-sm">{fileName || "Upload a logo image"}</div>
-          <div className="text-xs text-accent">PNG, JPG, WEBP, SVG up to 2MB</div>
-        </div>
-        <div className="ml-auto">
-          <Button type="button" onClick={pick} disabled={uploading}>{uploading ? "Uploading..." : "Choose"}</Button>
-          <input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" className="hidden" onChange={onInputChange} />
-        </div>
-      </div>
+    <div
+      className="relative w-8 h-8 rounded-md bg-muted border ring-1 ring-border overflow-hidden cursor-pointer"
+      onClick={pick}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+      role="button"
+      aria-label="Upload workspace logo"
+    >
+      {preview ? (
+        <img src={preview} alt="Logo" className="absolute inset-0 w-full h-full object-cover" />
+      ) : null}
+      <input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" className="hidden" onChange={onInputChange} />
     </div>
   )
 }

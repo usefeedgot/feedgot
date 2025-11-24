@@ -73,9 +73,8 @@ export default function BrandingSection({ slug }: { slug: string }) {
       <div className="divide-y rounded-md border">
         <div className="flex items-center justify-between p-4">
           <div className="text-sm">Logo</div>
-          <div className="w-full max-w-md space-y-2">
+          <div className="w-full max-w-md flex items-center justify-end">
             <LogoUploader slug={slug} value={logoUrl} onChange={setLogoUrl} />
-            <Input id="logo" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} placeholder="https://example.com/logo.png" className="h-9" />
           </div>
         </div>
         <div className="flex items-center justify-between p-4">
