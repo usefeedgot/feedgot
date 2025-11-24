@@ -116,7 +116,7 @@ export default function TeamSection({ slug }: { slug: string }) {
 
         <div className="space-y-2">
           <Label>Members</Label>
-          <div className="divide-y rounded-md border">
+          <div className="divide-y">
             {members.length === 0 && !loading ? (
               <div className="p-4 text-sm text-accent">No members</div>
             ) : (
@@ -135,7 +135,7 @@ export default function TeamSection({ slug }: { slug: string }) {
                         <SelectItem value="viewer">Viewer</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button variant="outline" onClick={() => handleRemove(m.userId)} disabled={m.isOwner === true}>Remove</Button>
+                    <Button variant="ghost" onClick={() => handleRemove(m.userId)} disabled={m.isOwner === true}>Remove</Button>
                   </div>
                 </div>
               ))
@@ -145,7 +145,7 @@ export default function TeamSection({ slug }: { slug: string }) {
 
         <div className="space-y-2">
           <Label>Pending Invites</Label>
-          <div className="divide-y rounded-md border">
+          <div className="divide-y">
             {invites.length === 0 && !loading ? (
               <div className="p-4 text-sm text-accent">No pending invites</div>
             ) : (
@@ -157,7 +157,7 @@ export default function TeamSection({ slug }: { slug: string }) {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm">{i.role}</span>
-                    <Button variant="outline" onClick={() => handleRevoke(i.id)}>Revoke</Button>
+                    <Button variant="ghost" onClick={() => handleRevoke(i.id)}>Revoke</Button>
                   </div>
                 </div>
               ))

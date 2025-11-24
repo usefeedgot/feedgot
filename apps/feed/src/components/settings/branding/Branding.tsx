@@ -70,7 +70,7 @@ export default function BrandingSection({ slug }: { slug: string }) {
 
   return (
     <SectionCard title="Branding" description="Change your brand settings.">
-      <div className="divide-y rounded-md border">
+      <div className="divide-y">
         <div className="flex items-center justify-between p-4">
           <div className="text-sm">Logo</div>
           <div className="w-full max-w-md flex items-center justify-end">

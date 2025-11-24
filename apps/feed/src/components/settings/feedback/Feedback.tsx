@@ -5,4 +5,3 @@ import ComingSoon from "../global/ComingSoon"
 export default function FeedbackSection() {
   return <SectionCard title="Feedback" description="Configure boards and feedback"><ComingSoon /></SectionCard>
 }
-
