@@ -23,10 +23,7 @@ export default async function WorkspacePage({ params }: Props) {
 
   const name = ws?.name || `${slug} Workspace`
   return (
-    <section className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">{name}</h1>
-      </div>
+    <section className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         <div className="bg-card rounded-md border p-4">
           <div className="text-sm text-accent">Open Requests</div>

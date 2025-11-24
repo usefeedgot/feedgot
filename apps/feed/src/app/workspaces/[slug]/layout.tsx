@@ -14,7 +14,7 @@ export default async function WorkspaceLayout({ children, params }: { children: 
       <style>{`:root{--primary:${p};--ring:${p};--sidebar-primary:${p};}`}</style>
       <BrandVarsEffect primary={p} />
       <Sidebar />
-      <main className="flex-1 pb-20 md:pb-0">{children}</main>
+      <main className="mt-4 flex-1 pb-20 md:pb-0">{children}</main>
       <MobileSidebar />
     </Container>
   )
