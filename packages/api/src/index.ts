@@ -5,6 +5,7 @@ const routerImports = {
   board: () => import("./router/board").then((m) => m.createBoardRouter()),
   branding: () => import("./router/branding").then((m) => m.createBrandingRouter()),
   team: () => import("./router/team").then((m) => m.createTeamRouter()),
+  storage: () => import("./router/storage").then((m) => m.createStorageRouter()),
 }
 
 const api = j
@@ -18,6 +19,7 @@ const appRouter = j.mergeRouters(api, {
   board: routerImports.board,
   branding: routerImports.branding,
   team: routerImports.team,
+  storage: routerImports.storage,
 })
 
 export type AppRouter = typeof appRouter

@@ -18,3 +18,9 @@ export async function saveBranding(slug: string, input: BrandingConfig & { logoU
   })
   return res.ok
 }
+
+export async function getLogoUploadUrl(slug: string, fileName: string, contentType: string): Promise<{ uploadUrl: string; key: string; publicUrl: string }> {
+  const res = await client.storage.getUploadUrl.$post({ slug, fileName, contentType, folder: "branding/logo" })
+  const data = await res.json()
+  return { uploadUrl: data.uploadUrl, key: data.key, publicUrl: data.publicUrl }
+}

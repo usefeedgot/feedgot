@@ -16,7 +16,9 @@
     "jstack": "^1.1.1",
     "drizzle-orm": "^0.39.0",
     "zod": "^3.25.76",
-    "@feedgot/db": "workspace:*"
+    "@feedgot/db": "workspace:*",
+    "@aws-sdk/client-s3": "^3.721.0",
+    "@aws-sdk/s3-request-presigner": "^3.721.0"
   },
   "devDependencies": {
     "@feedgot/tsconfig": "workspace:*",

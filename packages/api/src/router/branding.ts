@@ -68,6 +68,12 @@ export function createBrandingRouter() {
             .values({ workspaceId: ws.id, ...update })
         }
 
+        if (typeof input.logoUrl !== "undefined") {
+          try {
+            await ctx.db.update(workspace).set({ logo: input.logoUrl }).where(eq(workspace.id, ws.id))
+          } catch {}
+        }
+
         return c.json({ ok: true })
       }),
   })

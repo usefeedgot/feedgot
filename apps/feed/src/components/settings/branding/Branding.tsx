@@ -11,6 +11,7 @@ import { Badge } from "@feedgot/ui/components/badge"
 import { BRANDING_COLORS, findColorByPrimary, applyBrandPrimary } from "../../../types/colors"
 import ColorPicker from "./ColorPicker"
 import ThemePicker from "./ThemePicker"
+import LogoUploader from "./LogoUploader"
 
 export default function BrandingSection({ slug }: { slug: string }) {
   const [logoUrl, setLogoUrl] = React.useState("")
@@ -70,7 +71,8 @@ export default function BrandingSection({ slug }: { slug: string }) {
       <div className="divide-y rounded-md border">
         <div className="flex items-center justify-between p-4">
           <div className="text-sm">Logo</div>
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-md space-y-2">
+            <LogoUploader slug={slug} value={logoUrl} onChange={setLogoUrl} />
             <Input id="logo" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} placeholder="https://example.com/logo.png" className="h-9" />
           </div>
         </div>
