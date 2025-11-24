@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@feedgot/ui/lib/utils";
@@ -11,6 +11,7 @@ import {
   buildBottomNav,
   getSlugFromPath,
 } from "../../config/nav";
+import { useSidebarHotkeys, getShortcutForLabel } from "../../utils/useSidebarHotkeys";
 import WorkspaceSwitcher from "./WorkspaceSwitcher";
 import SignOutButton from "@/components/auth/SignOutButton";
 import Timezone from "./Timezone";
@@ -25,36 +26,16 @@ export default function Sidebar({ className = "" }: { className?: string }) {
 
   const primaryNav = buildTopNav(slug);
   const middleNav = buildMiddleNav(slug);
-
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const t = e.target as HTMLElement | null;
-      const tag = t?.tagName || "";
-      if (tag === "INPUT" || tag === "TEXTAREA" || (t && (t as any).isContentEditable)) return;
-      const key = e.key.toLowerCase();
-      if (key === "r" || key === "c" || key === "b") {
-        const target =
-          key === "r"
-            ? middleNav.find((i) => i.label.toLowerCase() === "roadmap")
-            : key === "c"
-            ? middleNav.find((i) => i.label.toLowerCase() === "changelog")
-            : middleNav.find((i) => i.label.toLowerCase() === "my board");
-        if (target) {
-          if (target.external) {
-            window.open(target.href, "_blank");
-          } else {
-            router.push(target.href);
-          }
-        }
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [middleNav, router]);
+  const [hotkeysActive, setHotkeysActive] = useState(false);
+  useSidebarHotkeys(hotkeysActive, middleNav, router);
 
   return (
     <aside
+      tabIndex={0}
+      onMouseEnter={() => setHotkeysActive(true)}
+      onMouseLeave={() => setHotkeysActive(false)}
+      onFocus={() => setHotkeysActive(true)}
+      onBlur={() => setHotkeysActive(false)}
       className={cn(
         "mt-4 hidden md:flex md:h-screen w-full md:w-60 flex-col bg-background",
         "md:sticky md:top-4",
@@ -76,19 +57,9 @@ export default function Sidebar({ className = "" }: { className?: string }) {
       </SidebarSection>
 
       <SidebarSection title="WORKSPACE" className="mt-4">
-        {middleNav.map((item) => {
-          const letter = item.label === "Roadmap" ? "R" : item.label === "Changelog" ? "C" : item.label === "My Board" ? "B" : "";
-          return (
-            <div key={item.label} className="relative">
-              <SidebarItem item={item} pathname={pathname} />
-              {letter ? (
-                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded-md bg-muted px-2 py-0.5 text-[10px] font-mono text-accent">
-                  {letter}
-                </span>
-              ) : null}
-            </div>
-          );
-        })}
+        {middleNav.map((item) => (
+          <SidebarItem key={item.label} item={item} pathname={pathname} shortcut={getShortcutForLabel(item.label)} />
+        ))}
       </SidebarSection>
 
       <SidebarSection className="mt-auto pb-8">

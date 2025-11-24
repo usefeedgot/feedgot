@@ -9,10 +9,12 @@ export default function SidebarItem({
   item,
   pathname,
   className = "",
+  shortcut,
 }: {
   item: NavItem;
   pathname: string;
   className?: string;
+  shortcut?: string;
 }) {
   const Icon = item.icon;
   const active = !item.external && (pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href)));
@@ -25,6 +27,9 @@ export default function SidebarItem({
     <>
       <Icon className="w-[18px] h-[18px] text-foreground/80 group-hover:text-primary transition-colors" />
       <span className="transition-colors">{item.label}</span>
+      {shortcut ? (
+        <span className="ml-auto rounded-md bg-muted px-2 py-0.5 text-[10px] font-mono text-accent">{shortcut}</span>
+      ) : null}
     </>
   );
 
@@ -42,4 +47,3 @@ export default function SidebarItem({
     </Link>
   );
 }
-
