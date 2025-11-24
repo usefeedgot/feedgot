@@ -12,6 +12,7 @@ import { BRANDING_COLORS, findColorByPrimary, applyBrandPrimary } from "../../..
 import ColorPicker from "./ColorPicker"
 import ThemePicker from "./ThemePicker"
 import LogoUploader from "./LogoUploader"
+import { setWorkspaceLogo } from "@/lib/branding-store"
 
 export default function BrandingSection({ slug }: { slug: string }) {
   const [logoUrl, setLogoUrl] = React.useState("")
@@ -57,6 +58,7 @@ export default function BrandingSection({ slug }: { slug: string }) {
     try {
       const ok = await saveBranding(slug, { logoUrl: logoUrl.trim(), primaryColor: p, accentColor: a, theme, hidePoweredBy })
       if (!ok) throw new Error("Update failed")
+      if (logoUrl.trim()) setWorkspaceLogo(slug, logoUrl.trim())
       toast.success("Branding updated")
     } catch (e) {
       applyBrandPrimary(prevP || "#3b82f6")

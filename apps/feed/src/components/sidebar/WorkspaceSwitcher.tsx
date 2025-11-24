@@ -15,6 +15,7 @@ import { client } from "@feedgot/api/client";
 import { getSlugFromPath } from "../../config/nav";
 import { DropdownIcon } from "@feedgot/ui/icons/dropdown";
 import { PlusIcon } from "@feedgot/ui/icons/plus";
+import { useWorkspaceLogo } from "@/lib/branding-store";
 
 type Ws = {
   id: string;
@@ -35,6 +36,7 @@ export default function WorkspaceSwitcher({
   const [currentDetails, setCurrentDetails] = React.useState<Ws | null>(null);
   const [open, setOpen] = React.useState(false);
   const slug = getSlugFromPath(pathname || "");
+  const liveLogo = useWorkspaceLogo(slug || "");
 
   React.useEffect(() => {
     let active = true;
@@ -62,7 +64,7 @@ export default function WorkspaceSwitcher({
   const current = React.useMemo(() => {
     return workspaces.find((w) => w.slug === slug) || null;
   }, [workspaces, slug]);
-  const currentLogo: string | null = currentDetails?.logo ?? current?.logo ?? null;
+  const currentLogo: string | null = liveLogo ?? currentDetails?.logo ?? current?.logo ?? null;
   const currentName = currentDetails?.name ?? current?.name ?? (slug || "Current");
   const all = workspaces;
 
@@ -78,6 +80,8 @@ export default function WorkspaceSwitcher({
     setOpen(false);
     router.push("/workspaces/new");
   }, [router]);
+
+  // No effect needed; logo reacts to global branding store
 
   return (
     <div className={cn(className)}>

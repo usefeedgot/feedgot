@@ -4,6 +4,7 @@ import React from "react"
 import { Button } from "@feedgot/ui/components/button"
 import { toast } from "sonner"
 import { getLogoUploadUrl, saveBranding } from "./service"
+import { setWorkspaceLogo } from "@/lib/branding-store"
 
 type Props = {
   slug: string
@@ -54,6 +55,7 @@ export default function LogoUploader({ slug, value = "", onChange }: Props) {
       if (!res.ok) throw new Error("Upload failed")
       const ok = await saveBranding(slug, { logoUrl: publicUrl })
       if (!ok) throw new Error("Save failed")
+      setWorkspaceLogo(slug, publicUrl)
       onChange(publicUrl)
       toast.success("Logo updated")
     } catch (e: any) {
