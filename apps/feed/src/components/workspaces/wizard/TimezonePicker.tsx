@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 import { Button } from "@feedgot/ui/components/button"
 import { Input } from "@feedgot/ui/components/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@feedgot/ui/components/popover"
+import { Popover, PopoverContent, PopoverTrigger, PopoverList, PopoverListItem } from "@feedgot/ui/components/popover"
 import { Globe2, ChevronDown } from "lucide-react"
 
 export default function TimezonePicker({ value, onChange, now }: { value: string; onChange: (v: string) => void; now: Date }) {
@@ -50,27 +50,24 @@ export default function TimezonePicker({ value, onChange, now }: { value: string
           <ChevronDown className="size-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-[calc(100vw-2rem)] sm:w-[400px]">
+      <PopoverContent list className="w-[calc(100vw-2rem)] sm:w-[400px]">
         <div className="p-2">
           <Input placeholder="Search by city or country..." value={query} onChange={(e) => setQuery(e.target.value)} className="placeholder:text-accent/70" />
         </div>
-        <div className="max-h-[50vh] sm:max-h-64 overflow-y-auto">
+        <PopoverList>
           {filtered.map((tz) => (
-            <button
+            <PopoverListItem
               key={tz}
-              type="button"
               onClick={() => {
                 onChange(tz)
                 setOpen(false)
               }}
-              className="relative group w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-4"
             >
-              <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-primary opacity-0 group-hover:opacity-100" />
               <span className="text-sm">{formatTimeWithDate(tz)}</span>
               <span className="ml-auto text-sm text-accent truncate">{friendlyTZ(tz)}</span>
-            </button>
+            </PopoverListItem>
           ))}
-        </div>
+        </PopoverList>
       </PopoverContent>
     </Popover>
   )

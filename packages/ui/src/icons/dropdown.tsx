@@ -16,11 +16,16 @@ export const DropdownIcon: React.FC<DropdownIconProps> = ({ className = '', size
       viewBox="0 0 18 18"
       className={className}
     >
-      <path d="M12.5 6.25L9 2.75L5.5 6.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"></path>
-      <path d="M12.5 11.75L9 15.25L5.5 11.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"></path>
+      <polyline
+        points="15.25 6.5 9 12.75 2.75 6.5"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
     </svg>
   )
 }
 
 export default DropdownIcon
-

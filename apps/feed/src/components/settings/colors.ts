@@ -20,12 +20,7 @@ export const BRANDING_COLORS: ColorOption[] = [
   { key: "emerald", name: "Emerald", primary: "#10b981", accent: "#34d399" },
   { key: "teal", name: "Teal", primary: "#14b8a6", accent: "#2dd4bf" },
   { key: "cyan", name: "Cyan", primary: "#06b6d4", accent: "#22d3ee" },
-  { key: "sky", name: "Sky", primary: "#0ea5e9", accent: "#38bdf8" },
-  { key: "slate", name: "Slate", primary: "#64748b", accent: "#94a3b8" },
-  { key: "gray", name: "Gray", primary: "#6b7280", accent: "#9ca3af" },
-  { key: "zinc", name: "Zinc", primary: "#71717a", accent: "#a1a1aa" },
-  { key: "neutral", name: "Neutral", primary: "#737373", accent: "#a3a3a3" },
-  { key: "stone", name: "Stone", primary: "#78716c", accent: "#a8a29e" },
+  { key: "sky", name: "Sky", primary: "#0ea5e9", accent: "#38bdf8" }
 ]
 
 export function findColorByPrimary(hex: string): ColorOption | undefined {

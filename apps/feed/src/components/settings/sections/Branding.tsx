@@ -5,7 +5,7 @@ import SectionCard from "../SectionCard"
 import { Input } from "@feedgot/ui/components/input"
 import { Label } from "@feedgot/ui/components/label"
 import { Button } from "@feedgot/ui/components/button"
-import { Popover, PopoverTrigger, PopoverContent } from "@feedgot/ui/components/popover"
+import { Popover, PopoverTrigger, PopoverContent, PopoverList, PopoverListItem } from "@feedgot/ui/components/popover"
 import { LoadingButton } from "@/components/loading-button"
 import { client } from "@feedgot/api/client"
 import { toast } from "sonner"
@@ -97,34 +97,31 @@ export default function BrandingSection({ slug }: { slug: string }) {
           <div className="w-full max-w-md flex items-center justify-end">
             <Popover>
               <PopoverTrigger asChild>
-                <Button type="button" variant="outline" className="h-9 min-w-[12rem] justify-between">
+                <Button type="button" variant="outline" className="h-9 w-fit min-w-0 justify-between px-2">
                   <span className="inline-flex items-center gap-2">
                     <span className="w-4 h-4 rounded-full border" style={{ background: primaryColor }} />
-                    <span className="text-sm">{BRANDING_COLORS.find((x) => x.key === colorKey)?.name || "Select color"}</span>
                   </span>
-                  <DropdownIcon className="opacity-60" size={16} />
+                  <DropdownIcon className="opacity-60" size={12} />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="p-0 w-auto min-w-[10rem]">
-                <div className="max-h-[50vh] sm:max-h-64 overflow-y-auto">
+              <PopoverContent list>
+                <PopoverList>
                   {BRANDING_COLORS.map((c) => (
-                    <button
+                    <PopoverListItem
                       key={c.key}
-                      type="button"
+                      accent={c.primary}
                       onClick={() => {
                         setColorKey(c.key)
                         setPrimaryColor(c.primary)
                         setAccentColor(c.accent)
                         applyBrandPrimary(c.primary)
                       }}
-                      className="relative group w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-3"
                     >
-                      <span className="absolute left-0 top-0 bottom-0 w-[2px] opacity-0 group-hover:opacity-100" style={{ background: c.primary }} />
                       <span className="w-4 h-4 rounded-full border" style={{ background: c.primary }} />
                       <span className="text-sm">{c.name}</span>
-                    </button>
+                    </PopoverListItem>
                   ))}
-                </div>
+                </PopoverList>
               </PopoverContent>
             </Popover>
           </div>
@@ -135,25 +132,19 @@ export default function BrandingSection({ slug }: { slug: string }) {
           <div className="w-full max-w-md flex items-center justify-end">
             <Popover>
               <PopoverTrigger asChild>
-                <Button type="button" variant="outline" className="h-9 min-w-[12rem] justify-between">
+                <Button type="button" variant="outline" className="h-9 w-fit min-w-0 justify-between px-2">
                   <span className="text-sm capitalize">{theme}</span>
-                  <DropdownIcon className="opacity-60" size={16} />
+                  <DropdownIcon className="opacity-60" size={12} />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="p-0 w-auto min-w-[10rem]">
-                <div className="max-h-[50vh] sm:max-h-64 overflow-y-auto">
+              <PopoverContent list>
+                <PopoverList>
                   {(["system", "light", "dark"] as const).map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setTheme(t)}
-                      className="relative group w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-3"
-                    >
-                      <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-primary opacity-0 group-hover:opacity-100" />
+                    <PopoverListItem key={t} onClick={() => setTheme(t)}>
                       <span className="text-sm capitalize">{t}</span>
-                    </button>
+                    </PopoverListItem>
                   ))}
-                </div>
+                </PopoverList>
               </PopoverContent>
             </Popover>
           </div>

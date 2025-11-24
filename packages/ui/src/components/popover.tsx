@@ -21,21 +21,49 @@ function PopoverContent({
   className,
   align = "center",
   sideOffset = 4,
+  list = false,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+}: React.ComponentProps<typeof PopoverPrimitive.Content> & { list?: boolean }) {
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}
         sideOffset={sideOffset}
+        data-variant={list ? "list" : undefined}
         className={cn(
-          "bg-popover text-popover-foreground z-50 w-80 rounded-md border p-2 shadow-sm outline-hidden",
+          list
+            ? "bg-popover text-popover-foreground z-50 w-fit min-w-0 rounded-md border p-0 shadow-sm outline-hidden"
+            : "bg-popover text-popover-foreground z-50 w-80 rounded-md border p-2 shadow-sm outline-hidden",
           className
         )}
         {...props}
       />
     </PopoverPrimitive.Portal>
+  )
+}
+
+function PopoverList({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="popover-list"
+      className={cn("max-h-[50vh] sm:max-h-64 overflow-y-auto", className)}
+      {...props}
+    />
+  )
+}
+
+function PopoverListItem({ className, accent, children, ...props }: React.ComponentProps<"button"> & { accent?: string }) {
+  const style = accent ? { background: accent } : { background: "var(--primary)" }
+  return (
+    <button
+      data-slot="popover-list-item"
+      className={cn("relative group w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-3", className)}
+      {...props}
+    >
+      <span aria-hidden className="absolute left-0 top-0 bottom-0 w-[2px] opacity-0 group-hover:opacity-100" style={style} />
+      {children}
+    </button>
   )
 }
 
@@ -45,4 +73,4 @@ function PopoverAnchor({
   return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
 }
 
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverList, PopoverListItem }
