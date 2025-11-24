@@ -1,4 +1,5 @@
 import { Container } from "@/components/global/container"
+import BrandVarsEffect from "@/components/global/BrandVarsEffect"
 import Sidebar from "@/components/sidebar/Sidebar"
 import MobileSidebar from "@/components/sidebar/MobileSidebar"
 import { getBrandingColorsBySlug } from "@/lib/workspace"
@@ -11,6 +12,7 @@ export default async function WorkspaceLayout({ children, params }: { children: 
   return (
     <Container className="min-h-screen flex gap-6" maxWidth="8xl">
       <style>{`:root{--primary:${p};--ring:${p};--sidebar-primary:${p};}`}</style>
+      <BrandVarsEffect primary={p} />
       <Sidebar />
       <main className="flex-1 pb-20 md:pb-0">{children}</main>
       <MobileSidebar />
