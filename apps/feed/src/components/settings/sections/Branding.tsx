@@ -8,13 +8,28 @@ import { LoadingButton } from "@/components/loading-button"
 import { client } from "@feedgot/api/client"
 import { toast } from "sonner"
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@feedgot/ui/components/select"
-import { BRANDING_COLORS } from "../colors"
+import { Switch } from "@feedgot/ui/components/switch"
+import { Badge } from "@feedgot/ui/components/badge"
+import DropdownIcon from "@feedgot/ui/icons/dropdown"
+import { BRANDING_COLORS, findColorByPrimary, applyBrandPrimary } from "../colors"
+
+type BrandingConfig = {
+  logoUrl?: string
+  primaryColor?: string
+  accentColor?: string
+  theme?: "light" | "dark" | "system" | "custom"
+  hidePoweredBy?: boolean
+}
+
+type BrandingResponse = { config: BrandingConfig | null }
 
 export default function BrandingSection({ slug }: { slug: string }) {
   const [logoUrl, setLogoUrl] = React.useState("")
   const [primaryColor, setPrimaryColor] = React.useState("#3b82f6")
   const [accentColor, setAccentColor] = React.useState("#60a5fa")
   const [colorKey, setColorKey] = React.useState<string>("blue")
+  const [theme, setTheme] = React.useState<"light" | "dark" | "system">("system")
+  const [hidePoweredBy, setHidePoweredBy] = React.useState<boolean>(false)
   const [saving, setSaving] = React.useState(false)
   const [loading, setLoading] = React.useState(true)
 
@@ -23,15 +38,17 @@ export default function BrandingSection({ slug }: { slug: string }) {
     void (async () => {
       try {
         const res = await client.branding.byWorkspaceSlug.$get({ slug })
-        const data = await res.json()
+        const data = (await res.json()) as BrandingResponse
         const conf = data?.config
         if (mounted && conf) {
           setLogoUrl(conf.logoUrl || "")
           const currentPrimary = conf.primaryColor || "#3b82f6"
-          const found = BRANDING_COLORS.find((c) => c.primary.toLowerCase() === currentPrimary.toLowerCase())
+          const found = findColorByPrimary(currentPrimary) || BRANDING_COLORS[1]
           setPrimaryColor(currentPrimary)
-          setAccentColor(conf.accentColor || found?.accent || "#60a5fa")
-          setColorKey(found?.key || "blue")
+          setAccentColor(conf.accentColor || (found && found.accent) || "#60a5fa")
+          setColorKey(found ? found.key : "blue")
+          if (conf.theme === "light" || conf.theme === "dark" || conf.theme === "system") setTheme(conf.theme)
+          setHidePoweredBy(Boolean(conf.hidePoweredBy))
         }
       } catch (e) {}
       finally {
@@ -48,20 +65,16 @@ export default function BrandingSection({ slug }: { slug: string }) {
     const prevP = getComputedStyle(root).getPropertyValue("--primary").trim()
     const p = primaryColor.trim()
     const a = accentColor.trim()
-    root.style.setProperty("--primary", p)
-    root.style.setProperty("--ring", p)
-    root.style.setProperty("--sidebar-primary", p)
+    applyBrandPrimary(p)
     try {
-      const res = await client.branding.update.$post({ slug, logoUrl: logoUrl.trim(), primaryColor: p, accentColor: a })
+      const res = await client.branding.update.$post({ slug, logoUrl: logoUrl.trim(), primaryColor: p, accentColor: a, theme, hidePoweredBy })
       if (!res.ok) {
         const err = await res.json().catch(() => null)
         throw new Error(err?.message || "Update failed")
       }
       toast.success("Branding updated")
     } catch (e) {
-      root.style.setProperty("--primary", prevP || "#3b82f6")
-      root.style.setProperty("--ring", prevP || "#3b82f6")
-      root.style.setProperty("--sidebar-primary", prevP || "#3b82f6")
+      applyBrandPrimary(prevP || "#3b82f6")
       toast.error("Failed to update branding")
     } finally {
       setSaving(false)
@@ -69,48 +82,79 @@ export default function BrandingSection({ slug }: { slug: string }) {
   }
 
   return (
-    <SectionCard title="Branding" description="Customize your logo and identity">
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="logo">Logo URL</Label>
-          <Input id="logo" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} placeholder="https://example.com/logo.png" className="placeholder:text-accent/60" />
+    <SectionCard title="Branding" description="Change your brand settings.">
+      <div className="divide-y rounded-md border">
+        <div className="flex items-center justify-between p-4">
+          <div className="text-sm">Logo</div>
+          <div className="w-full max-w-md">
+            <Input id="logo" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} placeholder="https://example.com/logo.png" className="h-9" />
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="color">Brand Color</Label>
-          <div className="flex items-center gap-2">
+
+        <div className="flex items-center justify-between p-4">
+          <div className="text-sm">Primary Color</div>
+          <div className="w-full max-w-md flex items-center justify-end">
             <Select value={colorKey} onValueChange={(k) => {
-              const c = BRANDING_COLORS.find((x) => x.key === k) || BRANDING_COLORS[0]
+              const c = BRANDING_COLORS.find((x) => x.key === k) || BRANDING_COLORS[1]
               setColorKey(k)
-              const p = c?.primary ?? "#3b82f6"
-              const a = c?.accent ?? "#60a5fa"
+              const p = c.primary
+              const a = c.accent
               setPrimaryColor(p)
               setAccentColor(a)
-              const root = document.documentElement
-              root.style.setProperty("--primary", p)
-              root.style.setProperty("--ring", p)
-              root.style.setProperty("--sidebar-primary", p)
+              applyBrandPrimary(p)
             }}>
-              <SelectTrigger id="color" className="min-w-[12rem]">
-                <SelectValue placeholder="Select a color" />
+              <SelectTrigger id="color" className="h-9 min-w-[12rem] justify-between [&>svg:last-child]:hidden">
+                <span className="inline-flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full border" style={{ background: primaryColor }} />
+                  <SelectValue placeholder="Select color" />
+                </span>
+                <DropdownIcon className="opacity-60" size={16} />
               </SelectTrigger>
               <SelectContent>
                 {BRANDING_COLORS.map((c) => (
                   <SelectItem key={c.key} value={c.key}>
                     <span className="inline-flex items-center gap-2">
-                      <span className="w-4 h-4 rounded-sm border" style={{ background: c.primary }} />
+                      <span className="w-4 h-4 rounded-full border" style={{ background: c.primary }} />
                       <span>{c.name}</span>
                     </span>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <div aria-hidden className="w-6 h-6 rounded border" style={{ backgroundColor: primaryColor }} />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between p-4">
+          <div className="text-sm">Theme</div>
+          <div className="w-full max-w-md flex items-center justify-end">
+            <Select value={theme} onValueChange={(v) => setTheme(v as any)}>
+              <SelectTrigger id="theme" className="h-9 min-w-[12rem] justify-between [&>svg:last-child]:hidden">
+                <SelectValue placeholder="Select theme" />
+                <DropdownIcon className="opacity-60" size={16} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="system">System</SelectItem>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between p-4">
+          <div className="text-sm text-muted-foreground">Hide "Powered by" Branding</div>
+          <div className="w-full max-w-md flex items-center justify-end">
+            <Switch checked={hidePoweredBy} onCheckedChange={(v) => setHidePoweredBy(Boolean(v))} aria-label="Hide Powered by" />
+          </div>
+        </div>
       </div>
-          <p className="text-xs text-accent">Applies to primary accents across the workspace.</p>
-        </div>
-        <div className="pt-2">
-          <LoadingButton onClick={handleSave} loading={saving} disabled={loading}>Save Changes</LoadingButton>
-        </div>
+
+      <div className="p-4">
+        <Badge variant="outline">Custom branding is only available on our paid plans.</Badge>
+      </div>
+
+      <div className="px-4 pb-4">
+        <LoadingButton onClick={handleSave} loading={saving} disabled={loading}>Save</LoadingButton>
       </div>
     </SectionCard>
   )

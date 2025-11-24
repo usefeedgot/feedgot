@@ -28,3 +28,15 @@ export const BRANDING_COLORS: ColorOption[] = [
   { key: "stone", name: "Stone", primary: "#78716c", accent: "#a8a29e" },
 ]
 
+export function findColorByPrimary(hex: string): ColorOption | undefined {
+  const h = hex.trim().toLowerCase()
+  return BRANDING_COLORS.find((c) => c.primary.toLowerCase() === h)
+}
+
+export function applyBrandPrimary(hex: string): void {
+  const root = document.documentElement
+  const p = hex.trim()
+  root.style.setProperty("--primary", p)
+  root.style.setProperty("--ring", p)
+  root.style.setProperty("--sidebar-primary", p)
+}
