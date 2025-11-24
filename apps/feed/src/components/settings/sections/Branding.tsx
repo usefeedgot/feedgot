@@ -4,10 +4,11 @@ import React from "react"
 import SectionCard from "../SectionCard"
 import { Input } from "@feedgot/ui/components/input"
 import { Label } from "@feedgot/ui/components/label"
+import { Button } from "@feedgot/ui/components/button"
+import { Popover, PopoverTrigger, PopoverContent } from "@feedgot/ui/components/popover"
 import { LoadingButton } from "@/components/loading-button"
 import { client } from "@feedgot/api/client"
 import { toast } from "sonner"
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@feedgot/ui/components/select"
 import { Switch } from "@feedgot/ui/components/switch"
 import { Badge } from "@feedgot/ui/components/badge"
 import DropdownIcon from "@feedgot/ui/icons/dropdown"
@@ -94,50 +95,67 @@ export default function BrandingSection({ slug }: { slug: string }) {
         <div className="flex items-center justify-between p-4">
           <div className="text-sm">Primary Color</div>
           <div className="w-full max-w-md flex items-center justify-end">
-            <Select value={colorKey} onValueChange={(k) => {
-              const c = BRANDING_COLORS.find((x) => x.key === k) || BRANDING_COLORS[1]
-              setColorKey(k)
-              const p = c.primary
-              const a = c.accent
-              setPrimaryColor(p)
-              setAccentColor(a)
-              applyBrandPrimary(p)
-            }}>
-              <SelectTrigger id="color" className="h-9 min-w-[12rem] justify-between [&>svg:last-child]:hidden">
-                <span className="inline-flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full border" style={{ background: primaryColor }} />
-                  <SelectValue placeholder="Select color" />
-                </span>
-                <DropdownIcon className="opacity-60" size={16} />
-              </SelectTrigger>
-              <SelectContent>
-                {BRANDING_COLORS.map((c) => (
-                  <SelectItem key={c.key} value={c.key}>
-                    <span className="inline-flex items-center gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button type="button" variant="outline" className="h-9 min-w-[12rem] justify-between">
+                  <span className="inline-flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full border" style={{ background: primaryColor }} />
+                    <span className="text-sm">{BRANDING_COLORS.find((x) => x.key === colorKey)?.name || "Select color"}</span>
+                  </span>
+                  <DropdownIcon className="opacity-60" size={16} />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 w-auto min-w-[10rem]">
+                <div className="max-h-[50vh] sm:max-h-64 overflow-y-auto">
+                  {BRANDING_COLORS.map((c) => (
+                    <button
+                      key={c.key}
+                      type="button"
+                      onClick={() => {
+                        setColorKey(c.key)
+                        setPrimaryColor(c.primary)
+                        setAccentColor(c.accent)
+                        applyBrandPrimary(c.primary)
+                      }}
+                      className="relative group w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-3"
+                    >
+                      <span className="absolute left-0 top-0 bottom-0 w-[2px] opacity-0 group-hover:opacity-100" style={{ background: c.primary }} />
                       <span className="w-4 h-4 rounded-full border" style={{ background: c.primary }} />
-                      <span>{c.name}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                      <span className="text-sm">{c.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
         <div className="flex items-center justify-between p-4">
           <div className="text-sm">Theme</div>
           <div className="w-full max-w-md flex items-center justify-end">
-            <Select value={theme} onValueChange={(v) => setTheme(v as any)}>
-              <SelectTrigger id="theme" className="h-9 min-w-[12rem] justify-between [&>svg:last-child]:hidden">
-                <SelectValue placeholder="Select theme" />
-                <DropdownIcon className="opacity-60" size={16} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="system">System</SelectItem>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-              </SelectContent>
-            </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button type="button" variant="outline" className="h-9 min-w-[12rem] justify-between">
+                  <span className="text-sm capitalize">{theme}</span>
+                  <DropdownIcon className="opacity-60" size={16} />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 w-auto min-w-[10rem]">
+                <div className="max-h-[50vh] sm:max-h-64 overflow-y-auto">
+                  {(["system", "light", "dark"] as const).map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setTheme(t)}
+                      className="relative group w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-3"
+                    >
+                      <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-primary opacity-0 group-hover:opacity-100" />
+                      <span className="text-sm capitalize">{t}</span>
+                    </button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
