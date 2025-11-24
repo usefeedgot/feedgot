@@ -4,17 +4,21 @@ import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 
 import { cn } from "@feedgot/ui/lib/utils"
+const GliderContext = React.createContext<{ value?: string; onHover?: (el: HTMLElement) => void; onActive?: (el: HTMLElement) => void } | null>(null)
 
 function Tabs({
   className,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Root>) {
+  const value = (props as any).value as string | undefined
   return (
-    <TabsPrimitive.Root
-      data-slot="tabs"
-      className={cn("flex flex-col gap-2", className)}
-      {...props}
-    />
+    <GliderContext.Provider value={{ value }}>
+      <TabsPrimitive.Root
+        data-slot="tabs"
+        className={cn("flex flex-col gap-2", className)}
+        {...props}
+      />
+    </GliderContext.Provider>
   )
 }
 
@@ -23,24 +27,23 @@ function TabsList({
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.List>) {
   const listRef = React.useRef<HTMLDivElement | null>(null)
+  const ctx = React.useContext(GliderContext)
   const [indicator, setIndicator] = React.useState<{ left: number; width: number; visible: boolean }>({ left: 0, width: 0, visible: false })
   const [hover, setHover] = React.useState<{ left: number; width: number; visible: boolean }>({ left: 0, width: 0, visible: false })
+  const lockUntil = React.useRef<number>(0)
+  const lockTarget = React.useRef<HTMLElement | null>(null)
 
   const measure = React.useCallback((el: HTMLElement | null) => {
     if (!el || !listRef.current) return
-    const rect = el.getBoundingClientRect()
-    const parentRect = listRef.current.getBoundingClientRect()
-    const left = rect.left - parentRect.left
-    const width = rect.width
+    const left = el.offsetLeft
+    const width = el.offsetWidth
     requestAnimationFrame(() => setIndicator({ left, width, visible: true }))
   }, [])
 
   const measureHover = React.useCallback((el: HTMLElement | null) => {
     if (!el || !listRef.current) return
-    const rect = el.getBoundingClientRect()
-    const parentRect = listRef.current.getBoundingClientRect()
-    const left = rect.left - parentRect.left
-    const width = rect.width
+    const left = el.offsetLeft
+    const width = el.offsetWidth
     requestAnimationFrame(() => setHover({ left, width, visible: true }))
   }, [])
 
@@ -48,22 +51,21 @@ function TabsList({
     const root = listRef.current
     if (!root) return
     const active = root.querySelector<HTMLElement>('[data-slot="tabs-trigger"][data-state="active"]')
+    if (!active) return
+    if (lockUntil.current > performance.now() && active !== lockTarget.current) return
     measure(active)
+    lockUntil.current = 0
+    lockTarget.current = null
   }, [measure])
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const root = listRef.current
     if (!root) return
-    const observer = new MutationObserver(() => measureActive())
-    observer.observe(root, { attributes: true, subtree: true, attributeFilter: ['data-state', 'class', 'style'] })
-    measureActive()
-    const onResize = () => measureActive()
-    window.addEventListener('resize', onResize)
-    return () => {
-      observer.disconnect()
-      window.removeEventListener('resize', onResize)
-    }
-  }, [measureActive, measure])
+    const v = ctx?.value
+    if (!v) return
+    const el = root.querySelector<HTMLElement>(`[data-slot="tabs-trigger"][data-value="${v}"]`)
+    if (el) measure(el)
+  }, [ctx?.value, measure])
 
   React.useEffect(() => {
     const root = listRef.current
@@ -71,17 +73,20 @@ function TabsList({
     const triggers = Array.from(root.querySelectorAll<HTMLElement>("[data-slot=\"tabs-trigger\"]"))
     const onEnter = (e: Event) => measureHover(e.currentTarget as HTMLElement)
     const onLeave = () => setHover((h) => ({ ...h, visible: false }))
+    const onDown = (e: Event) => { const el = e.currentTarget as HTMLElement; lockUntil.current = performance.now() + 200; lockTarget.current = el; measure(el) }
     triggers.forEach((t) => {
       t.addEventListener("mouseenter", onEnter)
+      t.addEventListener("pointerdown", onDown)
     })
     root.addEventListener("mouseleave", onLeave)
     return () => {
       triggers.forEach((t) => {
         t.removeEventListener("mouseenter", onEnter)
+        t.removeEventListener("pointerdown", onDown)
       })
       root.removeEventListener("mouseleave", onLeave)
     }
-  }, [measureHover])
+  }, [measureHover, measure])
 
   return (
     <TabsPrimitive.List
@@ -92,7 +97,7 @@ function TabsList({
         className
       )}
       {...props}
-    >
+>
       <span
         aria-hidden
         className={cn(
@@ -101,7 +106,9 @@ function TabsList({
         )}
         style={{ transform: `translateX(${hover.left}px)`, width: hover.width }}
       />
-      {props.children}
+      <GliderContext.Provider value={{ value: ctx?.value, onHover: (el) => measureHover(el), onActive: (el) => measure(el) }}>
+        {props.children}
+      </GliderContext.Provider>
       <span
         aria-hidden
         className={cn(
@@ -118,14 +125,19 @@ function TabsTrigger({
   className,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+  const ctx = React.useContext(GliderContext)
   return (
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
+      data-value={(props as any).value}
       className={cn(
         "inline-flex items-center justify-center gap-1.5 px-2 py-1 text-sm font-medium whitespace-nowrap border-b-2 border-transparent transition-colors cursor-pointer disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground",
         className
       )}
       {...props}
+      onPointerEnter={(e) => { ctx?.onHover?.(e.currentTarget as HTMLElement); (props as any).onPointerEnter?.(e) }}
+      onPointerDown={(e) => { ctx?.onActive?.(e.currentTarget as HTMLElement); (props as any).onPointerDown?.(e) }}
+      onFocus={(e) => { ctx?.onHover?.(e.currentTarget as HTMLElement); (props as any).onFocus?.(e) }}
     />
   )
 }
