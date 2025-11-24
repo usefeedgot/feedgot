@@ -70,7 +70,7 @@ export default function SettingsTabs({ slug }: Props) {
 function SectionRenderer({ slug, section, description }: { slug: string; section: string; description: string }) {
   switch (section) {
     case "branding":
-      return <BrandingSection />
+      return <BrandingSection slug={slug} />
     case "team":
       return <TeamSection />
     case "feedback":

@@ -1,0 +1,69 @@
+import { eq } from "drizzle-orm"
+import { j, privateProcedure, publicProcedure } from "../jstack"
+import { workspace, brandingConfig } from "@feedgot/db"
+import { checkSlugInputSchema } from "../validators/workspace"
+import { updateBrandingInputSchema } from "../validators/branding"
+
+export function createBrandingRouter() {
+  return j.router({
+    byWorkspaceSlug: publicProcedure
+      .input(checkSlugInputSchema)
+      .get(async ({ ctx, input, c }: any) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) return c.superjson({ config: null })
+
+        const [conf] = await ctx.db
+          .select({
+            id: brandingConfig.id,
+            logoUrl: brandingConfig.logoUrl,
+            faviconUrl: brandingConfig.faviconUrl,
+            primaryColor: brandingConfig.primaryColor,
+            accentColor: brandingConfig.accentColor,
+            theme: brandingConfig.theme,
+            showLogo: brandingConfig.showLogo,
+            showWorkspaceName: brandingConfig.showWorkspaceName,
+            hidePoweredBy: brandingConfig.hidePoweredBy,
+          })
+          .from(brandingConfig)
+          .where(eq(brandingConfig.workspaceId, ws.id))
+          .limit(1)
+
+        c.header("Cache-Control", "public, max-age=30, stale-while-revalidate=300")
+        return c.superjson({ config: conf || null })
+      }),
+
+    update: privateProcedure
+      .input(updateBrandingInputSchema)
+      .post(async ({ ctx, input, c }: any) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) return c.json({ ok: false })
+
+        const update: Record<string, any> = {}
+        if (typeof input.logoUrl !== "undefined") update.logoUrl = input.logoUrl
+        if (typeof input.faviconUrl !== "undefined") update.faviconUrl = input.faviconUrl
+        if (typeof input.primaryColor !== "undefined") update.primaryColor = input.primaryColor
+        if (typeof input.accentColor !== "undefined") update.accentColor = input.accentColor
+        if (typeof input.theme !== "undefined") update.theme = input.theme
+        if (typeof input.showLogo !== "undefined") update.showLogo = input.showLogo
+        if (typeof input.showWorkspaceName !== "undefined") update.showWorkspaceName = input.showWorkspaceName
+        if (typeof input.hidePoweredBy !== "undefined") update.hidePoweredBy = input.hidePoweredBy
+        update.updatedAt = new Date()
+
+        await ctx.db
+          .update(brandingConfig)
+          .set(update)
+          .where(eq(brandingConfig.workspaceId, ws.id))
+
+        return c.json({ ok: true })
+      }),
+  })
+}
+

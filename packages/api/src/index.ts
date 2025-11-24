@@ -3,6 +3,7 @@ import { j } from "./jstack"
 const routerImports = {
   workspace: () => import("./router/workspace").then((m) => m.createWorkspaceRouter()),
   board: () => import("./router/board").then((m) => m.createBoardRouter()),
+  branding: () => import("./router/branding").then((m) => m.createBrandingRouter()),
 }
 
 const api = j
@@ -14,6 +15,7 @@ const api = j
 const appRouter = j.mergeRouters(api, {
   workspace: routerImports.workspace,
   board: routerImports.board,
+  branding: routerImports.branding,
 })
 
 export type AppRouter = typeof appRouter
