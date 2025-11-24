@@ -24,7 +24,7 @@ export default async function WorkspacePage({ params }: Props) {
   const name = ws?.name || `${slug} Workspace`
   return (
     <section className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-4">
         <div className="bg-card rounded-md border p-4">
           <div className="text-sm text-accent">Open Requests</div>
           <div className="mt-2 text-3xl font-semibold">24</div>
@@ -37,6 +37,62 @@ export default async function WorkspacePage({ params }: Props) {
           <div className="text-sm text-accent">Active Review</div>
           <div className="mt-2 text-3xl font-semibold">7</div>
         </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Open Requests</div>
+          <div className="mt-2 text-3xl font-semibold">24</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Completed</div>
+          <div className="mt-2 text-3xl font-semibold">128</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Active Review</div>
+          <div className="mt-2 text-3xl font-semibold">7</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Open Requests</div>
+          <div className="mt-2 text-3xl font-semibold">24</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Completed</div>
+          <div className="mt-2 text-3xl font-semibold">128</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Active Review</div>
+          <div className="mt-2 text-3xl font-semibold">7</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Open Requests</div>
+          <div className="mt-2 text-3xl font-semibold">24</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Completed</div>
+          <div className="mt-2 text-3xl font-semibold">128</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Active Review</div>
+          <div className="mt-2 text-3xl font-semibold">7</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Open Requests</div>
+          <div className="mt-2 text-3xl font-semibold">24</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Completed</div>
+          <div className="mt-2 text-3xl font-semibold">128</div>
+        </div>
+        <div className="bg-card rounded-md border p-4">
+          <div className="text-sm text-accent">Active Review</div>
+          <div className="mt-2 text-3xl font-semibold">7</div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div className="xl:col-span-2 bg-card rounded-md border p-4 h-[300px] flex items-center justify-center text-accent">Graph placeholder</div>
+        <div className="bg-card rounded-md border p-4 h-[300px] flex items-center justify-center text-accent">Recent activity</div>
+      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div className="xl:col-span-2 bg-card rounded-md border p-4 h-[300px] flex items-center justify-center text-accent">Graph placeholder</div>
+        <div className="bg-card rounded-md border p-4 h-[300px] flex items-center justify-center text-accent">Recent activity</div>
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2 bg-card rounded-md border p-4 h-[300px] flex items-center justify-center text-accent">Graph placeholder</div>

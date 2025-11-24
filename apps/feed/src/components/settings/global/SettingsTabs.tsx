@@ -48,12 +48,12 @@ export default function SettingsTabs({ slug }: Props) {
   }
 
   return (
-    <section className="p-6 space-y-4">
+    <section className="p-3 space-y-4">
       <SettingsHeader title="Settings" description="View and manage your workspace settings." />
       <Tabs value={value} onValueChange={onValueChange} className="space-y-4">
         <TabsList className="w-full flex-wrap">
           {sections.map((s) => (
-            <TabsTrigger key={s.value} value={s.value}>{s.label}</TabsTrigger>
+            <TabsTrigger key={s.value} value={s.value} className="min-h-[36px] px-3 text-accent">{s.label}</TabsTrigger>
           ))}
         </TabsList>
 
