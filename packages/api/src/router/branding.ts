@@ -9,14 +9,7 @@ export function createBrandingRouter() {
     byWorkspaceSlug: publicProcedure
       .input(checkSlugInputSchema)
       .get(async ({ ctx, input, c }: any) => {
-        const [ws] = await ctx.db
-          .select({ id: workspace.id })
-          .from(workspace)
-          .where(eq(workspace.slug, input.slug))
-          .limit(1)
-        if (!ws) return c.superjson({ config: null })
-
-        const [conf] = await ctx.db
+        const [row] = await ctx.db
           .select({
             id: brandingConfig.id,
             logoUrl: brandingConfig.logoUrl,
@@ -28,12 +21,13 @@ export function createBrandingRouter() {
             showWorkspaceName: brandingConfig.showWorkspaceName,
             hidePoweredBy: brandingConfig.hidePoweredBy,
           })
-          .from(brandingConfig)
-          .where(eq(brandingConfig.workspaceId, ws.id))
+          .from(workspace)
+          .leftJoin(brandingConfig, eq(brandingConfig.workspaceId, workspace.id))
+          .where(eq(workspace.slug, input.slug))
           .limit(1)
 
         c.header("Cache-Control", "public, max-age=30, stale-while-revalidate=300")
-        return c.superjson({ config: conf || null })
+        return c.superjson({ config: row || null })
       }),
 
     update: privateProcedure
@@ -57,13 +51,24 @@ export function createBrandingRouter() {
         if (typeof input.hidePoweredBy !== "undefined") update.hidePoweredBy = input.hidePoweredBy
         update.updatedAt = new Date()
 
-        await ctx.db
-          .update(brandingConfig)
-          .set(update)
+        const [existing] = await ctx.db
+          .select({ id: brandingConfig.id })
+          .from(brandingConfig)
           .where(eq(brandingConfig.workspaceId, ws.id))
+          .limit(1)
+
+        if (existing) {
+          await ctx.db
+            .update(brandingConfig)
+            .set(update)
+            .where(eq(brandingConfig.workspaceId, ws.id))
+        } else {
+          await ctx.db
+            .insert(brandingConfig)
+            .values({ workspaceId: ws.id, ...update })
+        }
 
         return c.json({ ok: true })
       }),
   })
 }
-

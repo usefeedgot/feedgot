@@ -6,16 +6,19 @@ import {
   integer,
   json,
   uuid,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { workspace } from "./workspace";
 import { user } from "./auth";
 
 // Extended branding configuration
-export const brandingConfig = pgTable("branding_config", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  workspaceId: uuid("workspace_id")
-    .notNull()
-    .references(() => workspace.id, { onDelete: "cascade" }),
+export const brandingConfig = pgTable(
+  "branding_config",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    workspaceId: uuid("workspace_id")
+      .notNull()
+      .references(() => workspace.id, { onDelete: "cascade" }),
 
   // Logo configurations
   logoUrl: text("logo_url"),
@@ -73,9 +76,15 @@ export const brandingConfig = pgTable("branding_config", {
     socialLinks?: { platform: string; url: string }[];
   }>(),
 
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
-});
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    brandingWorkspaceUnique: uniqueIndex("branding_workspace_unique").on(
+      table.workspaceId,
+    ),
+  } as const)
+);
 
 // Predefined color palettes
 export const colorPalette = pgTable("color_palette", {

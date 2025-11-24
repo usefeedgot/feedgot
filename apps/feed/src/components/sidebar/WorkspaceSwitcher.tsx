@@ -69,6 +69,7 @@ export default function WorkspaceSwitcher({
   const handleSelectWorkspace = React.useCallback(
     (targetSlug: string) => {
       setOpen(false);
+      try { router.prefetch(`/workspaces/${targetSlug}`) } catch {}
       router.push(`/workspaces/${targetSlug}`);
     },
     [router]
