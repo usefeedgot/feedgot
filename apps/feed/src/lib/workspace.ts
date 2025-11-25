@@ -1,5 +1,5 @@
-import { db, workspace, workspaceMember, brandingConfig } from "@feedgot/db"
-import { eq } from "drizzle-orm"
+import { db, workspace, workspaceMember, brandingConfig, board, post, postTag, tag } from "@feedgot/db"
+import { eq, and, inArray, desc, asc } from "drizzle-orm"
 
 export async function findFirstAccessibleWorkspaceSlug(userId: string): Promise<string | null> {
   const [owned] = await db
@@ -32,4 +32,84 @@ export async function getBrandingColorsBySlug(slug: string): Promise<{ primary: 
   if (row?.primaryColor) primary = row.primaryColor
   if (row?.accentColor) accent = row.accentColor
   return { primary, accent }
+}
+
+export function parseArrayParam(v: any): string[] {
+  try {
+    if (!v) return []
+    const s = Array.isArray(v) ? v[0] : v
+    const arr = typeof s === "string" ? JSON.parse(s) : []
+    return Array.isArray(arr) ? arr : []
+  } catch {
+    return []
+  }
+}
+
+export function normalizeStatus(s: string): string {
+  const t = (s || "").trim().toLowerCase()
+  if (t === "pending") return "pending"
+  if (t === "review" || t === "under-review" || t === "underreview") return "under-review"
+  if (t === "planned") return "planned"
+  if (t === "progress" || t === "inprogress" || t === "in-progress") return "in-progress"
+  if (t === "complete" || t === "completed") return "completed"
+  if (t === "closed" || t === "close") return "closed"
+  return t
+}
+
+export async function getWorkspaceBySlug(slug: string): Promise<{ id: string; name: string; slug: string } | null> {
+  const [ws] = await db
+    .select({ id: workspace.id, name: workspace.name, slug: workspace.slug })
+    .from(workspace)
+    .where(eq(workspace.slug, slug))
+    .limit(1)
+  return ws || null
+}
+
+export async function getWorkspacePosts(slug: string, opts?: { statuses?: string[]; boardSlugs?: string[]; tagSlugs?: string[]; order?: "newest" | "oldest" }) {
+  const ws = await getWorkspaceBySlug(slug)
+  if (!ws) return []
+
+  const statuses = (opts?.statuses || []).map(normalizeStatus).filter(Boolean)
+  const boardSlugs = (opts?.boardSlugs || []).map((s) => s.trim().toLowerCase()).filter(Boolean)
+  const tagSlugs = (opts?.tagSlugs || []).map((s) => s.trim().toLowerCase()).filter(Boolean)
+  const order = opts?.order === "oldest" ? asc(post.createdAt) : desc(post.createdAt)
+
+  let tagPostIds: string[] | null = null
+  if (tagSlugs.length > 0) {
+    const rows = await db
+      .select({ postId: postTag.postId })
+      .from(postTag)
+      .innerJoin(tag, eq(postTag.tagId, tag.id))
+      .innerJoin(post, eq(postTag.postId, post.id))
+      .innerJoin(board, eq(post.boardId, board.id))
+      .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false), inArray(tag.slug, tagSlugs)))
+    tagPostIds = Array.from(new Set(rows.map((r) => r.postId)))
+  }
+
+  const filters: any[] = [eq(board.workspaceId, ws.id), eq(board.isSystem, false)]
+  if (statuses.length > 0) filters.push(inArray(post.roadmapStatus, statuses))
+  if (boardSlugs.length > 0) filters.push(inArray(board.slug, boardSlugs))
+  if (tagPostIds && tagPostIds.length > 0) filters.push(inArray(post.id, tagPostIds))
+
+  const rows = await db
+    .select({
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      content: post.content,
+      image: post.image,
+      commentCount: post.commentCount,
+      upvotes: post.upvotes,
+      roadmapStatus: post.roadmapStatus,
+      publishedAt: post.publishedAt,
+      createdAt: post.createdAt,
+      boardSlug: board.slug,
+      boardName: board.name,
+    })
+    .from(post)
+    .innerJoin(board, eq(post.boardId, board.id))
+    .where(and(...filters) as any)
+    .orderBy(order)
+
+  return rows
 }

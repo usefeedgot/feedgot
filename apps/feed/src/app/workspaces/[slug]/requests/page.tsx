@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { getServerSession } from "@feedgot/auth/session"
-import { db, workspace, board, post, postTag, tag } from "@feedgot/db"
-import { eq, and, inArray, desc, asc, sql } from "drizzle-orm"
+import { notFound } from "next/navigation"
+import { getWorkspaceBySlug, getWorkspacePosts, parseArrayParam, normalizeStatus } from "@/lib/workspace"
 import { createPageMetadata } from "@/lib/seo"
 
 export const dynamic = "force-dynamic"
@@ -26,27 +26,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
 }
 
-function parseArrayParam(v: any): string[] {
-  try {
-    if (!v) return []
-    const s = Array.isArray(v) ? v[0] : v
-    const arr = typeof s === "string" ? JSON.parse(s) : []
-    return Array.isArray(arr) ? arr : []
-  } catch {
-    return []
-  }
-}
-
-function normalizeStatus(s: string): string {
-  const t = (s || "").trim().toLowerCase()
-  if (t === "pending") return "pending"
-  if (t === "review" || t === "under-review" || t === "underreview") return "under-review"
-  if (t === "planned") return "planned"
-  if (t === "progress" || t === "inprogress" || t === "in-progress") return "in-progress"
-  if (t === "complete" || t === "completed") return "completed"
-  if (t === "closed" || t === "close") return "closed"
-  return t
-}
 
 export default async function RequestsPage({ params, searchParams }: Props) {
   const { slug } = await params
@@ -61,18 +40,8 @@ export default async function RequestsPage({ params, searchParams }: Props) {
     await getServerSession()
   } catch {}
 
-  const [ws] = await db
-    .select({ id: workspace.id })
-    .from(workspace)
-    .where(eq(workspace.slug, slug))
-    .limit(1)
-  if (!ws) {
-    return (
-      <section className="space-y-4">
-        <div className="text-accent">Workspace not found</div>
-      </section>
-    )
-  }
+  const ws = await getWorkspaceBySlug(slug)
+  if (!ws) return notFound()
 
   const statusRaw = parseArrayParam((sp as any).status)
   const boardRaw = parseArrayParam((sp as any).board)
@@ -82,59 +51,14 @@ export default async function RequestsPage({ params, searchParams }: Props) {
   const statusFilter = statusRaw.map(normalizeStatus)
   if (statusFilter.length === 0) statusFilter.push("pending", "under-review", "planned", "in-progress")
 
-  let tagPostIds: string[] | null = null
-  if (tagRaw.length > 0) {
-    const tagSlugs = tagRaw.map((t: string) => t.trim().toLowerCase()).filter(Boolean)
-    if (tagSlugs.length > 0) {
-      const rows = await db
-        .select({ postId: postTag.postId })
-        .from(postTag)
-        .innerJoin(tag, eq(postTag.tagId, tag.id))
-        .innerJoin(post, eq(postTag.postId, post.id))
-        .innerJoin(board, eq(post.boardId, board.id))
-        .where(
-          and(
-            eq(board.workspaceId, ws.id),
-            sql`(board.system_type is null or board.system_type not in ('roadmap','changelog'))`,
-            inArray(tag.slug, tagSlugs)
-          ) as any
-        )
-      tagPostIds = Array.from(new Set(rows.map((r) => r.postId)))
-    }
-  }
-
-  const filters: any[] = [
-    eq(board.workspaceId, ws.id),
-    sql`(board.system_type is null or board.system_type not in ('roadmap','changelog'))`,
-    inArray(post.roadmapStatus, statusFilter),
-  ]
-  if (boardRaw.length > 0) {
-    const boardSlugs = boardRaw.map((b: string) => b.trim().toLowerCase()).filter(Boolean)
-    if (boardSlugs.length > 0) filters.push(inArray(board.slug, boardSlugs))
-  }
-  if (tagPostIds && tagPostIds.length > 0) filters.push(inArray(post.id, tagPostIds))
-
-  const orderBy = order === "oldest" ? asc(post.createdAt) : desc(post.createdAt)
-
-  const rows = await db
-    .select({
-      id: post.id,
-      title: post.title,
-      slug: post.slug,
-      content: post.content,
-      image: post.image,
-      commentCount: post.commentCount,
-      upvotes: post.upvotes,
-      roadmapStatus: post.roadmapStatus,
-      publishedAt: post.publishedAt,
-      createdAt: post.createdAt,
-      boardSlug: board.slug,
-      boardName: board.name,
-    })
-    .from(post)
-    .innerJoin(board, eq(post.boardId, board.id))
-    .where(and(...filters) as any)
-    .orderBy(orderBy)
+  const boardSlugs = boardRaw.map((b: string) => b.trim().toLowerCase()).filter(Boolean)
+  const tagSlugs = tagRaw.map((t: string) => t.trim().toLowerCase()).filter(Boolean)
+  const rows = await getWorkspacePosts(slug, {
+    statuses: statusFilter,
+    boardSlugs,
+    tagSlugs,
+    order: order === "oldest" ? "oldest" : "newest",
+  })
 
   return (
     <section className="space-y-4">
