@@ -22,21 +22,18 @@ export default function SettingsTabs({ slug }: Props) {
   const router = useRouter()
   const routeParams = useParams()
   const paramSection = typeof routeParams?.section === "string" ? routeParams.section : undefined
-  const [selected, setSelected] = React.useState<string | undefined>(paramSection || sections[0]?.value)
+  const selected = paramSection || sections[0]?.value
 
-  const onValueChange = (v: string) => {
-    setSelected(v)
+  const onValueChange = React.useCallback((v: string) => {
     const url = `/workspaces/${slug}/settings/${encodeURIComponent(v)}`
     router.replace(url)
-  }
+  }, [router, slug])
 
   React.useEffect(() => {
-    const v = paramSection || sections[0]?.value
-    if (v && v !== selected) setSelected(v)
-    if (!paramSection && v) {
-      router.replace(`/workspaces/${slug}/settings/${encodeURIComponent(v)}`)
+    if (!paramSection && selected) {
+      router.replace(`/workspaces/${slug}/settings/${encodeURIComponent(selected)}`)
     }
-  }, [paramSection, selected, slug])
+  }, [paramSection, selected, slug, router])
 
   React.useEffect(() => {
     sections.forEach((s) => {

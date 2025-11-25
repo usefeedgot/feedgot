@@ -4,6 +4,7 @@ import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@feedgot/ui/lib/utils";
+import { useIsMobile } from "@feedgot/ui/hooks/use-mobile";
 const GliderContext = React.createContext<{
   value?: string;
   onHover?: (el: HTMLElement) => void;
@@ -32,6 +33,7 @@ function TabsList({
 }: React.ComponentProps<typeof TabsPrimitive.List>) {
   const listRef = React.useRef<HTMLDivElement | null>(null);
   const ctx = React.useContext(GliderContext);
+  const isMobile = useIsMobile();
   const [indicator, setIndicator] = React.useState<{
     x: number;
     width: number;
@@ -43,9 +45,9 @@ function TabsList({
     visible: boolean;
   }>({ x: 0, width: 0, visible: false });
 
-  const measure = React.useCallback((el: HTMLElement | null) => {
+  const computeMetrics = React.useCallback((el: HTMLElement | null) => {
     const root = listRef.current;
-    if (!el || !root) return;
+    if (!el || !root) return null;
     const navRect = root.getBoundingClientRect();
     const rect = el.getBoundingClientRect();
     const styles = getComputedStyle(el);
@@ -53,29 +55,28 @@ function TabsList({
     const padR = parseFloat(styles.paddingRight || "0") || 0;
     const x = rect.left - navRect.left - padL / 2;
     const width = rect.width + (padL + padR) / 2;
-    requestAnimationFrame(() => {
-      setIndicator({ x, width, visible: true });
-    });
+    return { x, width };
   }, []);
 
+  const measure = React.useCallback((el: HTMLElement | null) => {
+    const m = computeMetrics(el);
+    if (!m) return;
+    requestAnimationFrame(() => {
+      setIndicator({ x: m.x, width: m.width, visible: true });
+    });
+  }, [computeMetrics]);
+
   const measureHover = React.useCallback((el: HTMLElement | null) => {
-    const root = listRef.current;
-    if (!root) return;
     if (!el) {
       requestAnimationFrame(() =>
         setHover((prev) => ({ x: prev.x, width: prev.width, visible: false }))
       );
       return;
     }
-    const navRect = root.getBoundingClientRect();
-    const rect = el.getBoundingClientRect();
-    const styles = getComputedStyle(el);
-    const padL = parseFloat(styles.paddingLeft || "0") || 0;
-    const padR = parseFloat(styles.paddingRight || "0") || 0;
-    const x = rect.left - navRect.left - padL / 2;
-    const width = rect.width + (padL + padR) / 2;
-    requestAnimationFrame(() => setHover({ x, width, visible: true }));
-  }, []);
+    const m = computeMetrics(el);
+    if (!m) return;
+    requestAnimationFrame(() => setHover({ x: m.x, width: m.width, visible: true }));
+  }, [computeMetrics]);
 
   React.useLayoutEffect(() => {
     const root = listRef.current;
@@ -85,15 +86,15 @@ function TabsList({
     const el = root.querySelector<HTMLElement>(
       `[data-slot="tabs-trigger"][data-value="${v}"]`
     );
-    measure(el);
+    if (!isMobile) measure(el);
     if (el && "scrollIntoView" in el) {
       (el as HTMLElement).scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
     }
-  }, [ctx?.value, measure]);
+  }, [ctx?.value, measure, isMobile]);
 
   return (
     <TabsPrimitive.List
-      ref={listRef as any}
+      ref={listRef}
       data-slot="tabs-list"
       className={cn(
         "relative flex w-full items-center gap-2 pb-1 flex-nowrap overflow-x-auto snap-x snap-mandatory scroll-smooth [-webkit-overflow-scrolling:touch] whitespace-nowrap md:flex-wrap md:overflow-visible",
@@ -108,23 +109,25 @@ function TabsList({
       />
       <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent z-10" />
       <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent z-10" />
-      <AnimatePresence>
-        {hover.visible && (
-          <motion.div
-            key="hover"
-            className={cn("pointer-events-none absolute top-0 bottom-1 left-0 rounded-md bg-accent/10 z-0 hidden md:block")}
-            initial={{ opacity: 0, x: hover.x, width: hover.width }}
-            animate={{ opacity: 1, x: hover.x, width: hover.width }}
-            exit={{ opacity: 0, x: hover.x, width: hover.width }}
-            transition={{ type: "tween", ease: "easeOut", duration: 0.15 }}
-          />
-        )}
-      </AnimatePresence>
+      {!isMobile && (
+        <AnimatePresence>
+          {hover.visible && (
+            <motion.div
+              key="hover"
+              className={cn("pointer-events-none absolute top-0 bottom-1 left-0 rounded-md bg-accent/10 z-0")}
+              initial={{ opacity: 0, x: hover.x, width: hover.width }}
+              animate={{ opacity: 1, x: hover.x, width: hover.width }}
+              exit={{ opacity: 0, x: hover.x, width: hover.width }}
+              transition={{ type: "tween", ease: "easeOut", duration: 0.15 }}
+            />
+          )}
+        </AnimatePresence>
+      )}
       <GliderContext.Provider
         value={{
           value: ctx?.value,
-          onHover: (el) => measureHover(el),
-          onActive: (el) => {
+          onHover: isMobile ? undefined : (el) => measureHover(el),
+          onActive: isMobile ? undefined : (el) => {
             measure(el);
             measureHover(null);
           },
@@ -132,21 +135,23 @@ function TabsList({
       >
         {props.children}
       </GliderContext.Provider>
-      <AnimatePresence>
-        {indicator.visible && (
-          <motion.div
-            key="selected"
-            aria-hidden
-            className={cn(
-              "pointer-events-none absolute bottom-0 left-0 h-[2px] rounded-full bg-primary z-10 hidden md:block"
-            )}
-            initial={false}
-            animate={{ x: indicator.x, width: indicator.width, opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ type: "tween", ease: "easeOut", duration: 0.2 }}
-          />
-        )}
-      </AnimatePresence>
+      {!isMobile && (
+        <AnimatePresence>
+          {indicator.visible && (
+            <motion.div
+              key="selected"
+              aria-hidden
+              className={cn(
+                "pointer-events-none absolute bottom-0 left-0 h-[2px] rounded-full bg-primary z-10"
+              )}
+              initial={false}
+              animate={{ x: indicator.x, width: indicator.width, opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ type: "tween", ease: "easeOut", duration: 0.2 }}
+            />
+          )}
+        </AnimatePresence>
+      )}
     </TabsPrimitive.List>
   )
 }
