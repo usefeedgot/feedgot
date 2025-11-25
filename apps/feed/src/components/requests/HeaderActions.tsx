@@ -10,7 +10,7 @@ import SortAction from "./actions/SortAction"
 export default function HeaderActions({ className = "" }: { className?: string }) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <button type="button" className="rounded-md border bg-card px-2 py-1" aria-label="Search">
+      <button type="button" className="rounded-md border bg-card px-2 py-1 cursor-pointer" aria-label="Search">
         <SearchIcon className="w-4 h-4" size={16} />
       </button>
       <BoardsAction />

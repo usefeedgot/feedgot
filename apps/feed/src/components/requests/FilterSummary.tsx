@@ -25,7 +25,7 @@ export default function FilterSummary({ className = "" }: { className?: string }
   }
 
   return (
-    <button type="button" onClick={clearAll} className={cn("relative group rounded-md bg-muted px-2 py-0.5 text-xs text-foreground", className)} aria-label="Clear filters">
+    <button type="button" onClick={clearAll} className={cn("relative group rounded-md bg-muted px-2 py-0.5 text-xs text-foreground cursor-pointer", className)} aria-label="Clear filters">
       <span className="pointer-events-none">{count} filters</span>
       <XMarkIcon className="absolute -top-1 -right-1 size-3 opacity-0 group-hover:opacity-100 transition-opacity bg-card text-black rounded-sm p-0.5" />
     </button>
