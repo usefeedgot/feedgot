@@ -1,4 +1,5 @@
 import { getWorkspaceBySlug, getWorkspacePosts } from "@/lib/workspace";
+import RequestList from "@/components/requests/RequestList";
 import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic";
 
@@ -17,37 +18,7 @@ export default async function WorkspacePage({ params }: Props) {
         <div className="text-xl font-semibold">{ws.name}</div>
         <div className="text-sm text-accent">{rows.length} items</div>
       </div>
-      <ul className="space-y-2">
-        {rows.map((p) => (
-          <li key={p.id} className="rounded-md border bg-card p-3">
-            <div className="flex items-start gap-3">
-              {p.image ? (
-                <img
-                  src={p.image}
-                  alt=""
-                  className="w-16 h-16 rounded-md object-cover border"
-                />
-              ) : null}
-              <div className="flex-1">
-                <div className="text-sm font-medium">{p.title}</div>
-                <div className="text-xs text-accent mt-0.5">{p.boardName}</div>
-                <div className="mt-2 flex items-center gap-3 text-xs text-accent">
-                  <span className="rounded-md bg-muted px-2 py-0.5">
-                    {p.roadmapStatus || "pending"}
-                  </span>
-                  <span>↑ {p.upvotes}</span>
-                  <span>💬 {p.commentCount}</span>
-                  <span>
-                    {new Date(
-                      p.publishedAt ?? p.createdAt
-                    ).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <RequestList items={rows as any} workspaceSlug={slug} />
     </section>
   );
 }
