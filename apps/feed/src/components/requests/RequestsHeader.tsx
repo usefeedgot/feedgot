@@ -3,8 +3,7 @@
 import { useMemo } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@feedgot/ui/lib/utils"
-import { Search, Tags, ArrowUpDown, ListFilter } from "lucide-react"
-import { BoardIcon } from "@feedgot/ui/icons/board"
+import HeaderActions from "./HeaderActions"
 
 function toLabel(s: string) {
   const t = s.toLowerCase()
@@ -17,7 +16,7 @@ function toLabel(s: string) {
   return s
 }
 
-export default function RequestsHeader({ slug, selectedStatuses, order, className = "" }: { slug: string; selectedStatuses: string[]; order: string; className?: string }) {
+export default function RequestsHeader({ selectedStatuses, className = "" }: { selectedStatuses: string[]; className?: string }) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -44,24 +43,7 @@ export default function RequestsHeader({ slug, selectedStatuses, order, classNam
           </div>
         ) : null}
       </div>
-      <div className="flex items-center gap-2">
-        <button type="button" className="rounded-md border bg-card px-2 py-1" aria-label="Search">
-          <Search className="w-4 h-4" />
-        </button>
-        <button type="button" className="rounded-md border bg-card px-2 py-1" aria-label="Boards">
-          <BoardIcon className="w-4 h-4" />
-        </button>
-        <button type="button" className="rounded-md border bg-card px-2 py-1" aria-label="Requests">
-          <ListFilter className="w-4 h-4" />
-        </button>
-        <button type="button" className="rounded-md border bg-card px-2 py-1" aria-label="Tags">
-          <Tags className="w-4 h-4" />
-        </button>
-        <button type="button" className="rounded-md border bg-card px-2 py-1" aria-label="Sort">
-          <ArrowUpDown className="w-4 h-4" />
-        </button>
-      </div>
+      <HeaderActions />
     </div>
   )
 }
-

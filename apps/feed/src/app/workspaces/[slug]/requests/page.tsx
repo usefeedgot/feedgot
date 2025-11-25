@@ -64,7 +64,7 @@ export default async function RequestsPage({ params, searchParams }: Props) {
 
   return (
     <section className="space-y-4">
-      <RequestsHeader slug={slug} selectedStatuses={statusRaw} order={order} />
+      <RequestsHeader selectedStatuses={statusRaw} />
       <div className="text-sm text-accent">{rows.length} items</div>
       <RequestList items={rows as any} workspaceSlug={slug} />
     </section>

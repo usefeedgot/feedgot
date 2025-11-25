@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { db, workspace, board, post } from "@feedgot/db"
 import { eq, and, sql } from "drizzle-orm"
 import StatusIcon from "@/components/requests/StatusIcon"
+import HeaderActions from "@/components/requests/HeaderActions"
 
 export const dynamic = "force-dynamic"
 
@@ -38,9 +39,12 @@ export default async function RequestDetailPage({ params }: Props) {
 
   return (
     <section className="space-y-4">
-      <div className="flex items-center gap-2">
-        <StatusIcon status={p.roadmapStatus || undefined} className="w-[20px] h-[20px] text-foreground/80" />
-        <h1 className="text-xl font-semibold">{p.title}</h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <StatusIcon status={p.roadmapStatus || undefined} className="w-[20px] h-[20px] text-foreground/80" />
+          <h1 className="text-xl font-semibold">{p.title}</h1>
+        </div>
+        <HeaderActions />
       </div>
       {p.image ? <img src={p.image} alt="" className="w-full max-w-xl rounded-md object-cover border" /> : null}
       <div className="text-sm text-accent">{p.boardName}</div>
@@ -54,4 +58,3 @@ export default async function RequestDetailPage({ params }: Props) {
     </section>
   )
 }
-

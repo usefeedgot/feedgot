@@ -1,5 +1,6 @@
 import { getWorkspaceBySlug, getWorkspacePosts } from "@/lib/workspace";
 import RequestList from "@/components/requests/RequestList";
+import HeaderActions from "@/components/requests/HeaderActions";
 import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic";
 
@@ -16,8 +17,9 @@ export default async function WorkspacePage({ params }: Props) {
     <section className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="text-xl font-semibold">{ws.name}</div>
-        <div className="text-sm text-accent">{rows.length} items</div>
+        <HeaderActions />
       </div>
+      <div className="text-sm text-accent">{rows.length} items</div>
       <RequestList items={rows as any} workspaceSlug={slug} />
     </section>
   );
