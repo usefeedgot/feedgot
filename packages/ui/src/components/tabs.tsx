@@ -48,8 +48,11 @@ function TabsList({
     if (!el || !root) return;
     const navRect = root.getBoundingClientRect();
     const rect = el.getBoundingClientRect();
-    const x = rect.left - navRect.left;
-    const width = rect.width;
+    const styles = getComputedStyle(el);
+    const padL = parseFloat(styles.paddingLeft || "0") || 0;
+    const padR = parseFloat(styles.paddingRight || "0") || 0;
+    const x = rect.left - navRect.left - padL / 2;
+    const width = rect.width + (padL + padR) / 2;
     requestAnimationFrame(() => {
       setIndicator({ x, width, visible: true });
     });
@@ -66,8 +69,11 @@ function TabsList({
     }
     const navRect = root.getBoundingClientRect();
     const rect = el.getBoundingClientRect();
-    const x = rect.left - navRect.left;
-    const width = rect.width;
+    const styles = getComputedStyle(el);
+    const padL = parseFloat(styles.paddingLeft || "0") || 0;
+    const padR = parseFloat(styles.paddingRight || "0") || 0;
+    const x = rect.left - navRect.left - padL / 2;
+    const width = rect.width + (padL + padR) / 2;
     requestAnimationFrame(() => setHover({ x, width, visible: true }));
   }, []);
 
@@ -86,15 +92,14 @@ function TabsList({
     <TabsPrimitive.List
       ref={listRef as any}
       data-slot="tabs-list"
-      className={cn(
-        "relative flex w-full items-center gap-2 border-b pb-1",
-        className
-      )}
-      onPointerLeave={() =>
-        setHover((prev) => ({ x: prev.x, width: prev.width, visible: false }))
-      }
+      className={cn("relative flex w-full items-center gap-2 pb-1", className)}
+      onPointerLeave={() => setHover((prev) => ({ x: prev.x, width: prev.width, visible: false }))}
       {...props}
     >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-border z-0"
+      />
       <AnimatePresence>
         {hover.visible && (
           <motion.div
@@ -119,18 +124,23 @@ function TabsList({
       >
         {props.children}
       </GliderContext.Provider>
-      <motion.div
-        aria-hidden
-        className={cn(
-          "pointer-events-none absolute bottom-0 left-0 h-[2px] rounded-full bg-primary z-0",
-          indicator.visible ? "opacity-100" : "opacity-0"
+      <AnimatePresence>
+        {indicator.visible && (
+          <motion.div
+            key="selected"
+            aria-hidden
+            className={cn(
+              "pointer-events-none absolute bottom-0 left-0 h-[2px] rounded-full bg-primary z-10"
+            )}
+            initial={false}
+            animate={{ x: indicator.x, width: indicator.width, opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "tween", ease: "easeOut", duration: 0.2 }}
+          />
         )}
-        initial={false}
-        animate={{ x: indicator.x, width: indicator.width, opacity: indicator.visible ? 1 : 0 }}
-        transition={{ type: "tween", ease: "easeOut", duration: 0.2 }}
-      />
+      </AnimatePresence>
     </TabsPrimitive.List>
-  );
+  )
 }
 
 function TabsTrigger({
