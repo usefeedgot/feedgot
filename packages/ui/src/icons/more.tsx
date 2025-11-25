@@ -1,29 +1,24 @@
-import React from "react";
+import React from 'react'
 
-interface MoreIconProps {
-  className?: string;
-  size?: number;
-}
-
-export const MoreIcon: React.FC<MoreIconProps> = ({ className = "", size = 18 }) => {
+export function MoreIcon(props: React.SVGProps<SVGSVGElement>) {
+  const { width = 18, height = 18, ...rest } = props
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      className={className}
-      opacity={0.7}
+      width={width}
+      height={height}
+      viewBox="0 0 18 18"
+      opacity={0.4}
+      {...rest}
     >
       <title>more</title>
       <g fill="currentColor">
-        <circle cx="5" cy="12" r="2" />
-        <circle cx="12" cy="12" r="2" />
-        <circle cx="19" cy="12" r="2" />
+        <rect x="2" y="3" width="14" height="2" rx="1" />
+        <rect x="2" y="6.5" width="12" height="2" rx="1" />
+        <rect x="2" y="10" width="10" height="2" rx="1" />
       </g>
     </svg>
-  );
-};
+  )
+}
 
-export default MoreIcon;
-
+export default MoreIcon

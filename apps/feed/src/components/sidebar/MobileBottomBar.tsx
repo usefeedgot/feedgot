@@ -18,7 +18,7 @@ export default function MobileBottomBar({ items }: { items: NavItem[] }) {
               key={item.label}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center gap-1 px-3 py-2 text-xs text-accent hover:text-foreground hover:bg-muted"
+                "flex flex-col items-center justify-center gap-1 px-3 py-2 text-[10px] sm:text-xs text-accent hover:text-foreground hover:bg-muted"
               )}
             >
               <Icon className="w-[18px] h-[18px] text-foreground/80" />
@@ -27,7 +27,7 @@ export default function MobileBottomBar({ items }: { items: NavItem[] }) {
           );
         })}
         <DrawerTrigger asChild>
-          <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 text-xs text-accent hover:text-foreground hover:bg-muted">
+          <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 text-[10px] sm:text-xs text-accent hover:text-foreground hover:bg-muted">
             <MoreIcon className="w-[18px] h-[18px] text-foreground/80" />
             <span>More</span>
           </button>

@@ -19,7 +19,7 @@ export default function SidebarItem({
   const Icon = item.icon;
   const active = !item.external && (pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href)));
   const classes = cn(
-    "group flex items-center gap-2 rounded-md px-3 py-2 text-sm",
+    "group flex items-center gap-2 rounded-md px-3 py-2 text-xs md:text-sm",
     active ? "bg-card text-foreground" : "text-accent hover:bg-muted",
     className
   );
