@@ -41,11 +41,6 @@ export default async function ChangelogPage({ params }: Props) {
 
   return (
     <section className="space-y-4">
-      <div className="flex items-center gap-2">
-        <h1 className="text-xl font-semibold">Changelog</h1>
-        <span className="text-accent text-sm">/ {slug}</span>
-      </div>
-
       <div className="space-y-4">
         {entries.map((e) => (
           <article key={`${e.date}-${e.title}`} className="rounded-lg border bg-card p-4">
@@ -67,4 +62,3 @@ export default async function ChangelogPage({ params }: Props) {
     </section>
   )
 }
-

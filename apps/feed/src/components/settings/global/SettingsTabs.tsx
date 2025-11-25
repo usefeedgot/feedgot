@@ -3,7 +3,6 @@
 import React from "react"
 import { useRouter, useParams } from "next/navigation"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@feedgot/ui/components/tabs"
-import SettingsHeader from "./Header"
 import BrandingSection from "../branding/Branding"
 import TeamSection from "../billing/Team"
 import FeedbackSection from "../feedback/Feedback"
@@ -44,11 +43,10 @@ export default function SettingsTabs({ slug }: Props) {
 
   return (
     <section className="p-3 space-y-4">
-      <SettingsHeader title="Settings" description="View and manage your workspace settings." />
       <Tabs value={value} onValueChange={onValueChange} className="space-y-4">
         <TabsList className="w-full flex-wrap">
-          {sections.map((s) => (
-            <TabsTrigger key={s.value} value={s.value} className="min-h-[36px] px-3 text-accent">{s.label}</TabsTrigger>
+          {sections.map((item) => (
+            <TabsTrigger key={item.value} value={item.value} className="min-h-[36px] px-3 text-accent">{item.label}</TabsTrigger>
           ))}
         </TabsList>
 

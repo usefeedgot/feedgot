@@ -3,6 +3,7 @@ import BrandVarsEffect from "@/components/global/BrandVarsEffect"
 import Sidebar from "@/components/sidebar/Sidebar"
 import MobileSidebar from "@/components/sidebar/MobileSidebar"
 import { getBrandingColorsBySlug } from "@/lib/workspace"
+import WorkspaceBreadcrumbs from "@/components/global/WorkspaceBreadcrumbs"
 
 export const dynamic = "force-dynamic"
 
@@ -14,7 +15,10 @@ export default async function WorkspaceLayout({ children, params }: { children: 
       <style>{`:root{--primary:${p};--ring:${p};--sidebar-primary:${p};}`}</style>
       <BrandVarsEffect primary={p} />
       <Sidebar />
-      <main className="mt-4 flex-1 pb-20 md:pb-0">{children}</main>
+      <main className="mt-4 flex-1 pb-20 md:pb-0">
+        <WorkspaceBreadcrumbs />
+        {children}
+      </main>
       <MobileSidebar />
     </Container>
   )

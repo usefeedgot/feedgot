@@ -44,11 +44,6 @@ export default async function RoadmapPage({ params }: Props) {
 
   return (
     <section className="space-y-4">
-      <div className="flex items-center gap-2">
-        <h1 className="text-xl font-semibold">Roadmap</h1>
-        <span className="text-accent text-sm">/ {slug}</span>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {columns.map((col) => (
           <div key={col.status} className="rounded-lg border bg-card">
@@ -70,4 +65,3 @@ export default async function RoadmapPage({ params }: Props) {
     </section>
   )
 }
-
