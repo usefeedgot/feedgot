@@ -22,18 +22,21 @@ export default function SettingsTabs({ slug }: Props) {
   const router = useRouter()
   const routeParams = useParams()
   const paramSection = typeof routeParams?.section === "string" ? routeParams.section : undefined
-  const value = paramSection || sections[0]?.value
+  const [selected, setSelected] = React.useState<string | undefined>(paramSection || sections[0]?.value)
 
   const onValueChange = (v: string) => {
+    setSelected(v)
     const url = `/workspaces/${slug}/settings/${encodeURIComponent(v)}`
     router.replace(url)
   }
 
   React.useEffect(() => {
-    if (!paramSection && value) {
-      router.replace(`/workspaces/${slug}/settings/${encodeURIComponent(value)}`)
+    const v = paramSection || sections[0]?.value
+    if (v && v !== selected) setSelected(v)
+    if (!paramSection && v) {
+      router.replace(`/workspaces/${slug}/settings/${encodeURIComponent(v)}`)
     }
-  }, [paramSection, value])
+  }, [paramSection, selected, slug])
 
   React.useEffect(() => {
     sections.forEach((s) => {
@@ -43,7 +46,7 @@ export default function SettingsTabs({ slug }: Props) {
 
   return (
     <section className="p-3 space-y-4">
-      <Tabs value={value} onValueChange={onValueChange} className="space-y-4">
+      <Tabs value={selected} onValueChange={onValueChange} className="space-y-4">
         <TabsList className="w-full flex-wrap">
           {sections.map((item) => (
             <TabsTrigger key={item.value} value={item.value} className="min-h-[36px] px-3 text-accent">{item.label}</TabsTrigger>
