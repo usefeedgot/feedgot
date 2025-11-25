@@ -125,7 +125,7 @@ export const ScheduleIllustation = ({
           }
         )}
       >
-        <Button size="sm" className="rounded-sm">
+        <Button size="sm" className="rounded-md">
           <Calendar1 className="size-3" />
           <span className="text-sm font-medium">Schedule</span>
         </Button>

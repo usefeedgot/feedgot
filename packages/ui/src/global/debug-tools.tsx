@@ -290,7 +290,7 @@ export function DebugTools() {
         ) : null
       )}
 
-      <div className="rounded-sm border bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-2 py-1 shadow-sm">
+      <div className="rounded-md border bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-2 py-1 shadow-sm">
         <div className="flex items-center gap-1">
           <Button
             size="sm"

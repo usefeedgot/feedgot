@@ -45,14 +45,14 @@ export function ConversionHero() {
             </p>
             <div className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
               <HotkeyLink
-                className="w-full sm:w-auto si !h-9 !px-3 rounded-sm"
+                className="w-full sm:w-auto si !h-9 !px-3 rounded-md"
                 label="Add to your website"
               />
               <Button
                 asChild
                 variant="outline"
                 size="sm"
-                className="w-full sm:w-auto h-9 px-3 rounded-sm text-accent"
+                className="w-full sm:w-auto h-9 px-3 rounded-md text-accent"
               >
                 <Link href="#demo" aria-label="Get a demo">
                   <span className="inline-flex items-center gap-1.5">

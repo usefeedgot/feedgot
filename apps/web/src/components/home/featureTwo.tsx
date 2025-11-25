@@ -65,13 +65,13 @@ export default function FeaturesSection() {
                       context switching.
                     </p>
                     <div className="mt-5 flex gap-3">
-                      <Button size="sm" className="rounded-sm">
+                      <Button size="sm" className="rounded-md">
                         Open Quick AI
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        className="rounded-sm"
+                        className="rounded-md"
                       >
                         Learn more
                       </Button>
@@ -251,7 +251,7 @@ export const ScheduleIllustation = ({
           }
         )}
       >
-        <Button size="sm" className="rounded-sm">
+        <Button size="sm" className="rounded-md">
           <Calendar1 className="size-3" />
           <span className="text-sm font-medium">Schedule</span>
         </Button>
