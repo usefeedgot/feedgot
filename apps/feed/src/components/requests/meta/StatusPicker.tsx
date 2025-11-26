@@ -27,7 +27,7 @@ export default function StatusPicker({ postId, value, onChange }: { postId: stri
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button type="button" variant="outline" size="sm" className="h-7 px-2">
+        <Button type="button" variant="ghost" size="sm" className="h-7 px-2">
           <span className="rounded-md bg-muted px-2 py-0.5 capitalize">{value || "pending"}</span>
           <DropdownIcon className="ml-1 opacity-60" size={12} />
         </Button>
@@ -45,4 +45,3 @@ export default function StatusPicker({ postId, value, onChange }: { postId: stri
     </Popover>
   )
 }
-

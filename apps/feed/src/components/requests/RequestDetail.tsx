@@ -71,29 +71,29 @@ export default function RequestDetail({ post, workspaceSlug }: { post: RequestDe
           </div>
         </article>
         <aside className="space-y-4">
-          <div className="rounded-md border bg-card p-3">
-            <div className="space-y-2">
+          <div className="rounded-md bg-card p-3">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-accent">Date</span>
                 <span className="text-xs text-accent">{formatted}</span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4">
                 <span className="text-xs text-accent">Board</span>
                 <BoardPicker workspaceSlug={workspaceSlug} postId={post.id} value={board} onChange={setBoard} />
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4">
                 <span className="text-xs text-accent">Status</span>
                 <StatusPicker postId={post.id} value={meta.roadmapStatus} onChange={(v) => setMeta((m) => ({ ...m, roadmapStatus: v }))} />
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4">
                 <span className="text-xs text-accent">Priority</span>
                 <PriorityPicker postId={post.id} value={meta.priority as any} onChange={(v) => setMeta((m) => ({ ...m, priority: v }))} />
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4">
                 <span className="text-xs text-accent">Effort</span>
                 <EffortPicker postId={post.id} value={meta.effort as any} onChange={(v) => setMeta((m) => ({ ...m, effort: v }))} />
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4">
                 <span className="text-xs text-accent">Flags</span>
                 <FlagsPicker postId={post.id} value={{ isPinned: meta.isPinned, isLocked: meta.isLocked, isFeatured: meta.isFeatured }} onChange={(v) => setMeta((m) => ({ ...m, ...v }))} />
               </div>
