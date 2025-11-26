@@ -2,10 +2,11 @@
 
 import React from "react"
 import RequestItem, { type RequestItemData } from "./RequestItem"
+import EmptyRequests from "./EmptyRequests"
 
 function RequestListBase({ items, workspaceSlug }: { items: RequestItemData[]; workspaceSlug: string }) {
   if (items.length === 0) {
-    return <div className="text-accent text-sm">No requests found</div>
+    return <EmptyRequests workspaceSlug={workspaceSlug} />
   }
   return (
     <ul className="space-y-2">
@@ -17,4 +18,3 @@ function RequestListBase({ items, workspaceSlug }: { items: RequestItemData[]; w
 }
 
 export default React.memo(RequestListBase)
-
