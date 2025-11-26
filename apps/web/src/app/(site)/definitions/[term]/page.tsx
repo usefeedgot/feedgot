@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ term: str
   const primary = getPrimarySlug(term)
   const def = primary ? getDefinitionBySlug(primary) : undefined
   if (!def) return {}
-  const title = `${def.name} — Definition`
+  const title = `${def.name} - Definition`
   const desc = def.short
   return createPageMetadata({ title, description: desc, path: `/definitions/${def.slug}` })
 }

@@ -4,7 +4,7 @@ import Pricing from "@/components/home/pricing"
 import { createPageMetadata } from "@/lib/seo"
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Pricing — Transparent plans for teams",
+  title: "Pricing - Transparent plans for teams",
   description: "Simple, honest pricing with a free tier and startup‑friendly plans.",
   path: "/pricing",
 })

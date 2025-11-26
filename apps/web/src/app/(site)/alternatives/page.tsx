@@ -5,7 +5,7 @@ import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
   title:
-    "Alternatives — Compare Feedgot with Canny, Featurebase, Nolt, Upvoty, UserJot",
+    "Alternatives - Compare Feedgot with Canny, Featurebase, Nolt, Upvoty, UserJot",
   description:
     "Side‑by‑side comparisons covering features, privacy, and hosting differences to help you choose confidently.",
   path: "/alternatives",

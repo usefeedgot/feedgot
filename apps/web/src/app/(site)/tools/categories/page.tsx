@@ -4,7 +4,7 @@ import CategoryList from "@/components/tools/global/category-list"
 import { createPageMetadata } from "@/lib/seo"
 
 export const metadata: Metadata = createPageMetadata({
-  title: "All Tool Categories — Revenue, retention, feedback",
+  title: "All Tool Categories - Revenue, retention, feedback",
   description: "Browse tool categories including revenue, retention, and customer feedback calculators.",
   path: "/tools/categories",
 })
