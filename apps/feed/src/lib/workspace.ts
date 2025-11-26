@@ -118,3 +118,24 @@ export async function getWorkspacePosts(slug: string, opts?: { statuses?: string
 
   return rows
 }
+export async function getWorkspaceStatusCounts(slug: string): Promise<Record<string, number>> {
+  const ws = await getWorkspaceBySlug(slug)
+  if (!ws) return {}
+
+  const rows = await db
+    .select({ status: post.roadmapStatus, count: sql<number>`count(*)` })
+    .from(post)
+    .innerJoin(board, eq(post.boardId, board.id))
+    .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false)))
+    .groupBy(post.roadmapStatus)
+
+  const counts: Record<string, number> = {}
+  for (const r of rows as any[]) {
+    const s = normalizeStatus(String(r.status))
+    counts[s] = (counts[s] || 0) + Number(r.count)
+  }
+  for (const key of ["planned", "in-progress", "under-review", "completed", "pending", "closed"]) {
+    if (typeof counts[key] !== "number") counts[key] = 0
+  }
+  return counts
+}

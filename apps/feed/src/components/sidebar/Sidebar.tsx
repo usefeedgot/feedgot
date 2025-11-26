@@ -17,6 +17,7 @@ import SignOutButton from "@/components/auth/SignOutButton";
 import Timezone from "./Timezone";
 import SidebarItem from "./SidebarItem";
 import SidebarSection from "./SidebarSection";
+import { useQuery } from "@tanstack/react-query";
 const secondaryNav: NavItem[] = buildBottomNav();
 
 export default function Sidebar({ className = "" }: { className?: string }) {
@@ -28,6 +29,26 @@ export default function Sidebar({ className = "" }: { className?: string }) {
   const middleNav = buildMiddleNav(slug);
   const [hotkeysActive, setHotkeysActive] = useState(false);
   useSidebarHotkeys(hotkeysActive, middleNav, router);
+
+  const { data: statusCounts } = useQuery({
+    queryKey: ["status-counts", slug],
+    queryFn: async () => {
+      if (!slug) return null as any;
+      const res = await fetch(`/api/status-counts?slug=${encodeURIComponent(slug)}`);
+      const json = await res.json();
+      return json?.counts || null;
+    },
+    enabled: !!slug,
+    staleTime: 30_000,
+  });
+
+  const statusKey = (label: string) => {
+    const t = label.trim().toLowerCase();
+    if (t === "progress") return "in-progress";
+    if (t === "review") return "under-review";
+    if (t === "complete") return "completed";
+    return t;
+  };
 
   return (
     <aside
@@ -52,7 +73,7 @@ export default function Sidebar({ className = "" }: { className?: string }) {
       </div>
       <SidebarSection title="REQUEST">
         {primaryNav.map((item) => (
-          <SidebarItem key={item.label} item={item} pathname={pathname} />
+          <SidebarItem key={item.label} item={item} pathname={pathname} count={statusCounts ? statusCounts[statusKey(item.label)] : undefined} />
         ))}
       </SidebarSection>
 
