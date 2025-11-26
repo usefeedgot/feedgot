@@ -52,7 +52,7 @@ export default async function RequestsPage({ params, searchParams }: Props) {
   const search = typeof (sp as any).search === "string" ? (sp as any).search : ""
 
   const statusFilter = statusRaw.map(normalizeStatus)
-  if (statusFilter.length === 0) statusFilter.push("pending", "under-review", "planned", "in-progress")
+  if (statusFilter.length === 0) statusFilter.push("pending", "review", "planned", "progress")
 
   const boardSlugs = (search ? [] : boardRaw.map((b: string) => b.trim().toLowerCase())).filter(Boolean)
   const tagSlugs = tagRaw.map((t: string) => t.trim().toLowerCase()).filter(Boolean)

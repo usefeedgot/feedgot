@@ -103,12 +103,15 @@ export async function getWorkspacePosts(slug: string, opts?: { statuses?: string
       .innerJoin(board, eq(post.boardId, board.id))
       .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false), inArray(tag.slug, tagSlugs)))
     tagPostIds = Array.from(new Set(rows.map((r) => r.postId)))
+    if (tagPostIds.length === 0) {
+      return []
+    }
   }
 
   const filters: any[] = [eq(board.workspaceId, ws.id), eq(board.isSystem, false)]
   if (matchStatuses.length > 0) filters.push(inArray(post.roadmapStatus, matchStatuses))
   if (boardSlugs.length > 0) filters.push(inArray(board.slug, boardSlugs))
-  if (tagPostIds && tagPostIds.length > 0) filters.push(inArray(post.id, tagPostIds))
+  if (tagPostIds) filters.push(inArray(post.id, tagPostIds))
   if (search) {
     const wildcard = `%${search}%`
     filters.push(sql`(${post.title} ilike ${wildcard} or ${post.content} ilike ${wildcard})`)

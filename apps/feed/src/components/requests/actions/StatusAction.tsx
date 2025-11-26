@@ -10,9 +10,9 @@ import { parseArrayParam, buildRequestsUrl, toggleValue, isAllSelected as isAllS
 
 const options = [
   { label: "Pending", value: "pending" },
-  { label: "Review", value: "under-review" },
+  { label: "Review", value: "review" },
   { label: "Planned", value: "planned" },
-  { label: "Progress", value: "in-progress" },
+  { label: "Progress", value: "progress" },
   { label: "Complete", value: "completed" },
   { label: "Closed", value: "closed" },
 ]
