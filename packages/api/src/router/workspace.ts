@@ -1,7 +1,7 @@
 import { HTTPException } from "hono/http-exception"
 import { eq } from "drizzle-orm"
 import { j, privateProcedure, publicProcedure } from "../jstack"
-import { workspace, workspaceMember, board, brandingConfig } from "@feedgot/db"
+import { workspace, workspaceMember, board, brandingConfig, tag } from "@feedgot/db"
 import { createWorkspaceInputSchema, checkSlugInputSchema } from "../validators/workspace"
 
 export function createWorkspaceRouter() {
@@ -119,8 +119,6 @@ export function createWorkspaceRouter() {
 
           await ctx.db.insert(brandingConfig).values({
             workspaceId: ws.id,
-            faviconUrl: favicon,
-            logoUrl: favicon,
           })
 
           await ctx.db.insert(board).values([
@@ -158,6 +156,14 @@ export function createWorkspaceRouter() {
               isSystem: true,
               systemType: "changelog",
             },
+          ])
+
+          await ctx.db.insert(tag).values([
+            { workspaceId: ws.id, name: "UI", slug: "ui" },
+            { workspaceId: ws.id, name: "Design", slug: "design" },
+            { workspaceId: ws.id, name: "Security", slug: "security" },
+            { workspaceId: ws.id, name: "Bugs", slug: "bugs" },
+            { workspaceId: ws.id, name: "Support", slug: "support" },
           ])
         } catch (err) {
           if (created?.id) {

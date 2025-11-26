@@ -128,8 +128,6 @@ export function createBoardRouter() {
             image: post.image,
             upvotes: post.upvotes,
             commentCount: post.commentCount,
-            priority: post.priority,
-            effort: post.effort,
             isPinned: post.isPinned,
             isLocked: post.isLocked,
             isFeatured: post.isFeatured,
@@ -276,8 +274,6 @@ export function createBoardRouter() {
         if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
 
         const patch: any = {}
-        if (input.priority !== undefined) patch.priority = input.priority
-        if (input.effort !== undefined) patch.effort = input.effort
         if (input.roadmapStatus !== undefined) patch.roadmapStatus = input.roadmapStatus
         if (input.isPinned !== undefined) patch.isPinned = input.isPinned
         if (input.isLocked !== undefined) patch.isLocked = input.isLocked

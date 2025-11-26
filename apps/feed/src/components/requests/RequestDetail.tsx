@@ -5,8 +5,6 @@ import StatusIcon from "./StatusIcon"
 import { LoveIcon } from "@feedgot/ui/icons/love"
 import { CommentsIcon } from "@feedgot/ui/icons/comments"
 import StatusPicker from "./meta/StatusPicker"
-import PriorityPicker from "./meta/PriorityPicker"
-import EffortPicker from "./meta/EffortPicker"
 import FlagsPicker from "./meta/FlagsPicker"
 import BoardPicker from "./meta/BoardPicker"
 
@@ -18,8 +16,6 @@ export type RequestDetailData = {
   upvotes: number
   commentCount: number
   roadmapStatus: string | null
-  priority?: string | null
-  effort?: string | null
   isFeatured?: boolean
   isLocked?: boolean
   isPinned?: boolean
@@ -34,8 +30,6 @@ export default function RequestDetail({ post, workspaceSlug }: { post: RequestDe
   const formatted = new Intl.DateTimeFormat(undefined, { month: "short", day: "2-digit" }).format(date)
   const [meta, setMeta] = React.useState({
     roadmapStatus: post.roadmapStatus || undefined,
-    priority: (post.priority as any) || undefined,
-    effort: (post.effort as any) || undefined,
     isPinned: !!post.isPinned,
     isLocked: !!post.isLocked,
     isFeatured: !!post.isFeatured,
@@ -85,14 +79,7 @@ export default function RequestDetail({ post, workspaceSlug }: { post: RequestDe
                 <span className="text-xs text-accent">Status</span>
                 <StatusPicker postId={post.id} value={meta.roadmapStatus} onChange={(v) => setMeta((m) => ({ ...m, roadmapStatus: v }))} />
               </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-xs text-accent">Priority</span>
-                <PriorityPicker postId={post.id} value={meta.priority as any} onChange={(v) => setMeta((m) => ({ ...m, priority: v }))} />
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-xs text-accent">Effort</span>
-                <EffortPicker postId={post.id} value={meta.effort as any} onChange={(v) => setMeta((m) => ({ ...m, effort: v }))} />
-              </div>
+              
               <div className="flex items-center justify-between gap-4">
                 <span className="text-xs text-accent">Flags</span>
                 <FlagsPicker postId={post.id} value={{ isPinned: meta.isPinned, isLocked: meta.isLocked, isFeatured: meta.isFeatured }} onChange={(v) => setMeta((m) => ({ ...m, ...v }))} />
