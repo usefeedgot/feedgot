@@ -46,9 +46,9 @@ export function parseArrayParam(v: any): string[] {
 export function normalizeStatus(s: string): string {
   const t = (s || "").trim().toLowerCase()
   if (t === "pending") return "pending"
-  if (t === "review" || t === "under-review" || t === "underreview") return "under-review"
+  if (t === "review" || t === "under-review" || t === "underreview") return "review"
   if (t === "planned") return "planned"
-  if (t === "progress" || t === "inprogress" || t === "in-progress") return "in-progress"
+  if (t === "progress" || t === "inprogress" || t === "in-progress") return "progress"
   if (t === "complete" || t === "completed") return "completed"
   if (t === "closed" || t === "close") return "closed"
   return t
@@ -79,8 +79,8 @@ export async function getWorkspacePosts(slug: string, opts?: { statuses?: string
   const normalizedStatuses = (opts?.statuses || []).map(normalizeStatus).filter(Boolean)
   function statusSynonyms(s: string): string[] {
     const t = s.toLowerCase()
-    if (t === "in-progress") return ["in-progress", "inprogress", "progress"]
-    if (t === "under-review") return ["under-review", "underreview", "review"]
+    if (t === "progress") return ["progress", "inprogress", "in-progress"]
+    if (t === "review") return ["review", "underreview", "under-review"]
     if (t === "completed") return ["completed", "complete"]
     if (t === "closed") return ["closed", "close"]
     if (t === "planned") return ["planned"]
@@ -152,7 +152,7 @@ export async function getWorkspaceStatusCounts(slug: string): Promise<Record<str
     const s = normalizeStatus(String(r.status))
     counts[s] = (counts[s] || 0) + Number(r.count)
   }
-  for (const key of ["planned", "in-progress", "under-review", "completed", "pending", "closed"]) {
+  for (const key of ["planned", "progress", "review", "completed", "pending", "closed"]) {
     if (typeof counts[key] !== "number") counts[key] = 0
   }
   return counts
