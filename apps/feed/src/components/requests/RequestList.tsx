@@ -9,7 +9,7 @@ function RequestListBase({ items, workspaceSlug }: { items: RequestItemData[]; w
     return <EmptyRequests workspaceSlug={workspaceSlug} />
   }
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-2 mt-4">
       {items.map((p) => (
         <RequestItem key={p.id} item={p} workspaceSlug={workspaceSlug} />
       ))}
