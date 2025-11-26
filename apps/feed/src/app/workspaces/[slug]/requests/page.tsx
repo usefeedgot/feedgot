@@ -15,6 +15,8 @@ type SearchParams = {
   tag?: string | string[]
   order?: string
   search?: string
+  page?: string | string[]
+  pageSize?: string | string[]
 }
 
 type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<SearchParams> }
@@ -51,6 +53,9 @@ export default async function RequestsPage({ params, searchParams }: Props) {
   const tagRaw = parseArrayParam((sp as any).tag)
   const order = typeof (sp as any).order === "string" && (sp as any).order ? (sp as any).order : "newest"
   const search = typeof (sp as any).search === "string" ? (sp as any).search : ""
+  const pageSize = Math.max(Number((sp as any).pageSize) || 50, 1)
+  const page = Math.max(Number((sp as any).page) || 1, 1)
+  const offset = (page - 1) * pageSize
 
   const statusFilter = statusRaw.map(normalizeStatus)
   if (statusFilter.length === 0) statusFilter.push("pending", "review", "planned", "progress")
@@ -63,6 +68,8 @@ export default async function RequestsPage({ params, searchParams }: Props) {
     tagSlugs,
     order: order === "oldest" ? "oldest" : "newest",
     search,
+    limit: pageSize,
+    offset,
   })
 
   return (

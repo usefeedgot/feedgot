@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger, PopoverList, PopoverListItem }
 import { ArrowUpDownIcon } from "@feedgot/ui/icons/arrow-up-down"
 import { cn } from "@feedgot/ui/lib/utils"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { buildRequestsUrl } from "@/utils/request-filters"
 
 export default function SortAction({ className = "" }: { className?: string }) {
   const router = useRouter()
@@ -20,11 +21,7 @@ export default function SortAction({ className = "" }: { className?: string }) {
   const order = (sp.get("order") || "newest").toLowerCase() === "oldest" ? "oldest" : "newest"
 
   const setOrder = (v: "newest" | "oldest") => {
-    const status = sp.get("status") || encodeURIComponent(JSON.stringify([]))
-    const boards = sp.get("board") || encodeURIComponent(JSON.stringify([]))
-    const tags = sp.get("tag") || encodeURIComponent(JSON.stringify([]))
-    const search = sp.get("search") || ""
-    const href = `/workspaces/${slug}/requests?status=${status}&board=${boards}&tag=${tags}&order=${v}&search=${search}`
+    const href = buildRequestsUrl(slug, sp, { order: v })
     router.push(href)
     setOpen(false)
   }

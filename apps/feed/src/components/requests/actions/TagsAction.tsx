@@ -6,7 +6,7 @@ import { TagIcon } from "@feedgot/ui/icons/tag"
 import { cn } from "@feedgot/ui/lib/utils"
 import { client } from "@feedgot/api/client"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getSlugFromPath } from "@/config/nav"
 import { parseArrayParam, buildRequestsUrl, toggleValue, isAllSelected as isAllSel } from "@/utils/request-filters"
 
@@ -15,6 +15,7 @@ export default function TagsAction({ className = "" }: { className?: string }) {
   const pathname = usePathname() || "/"
   const sp = useSearchParams()
   const [open, setOpen] = React.useState(false)
+  const queryClient = useQueryClient()
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["tags", getSlugFromPath(pathname)],
@@ -24,7 +25,9 @@ export default function TagsAction({ className = "" }: { className?: string }) {
       const tags = (data?.tags || [])
       return tags.map((t: any) => ({ id: t.id, name: t.name, slug: t.slug, color: t.color, count: t.count }))
     },
-    staleTime: 60_000,
+    staleTime: 300_000,
+    gcTime: 300_000,
+    enabled: !!getSlugFromPath(pathname),
   })
 
   const slug = React.useMemo(() => getSlugFromPath(pathname), [pathname])
@@ -32,7 +35,21 @@ export default function TagsAction({ className = "" }: { className?: string }) {
   const selected = React.useMemo(() => parseArrayParam(sp.get("tag")), [sp])
   const isAllSelected = React.useMemo(() => isAllSel(items.map((i: { slug: string }) => i.slug), selected), [items, selected])
 
-  React.useEffect(() => {}, [slug])
+  React.useEffect(() => {
+    if (open) {
+      queryClient.prefetchQuery({
+        queryKey: ["tags", getSlugFromPath(pathname)],
+        queryFn: async () => {
+          const res = await client.board.tagsByWorkspaceSlug.$get({ slug: getSlugFromPath(pathname) })
+          const data = await res.json()
+          const tags = (data?.tags || [])
+          return tags.map((t: any) => ({ id: t.id, name: t.name, slug: t.slug, color: t.color, count: t.count }))
+        },
+        staleTime: 300_000,
+        gcTime: 300_000,
+      })
+    }
+  }, [open, pathname, queryClient, slug])
 
   const toggle = (tagSlug: string) => {
     const next = toggleValue(selected, tagSlug)

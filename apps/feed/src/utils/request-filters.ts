@@ -25,12 +25,14 @@ type SearchParamsLike = { get: (key: string) => string | null }
 export function buildRequestsUrl(
   slug: string,
   prev: SearchParamsLike,
-  overrides: Partial<{ status: string[]; board: string[]; tag: string[]; order: string; search: string }>
+  overrides: Partial<{ status: string[]; board: string[]; tag: string[]; order: string; search: string; page: number; pageSize: number }>
 ): string {
   const status = overrides.status ? encodeArray(overrides.status) : prev.get("status") || encodeArray([])
   const board = overrides.board ? encodeArray(overrides.board) : prev.get("board") || encodeArray([])
   const tag = overrides.tag ? encodeArray(overrides.tag) : prev.get("tag") || encodeArray([])
   const order = overrides.order || prev.get("order") || "newest"
   const search = overrides.search ?? prev.get("search") ?? ""
-  return `/workspaces/${slug}/requests?status=${status}&board=${board}&tag=${tag}&order=${order}&search=${search}`
+  const page = overrides.page != null ? String(overrides.page) : prev.get("page") || "1"
+  const pageSize = overrides.pageSize != null ? String(overrides.pageSize) : prev.get("pageSize") || "50"
+  return `/workspaces/${slug}/requests?status=${status}&board=${board}&tag=${tag}&order=${order}&search=${search}&page=${page}&pageSize=${pageSize}`
 }

@@ -69,7 +69,7 @@ export async function getWorkspaceTimezoneBySlug(slug: string): Promise<string |
   return (ws as any)?.timezone || null
 }
 
-export async function getWorkspacePosts(slug: string, opts?: { statuses?: string[]; boardSlugs?: string[]; tagSlugs?: string[]; order?: "newest" | "oldest"; search?: string }) {
+export async function getWorkspacePosts(slug: string, opts?: { statuses?: string[]; boardSlugs?: string[]; tagSlugs?: string[]; order?: "newest" | "oldest"; search?: string; limit?: number; offset?: number }) {
   const ws = await getWorkspaceBySlug(slug)
   if (!ws) return []
 
@@ -79,6 +79,8 @@ export async function getWorkspacePosts(slug: string, opts?: { statuses?: string
   const tagSlugs = (opts?.tagSlugs || []).map((s) => s.trim().toLowerCase()).filter(Boolean)
   const order = opts?.order === "oldest" ? asc(post.createdAt) : desc(post.createdAt)
   const search = (opts?.search || "").trim()
+  const lim = Math.min(Math.max(Number(opts?.limit ?? 50), 1), 200)
+  const off = Math.max(Number(opts?.offset ?? 0), 0)
 
   let tagPostIds: string[] | null = null
   if (tagSlugs.length > 0) {
@@ -100,8 +102,7 @@ export async function getWorkspacePosts(slug: string, opts?: { statuses?: string
   if (boardSlugs.length > 0) filters.push(inArray(board.slug, boardSlugs))
   if (tagPostIds) filters.push(inArray(post.id, tagPostIds))
   if (search) {
-    const wildcard = `%${search}%`
-    filters.push(sql`(${post.title} ilike ${wildcard} or ${post.content} ilike ${wildcard})`)
+    filters.push(sql`to_tsvector('english', coalesce(${post.title}, '') || ' ' || coalesce(${post.content}, '')) @@ plainto_tsquery('english', ${search})`)
   }
 
   const rows = await db
@@ -123,6 +124,8 @@ export async function getWorkspacePosts(slug: string, opts?: { statuses?: string
     .innerJoin(board, eq(post.boardId, board.id))
     .where(and(...filters) as any)
     .orderBy(order)
+    .limit(lim)
+    .offset(off)
 
   return rows
 }

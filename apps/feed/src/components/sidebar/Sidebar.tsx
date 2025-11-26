@@ -39,7 +39,7 @@ export default function Sidebar({ className = "", initialCounts, initialTimezone
       return json.counts || null;
     },
     enabled: !!slug,
-    staleTime: 60_000,
+    staleTime: 300_000,
     gcTime: 300_000,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
