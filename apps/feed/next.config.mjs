@@ -7,6 +7,7 @@ const nextConfig = {
           'github.com', // GitHub profile images
           'githubusercontent.com', // GitHub raw content
           'gravatar.com', // Gravatar images (commonly used as fallback)
+          'www.google.com',
         ],
       },
       turbopack: {

@@ -11,6 +11,7 @@ import {
 } from "@feedgot/ui/components/dropdown-menu";
 import { client } from "@feedgot/api/client"
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image"
 import { getSlugFromPath } from "../../config/nav";
 import { ChevronIcon } from "@feedgot/ui/icons/chevron";
 import { PlusIcon } from "@feedgot/ui/icons/plus";
@@ -120,12 +121,13 @@ export default function WorkspaceSwitcher({
           <div className="group flex items-center gap-2 rounded-md px-2 py-2 text-md text-accent hover:bg-muted cursor-pointer">
             <div className={cn("relative w-6 h-6 rounded-md border ring-1 ring-border overflow-hidden", currentLogo ? "bg-transparent" : "bg-muted")}>
               {currentLogo ? (
-                <img
+                <Image
                   src={currentLogo}
                   alt={currentName}
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  fill
+                  sizes="24px"
+                  className="object-cover"
+                  priority
                 />
               ) : null}
             </div>
@@ -157,12 +159,12 @@ export default function WorkspaceSwitcher({
                   >
                     {logoUrl ? (
                       <div className="relative w-6 h-6 rounded-md bg-muted border ring-1 ring-border overflow-hidden">
-                        <img
+                        <Image
                           src={logoUrl}
                           alt={w.name}
-                          loading="lazy"
-                          decoding="async"
-                          className="absolute inset-0 w-full h-full object-cover"
+                          fill
+                          sizes="24px"
+                          className="object-cover"
                         />
                       </div>
                     ) : (
