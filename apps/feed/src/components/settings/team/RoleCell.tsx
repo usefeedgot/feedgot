@@ -4,7 +4,7 @@ import { Popover, PopoverTrigger, PopoverContent, PopoverList, PopoverListItem }
 import { Button } from "@feedgot/ui/components/button";
 import { cn } from "@feedgot/ui/lib/utils";
 import { MoreVertical } from "lucide-react";
-import type { Member } from "./Team";
+import type { Member } from "./types";
 
 function badgeFor(m: Member) {
   if (m.isOwner) return "bg-primary/20 text-primary";
@@ -56,4 +56,3 @@ export default function RoleCell({
     </TableCell>
   );
 }
-

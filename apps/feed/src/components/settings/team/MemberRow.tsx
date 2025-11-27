@@ -2,7 +2,7 @@ import React from "react";
 import { TableRow, TableCell } from "@feedgot/ui/components/table";
 import { Avatar, AvatarImage, AvatarFallback } from "@feedgot/ui/components/avatar";
 import RoleCell from "./RoleCell";
-import type { Member } from "./Team";
+import type { Member } from "./types";
 import { getInitials } from "@/utils/user-utils";
 
 export default function MemberRow({
@@ -34,4 +34,3 @@ export default function MemberRow({
     </TableRow>
   );
 }
-

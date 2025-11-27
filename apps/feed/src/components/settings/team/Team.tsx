@@ -10,26 +10,9 @@ import { toast } from "sonner";
 import InviteMemberModal from "./InviteMemberModal";
 import MemberRow from "./MemberRow";
 import InvitesList from "./InvitesList";
+import type { Member, Invite } from "./types";
 
-export type Member = {
-  userId: string;
-  role: "admin" | "member" | "viewer";
-  isOwner?: boolean;
-  joinedAt?: string;
-  isActive?: boolean;
-  name?: string;
-  email?: string;
-  image?: string;
-};
-export type Invite = {
-  id: string;
-  email: string;
-  role: "admin" | "member" | "viewer";
-  invitedBy: string;
-  expiresAt: string;
-  acceptedAt?: string | null;
-  createdAt: string;
-};
+ 
 
 export default function TeamSection({ slug }: { slug: string }) {
   const [members, setMembers] = React.useState<Member[]>([]);
