@@ -25,10 +25,10 @@ export default async function SettingsSectionPage({ params }: Props) {
     try {
       const res = await client.team.membersByWorkspaceSlug.$get({ slug })
       const data = await res.json()
-      return <SettingsTabs slug={slug} initialTeam={{ members: data?.members || [], invites: data?.invites || [], meId: data?.meId || null }} />
+      return <SettingsTabs slug={slug} selectedSection={section} initialTeam={{ members: data?.members || [], invites: data?.invites || [], meId: data?.meId || null }} />
     } catch {
-      return <SettingsTabs slug={slug} />
+      return <SettingsTabs slug={slug} selectedSection={section} />
     }
   }
-  return <SettingsTabs slug={slug} />
+  return <SettingsTabs slug={slug} selectedSection={section} />
 }

@@ -15,15 +15,15 @@ import DataSection from "../data/Data"
 import type { Member, Invite } from "../team/types"
 import { SECTIONS } from "../../../config/sections"
 
-type Props = { slug: string; initialTeam?: { members: Member[]; invites: Invite[]; meId: string | null } }
+type Props = { slug: string; initialTeam?: { members: Member[]; invites: Invite[]; meId: string | null }; selectedSection?: string }
 
 const sections = SECTIONS
 
-export default function SettingsTabs({ slug, initialTeam }: Props) {
+export default function SettingsTabs({ slug, initialTeam, selectedSection }: Props) {
   const router = useRouter()
   const routeParams = useParams()
   const paramSection = typeof routeParams?.section === "string" ? routeParams.section : undefined
-  const selected = paramSection || sections[0]?.value
+  const selected = selectedSection || paramSection || sections[0]?.value
 
   const onValueChange = React.useCallback((v: string) => {
     const url = `/workspaces/${slug}/settings/${encodeURIComponent(v)}`

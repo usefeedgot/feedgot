@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Label } from "@feedgot/ui/components/label";
 import { client } from "@feedgot/api/client";
 import { toast } from "sonner";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import InviteMemberModal from "./InviteMemberModal";
 import MemberRow from "./MemberRow";
 import InvitesList from "./InvitesList";
@@ -20,40 +21,26 @@ export default function TeamSection({
   initialInvites,
   initialMeId,
 }: { slug: string; initialMembers?: Member[]; initialInvites?: Invite[]; initialMeId?: string | null }) {
-  const [members, setMembers] = React.useState<Member[]>(initialMembers || []);
-  const [invites, setInvites] = React.useState<Invite[]>(initialInvites || []);
-  const [loading, setLoading] = React.useState(!initialMembers);
   const [inviteOpen, setInviteOpen] = React.useState(false);
-  const [meId, setMeId] = React.useState<string | null>(initialMeId ?? null);
   const [menuFor, setMenuFor] = React.useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const { data = { members: initialMembers || [], invites: initialInvites || [], meId: initialMeId ?? null }, isLoading, refetch } = useQuery({
+    queryKey: ["team", slug],
+    queryFn: async () => {
+      const res = await client.team.membersByWorkspaceSlug.$get({ slug });
+      const d = await res.json();
+      return { members: d?.members || [], invites: d?.invites || [], meId: d?.meId || null };
+    },
+    initialData: (initialMembers || initialInvites || initialMeId) ? { members: initialMembers || [], invites: initialInvites || [], meId: initialMeId ?? null } : undefined,
+    staleTime: 300000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 
-  React.useEffect(() => {
-    let mounted = true;
-    void (async () => {
-      try {
-        const res = await client.team.membersByWorkspaceSlug.$get({ slug });
-        const data = await res.json();
-        if (mounted) {
-          setMembers(data?.members || []);
-          setInvites(data?.invites || []);
-          setMeId(data?.meId || null);
-        }
-      } catch (e) {
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [slug]);
+
 
   const refresh = async () => {
-    const res = await client.team.membersByWorkspaceSlug.$get({ slug });
-    const data = await res.json();
-    setMembers(data?.members || []);
-    setInvites(data?.invites || []);
-    setMeId(data?.meId || null);
+    await refetch();
   };
 
   const handleRoleChange = async (
@@ -68,9 +55,11 @@ export default function TeamSection({
       });
       if (!res.ok) throw new Error("Update failed");
       toast.success("Role updated");
-      setMembers((prev) =>
-        prev.map((m) => (m.userId === userId ? { ...m, role: newRole } : m))
-      );
+      queryClient.setQueryData(["team", slug], (prev: any) => {
+        const p = prev || { members: [], invites: [], meId: null };
+        const nextMembers = (p.members || []).map((m: any) => (m.userId === userId ? { ...m, role: newRole } : m));
+        return { ...p, members: nextMembers };
+      });
       setMenuFor(null);
     } catch (e) {
       toast.error("Failed to update role");
@@ -82,7 +71,11 @@ export default function TeamSection({
       const res = await client.team.revokeInvite.$post({ slug, inviteId });
       if (!res.ok) throw new Error("Revoke failed");
       toast.success("Invite revoked");
-      await refresh();
+      queryClient.setQueryData(["team", slug], (prev: any) => {
+        const p = prev || { members: [], invites: [], meId: null };
+        const nextInvites = (p.invites || []).filter((i: any) => i.id === inviteId ? false : true);
+        return { ...p, invites: nextInvites };
+      });
     } catch (e) {
       toast.error("Failed to revoke invite");
     }
@@ -101,12 +94,12 @@ export default function TeamSection({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {members.length === 0 && !loading ? (
+                {(data.members || []).length === 0 && !isLoading ? (
                   <TableRow>
                     <TableCell colSpan={2} className="px-4 py-6 text-accent">No members</TableCell>
                   </TableRow>
                 ) : (
-                  members.map((m) => (
+                  (data.members || []).map((m: Member) => (
                     <MemberRow key={m.userId} m={m} menuFor={menuFor} setMenuFor={setMenuFor} onRoleChange={handleRoleChange} />
                   ))
                 )}
@@ -117,7 +110,7 @@ export default function TeamSection({
 
         <div className="space-y-2">
           <Label>Pending Invites</Label>
-          <InvitesList slug={slug} invites={invites} loading={loading} onChanged={refresh} />
+          <InvitesList slug={slug} invites={data.invites || []} loading={isLoading} onChanged={refresh} />
         </div>
 
         <div className="pt-2 space-y-2">
