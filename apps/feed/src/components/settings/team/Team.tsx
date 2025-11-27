@@ -2,13 +2,12 @@
 
 import React from "react"
 import SectionCard from "../global/SectionCard"
-import { Input } from "@feedgot/ui/components/input"
 import { Label } from "@feedgot/ui/components/label"
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@feedgot/ui/components/select"
-import { LoadingButton } from "@/components/loading-button"
 import { Button } from "@feedgot/ui/components/button"
 import { client } from "@feedgot/api/client"
 import { toast } from "sonner"
+import InviteMemberModal from "./InviteMemberModal"
 
 type Member = { userId: string; role: "admin" | "member" | "viewer"; isOwner?: boolean; joinedAt?: string; isActive?: boolean; name?: string; email?: string; image?: string }
 type Invite = { id: string; email: string; role: "admin" | "member" | "viewer"; invitedBy: string; expiresAt: string; acceptedAt?: string | null; createdAt: string }
@@ -17,9 +16,7 @@ export default function TeamSection({ slug }: { slug: string }) {
   const [members, setMembers] = React.useState<Member[]>([])
   const [invites, setInvites] = React.useState<Invite[]>([])
   const [loading, setLoading] = React.useState(true)
-  const [email, setEmail] = React.useState("")
-  const [role, setRole] = React.useState<"admin" | "member" | "viewer">("member")
-  const [inviting, setInviting] = React.useState(false)
+  const [inviteOpen, setInviteOpen] = React.useState(false)
 
   React.useEffect(() => {
     let mounted = true
@@ -42,24 +39,6 @@ export default function TeamSection({ slug }: { slug: string }) {
     const data = await res.json()
     setMembers(data?.members || [])
     setInvites(data?.invites || [])
-  }
-
-  const handleInvite = async () => {
-    if (!email.trim()) return
-    if (inviting) return
-    setInviting(true)
-    try {
-      const res = await client.team.invite.$post({ slug, email: email.trim(), role })
-      if (!res.ok) {
-        const err = await res.json().catch(() => null)
-        throw new Error(err?.message || "Invite failed")
-      }
-      toast.success("Invite sent")
-      setEmail("")
-      await refresh()
-    } catch (e) {
-      toast.error("Failed to invite member")
-    } finally { setInviting(false) }
   }
 
   const handleRoleChange = async (userId: string, newRole: "admin" | "member" | "viewer") => {
@@ -100,17 +79,16 @@ export default function TeamSection({ slug }: { slug: string }) {
       <div className="space-y-6">
         <div className="space-y-2">
           <Label>Invite member</Label>
-          <div className="flex items-center gap-2 max-w-xl">
-            <Input placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Select value={role} onValueChange={(v) => setRole(v as any)}>
-              <SelectTrigger className="w-40"><SelectValue placeholder="Role" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="member">Member</SelectItem>
-                <SelectItem value="viewer">Viewer</SelectItem>
-              </SelectContent>
-            </Select>
-            <LoadingButton onClick={handleInvite} loading={inviting} disabled={loading}>Invite</LoadingButton>
+          <div className="flex items-center gap-2">
+            <Button type="button" variant="quiet" onClick={() => setInviteOpen(true)}>Invite</Button>
+            <InviteMemberModal
+              slug={slug}
+              open={inviteOpen}
+              onOpenChange={setInviteOpen}
+              onInvited={async () => {
+                await refresh()
+              }}
+            />
           </div>
         </div>
 

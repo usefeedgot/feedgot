@@ -1,0 +1,90 @@
+"use client"
+
+import React from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@feedgot/ui/components/dialog"
+import { Label } from "@feedgot/ui/components/label"
+import { Input } from "@feedgot/ui/components/input"
+import { Button } from "@feedgot/ui/components/button"
+import { Popover, PopoverTrigger, PopoverContent, PopoverList, PopoverListItem } from "@feedgot/ui/components/popover"
+import { DropdownIcon } from "@feedgot/ui/icons/dropdown"
+import { LoadingButton } from "@/components/loading-button"
+import { client } from "@feedgot/api/client"
+import { toast } from "sonner"
+
+type Role = "admin" | "member" | "viewer"
+const ROLES: Role[] = ["admin", "member", "viewer"]
+
+export default function InviteMemberModal({ slug, open, onOpenChange, onInvited }: { slug: string; open: boolean; onOpenChange: (v: boolean) => void; onInvited: () => void }) {
+  const [email, setEmail] = React.useState("")
+  const [role, setRole] = React.useState<Role>("member")
+  const [loading, setLoading] = React.useState(false)
+  const [roleOpen, setRoleOpen] = React.useState(false)
+
+  const onSubmit = async () => {
+    const value = email.trim()
+    if (!value) return
+    if (loading) return
+    setLoading(true)
+    try {
+      const res = await client.team.invite.$post({ slug, email: value, role })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        throw new Error(err?.message || "Invite failed")
+      }
+      toast.success("Invite sent")
+      setEmail("")
+      onInvited()
+      onOpenChange(false)
+    } catch (e) {
+      toast.error("Failed to invite member")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Invite member</DialogTitle>
+          <DialogDescription>Send an invite by email</DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="invite-email">Email</Label>
+            <Input id="invite-email" type="email" autoComplete="email" placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Role</Label>
+            <Popover open={roleOpen} onOpenChange={setRoleOpen}>
+              <PopoverTrigger asChild>
+                <Button type="button" variant="ghost" size="sm" className="h-7 px-2">
+                  <span className="rounded-md bg-card px-2 py-0.5 capitalize">{role}</span>
+                  <DropdownIcon className="ml-1 opacity-60" size={12} />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent list className="min-w-0 w-fit">
+                <PopoverList>
+                  {ROLES.map((r) => (
+                    <PopoverListItem key={r} role="menuitemradio" aria-checked={role === r} onClick={() => { setRole(r); setRoleOpen(false) }}>
+                      <span className="text-sm capitalize">{r}</span>
+                      {role === r ? <span className="ml-auto text-xs">✓</span> : null}
+                    </PopoverListItem>
+                  ))}
+                </PopoverList>
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="flex items-center justify-end gap-2">
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <LoadingButton type="button" onClick={onSubmit} loading={loading} disabled={!email.trim()}>Send Invite</LoadingButton>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
