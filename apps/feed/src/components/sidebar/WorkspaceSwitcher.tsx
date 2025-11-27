@@ -89,9 +89,21 @@ export default function WorkspaceSwitcher({
       try {
         router.prefetch(`/workspaces/${targetSlug}`);
       } catch {}
+      try {
+        queryClient.prefetchQuery({
+          queryKey: ["status-counts", targetSlug],
+          queryFn: async () => {
+            const res = await client.workspace.statusCounts.$get({ slug: targetSlug });
+            const data = await res.json();
+            return (data?.counts || null) as Record<string, number> | null;
+          },
+          staleTime: 300_000,
+          gcTime: 300_000,
+        });
+      } catch {}
       router.push(`/workspaces/${targetSlug}`);
     },
-    [router]
+    [router, queryClient]
   );
   const handleCreateNew = React.useCallback(() => {
     setOpen(false);

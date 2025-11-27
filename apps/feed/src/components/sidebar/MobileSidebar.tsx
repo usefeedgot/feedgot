@@ -18,8 +18,8 @@ import MobileDrawerContent from "./MobileDrawerContent";
 export default function MobileSidebar({ className = "", initialCounts, initialTimezone, initialServerNow, initialWorkspace, initialWorkspaces }: { className?: string; initialCounts?: Record<string, number>; initialTimezone?: string | null; initialServerNow?: number; initialWorkspace?: { id: string; name: string; slug: string; logo?: string | null } | undefined; initialWorkspaces?: { id: string; name: string; slug: string; logo?: string | null }[] | undefined }) {
   const pathname = usePathname() || "/";
   const slug = getSlugFromPath(pathname);
-  const primaryNav = buildTopNav(slug);
-  const middleNav = buildMiddleNav(slug);
+  const primaryNav = React.useMemo(() => buildTopNav(slug), [slug]);
+  const middleNav = React.useMemo(() => buildMiddleNav(slug), [slug]);
   const secondaryNav = buildBottomNav();
   const { data: statusCounts } = useQuery({
     queryKey: ["status-counts", slug],

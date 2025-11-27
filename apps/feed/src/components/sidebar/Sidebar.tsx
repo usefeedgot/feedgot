@@ -26,8 +26,8 @@ export default function Sidebar({ className = "", initialCounts, initialTimezone
   const router = useRouter();
   const slug = getSlugFromPath(pathname);
 
-  const primaryNav = buildTopNav(slug);
-  const middleNav = buildMiddleNav(slug);
+  const primaryNav = React.useMemo(() => buildTopNav(slug), [slug]);
+  const middleNav = React.useMemo(() => buildMiddleNav(slug), [slug]);
   const [hotkeysActive, setHotkeysActive] = useState(false);
   useSidebarHotkeys(hotkeysActive, middleNav, router);
 

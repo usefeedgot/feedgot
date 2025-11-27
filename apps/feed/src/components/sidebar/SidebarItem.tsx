@@ -5,7 +5,7 @@ import Link from "next/link";
 import { cn } from "@feedgot/ui/lib/utils";
 import type { NavItem } from "../../types/nav";
 
-export default function SidebarItem({
+function SidebarItem({
   item,
   pathname,
   className = "",
@@ -55,3 +55,4 @@ export default function SidebarItem({
     </Link>
   );
 }
+export default React.memo(SidebarItem)
