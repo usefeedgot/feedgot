@@ -2,8 +2,8 @@
 
 import { Input } from "@feedgot/ui/components/input"
 import { Link2, Loader2 } from "lucide-react"
-import { CompleteIcon } from "@feedgot/ui/icons/completed"
-import { CloseIcon } from "@feedgot/ui/icons/close"
+import  CompletedIcon  from "@feedgot/ui/icons/completed"
+import ClosedIcon from "@feedgot/ui/icons/closed"
 import { isSlugValid } from "./validators"
 
 export default function StepSlug({ slug, onChange, checking, available }: { slug: string; onChange: (v: string) => void; checking: boolean; available: boolean | null }) {
@@ -31,9 +31,9 @@ export default function StepSlug({ slug, onChange, checking, available }: { slug
             {checking ? (
               <Loader2 className="size-4 text-accent animate-spin" />
             ) : available === true ? (
-              <CompleteIcon size={16} className="text-emerald-600" />
+              <CompletedIcon size={16} className="text-emerald-600" />
             ) : available === false || (!!slug && !isSlugValid(slug)) ? (
-              <CloseIcon size={16} className="text-destructive" />
+              <ClosedIcon size={16} className="text-destructive" />
             ) : null}
           </div>
         </div>
