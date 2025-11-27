@@ -18,6 +18,7 @@ import Timezone from "./Timezone";
 import SidebarItem from "./SidebarItem";
 import SidebarSection from "./SidebarSection";
 import { useQuery } from "@tanstack/react-query";
+import { client } from "@feedgot/api/client"
 const secondaryNav: NavItem[] = buildBottomNav();
 
 export default function Sidebar({ className = "", initialCounts, initialTimezone, initialServerNow, initialWorkspace, initialWorkspaces }: { className?: string; initialCounts?: Record<string, number>; initialTimezone?: string | null; initialServerNow?: number; initialWorkspace?: { id: string; name: string; slug: string; logo?: string | null } | undefined; initialWorkspaces?: { id: string; name: string; slug: string; logo?: string | null }[] | undefined }) {
@@ -34,9 +35,9 @@ export default function Sidebar({ className = "", initialCounts, initialTimezone
     queryKey: ["status-counts", slug],
     queryFn: async () => {
       if (!slug) return null as any;
-      const res = await fetch(`/api/status-counts?slug=${encodeURIComponent(slug)}`);
-      const json = (await res.json()) as { counts?: Record<string, number> };
-      return json.counts || null;
+      const res = await client.workspace.statusCounts.$get({ slug });
+      const data = await res.json();
+      return (data?.counts || null) as Record<string, number> | null;
     },
     enabled: !!slug,
     staleTime: 300_000,

@@ -1,7 +1,7 @@
 import { HTTPException } from "hono/http-exception"
-import { eq } from "drizzle-orm"
+import { eq, and, sql } from "drizzle-orm"
 import { j, privateProcedure, publicProcedure } from "../jstack"
-import { workspace, workspaceMember, board, brandingConfig, tag } from "@feedgot/db"
+import { workspace, workspaceMember, board, brandingConfig, tag, post } from "@feedgot/db"
 import { createWorkspaceInputSchema, checkSlugInputSchema } from "../validators/workspace"
 
 export function createWorkspaceRouter() {
@@ -64,6 +64,36 @@ export function createWorkspaceRouter() {
       c.header("Cache-Control", "private, max-age=30, stale-while-revalidate=300")
       return c.superjson({ workspaces: Array.from(map.values()) })
     }),
+
+    statusCounts: publicProcedure
+      .input(checkSlugInputSchema)
+      .get(async ({ ctx, input, c }: any) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) return c.json({ counts: {} })
+
+        const rows = await ctx.db
+          .select({ status: post.roadmapStatus, count: sql<number>`count(*)` })
+          .from(post)
+          .innerJoin(board, eq(post.boardId, board.id))
+          .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false)))
+          .groupBy(post.roadmapStatus)
+
+        const counts: Record<string, number> = {}
+        for (const r of rows as any[]) {
+          const s = String(r.status || "pending").toLowerCase()
+          const key = ["planned","progress","review","completed","pending","closed"].includes(s) ? s : "pending"
+          counts[key] = (counts[key] || 0) + Number(r.count || 0)
+        }
+        for (const key of ["planned","progress","review","completed","pending","closed"]) {
+          if (typeof counts[key] !== "number") counts[key] = 0
+        }
+        c.header("Cache-Control", "public, max-age=30, stale-while-revalidate=300")
+        return c.json({ counts })
+      }),
 
     create: privateProcedure
       .input(createWorkspaceInputSchema)

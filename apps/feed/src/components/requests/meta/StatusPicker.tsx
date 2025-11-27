@@ -5,20 +5,38 @@ import { Button } from "@feedgot/ui/components/button"
 import { Popover, PopoverTrigger, PopoverContent, PopoverList, PopoverListItem } from "@feedgot/ui/components/popover"
 import { DropdownIcon } from "@feedgot/ui/icons/dropdown"
 import { client } from "@feedgot/api/client"
+import { usePathname } from "next/navigation"
+import { useQueryClient } from "@tanstack/react-query"
+import { getSlugFromPath } from "@/config/nav"
 
 const STATUSES = ["pending", "review", "planned", "progress", "completed", "closed"] as const
 
 export default function StatusPicker({ postId, value, onChange }: { postId: string; value?: string; onChange: (v: string) => void }) {
   const [open, setOpen] = React.useState(false)
   const [saving, setSaving] = React.useState(false)
+  const pathname = usePathname() || "/"
+  const slug = React.useMemo(() => getSlugFromPath(pathname), [pathname])
+  const queryClient = useQueryClient()
 
   const select = async (v: string) => {
     if (saving) return
     setSaving(true)
+    const prevStatus = (value || "pending").toLowerCase()
+    const nextStatus = (v || "pending").toLowerCase()
     try {
-      await client.board.updatePostMeta.$post({ postId, roadmapStatus: v })
       onChange(v)
       setOpen(false)
+      if (slug) {
+        queryClient.setQueryData(["status-counts", slug], (prev: any) => {
+          if (!prev) return prev
+          const copy: Record<string, number> = { ...prev }
+          if (prevStatus && typeof copy[prevStatus] === "number") copy[prevStatus] = Math.max(0, (copy[prevStatus] || 0) - 1)
+          copy[nextStatus] = ((copy[nextStatus] || 0) + 1)
+          return copy
+        })
+      }
+      await client.board.updatePostMeta.$post({ postId, roadmapStatus: v })
+      if (slug) queryClient.invalidateQueries({ queryKey: ["status-counts", slug] })
     } finally {
       setSaving(false)
     }

@@ -6,6 +6,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { client } from "@feedgot/api/client"
 import { toast } from "sonner"
 import RoadmapRequestItem from "@/components/roadmap/RoadmapRequestItem"
+import { useQueryClient } from "@tanstack/react-query"
 
 type Item = {
   id: string
@@ -57,6 +58,7 @@ export default function RoadmapBoard({ workspaceSlug, items: initialItems }: { w
   const [savingId, setSavingId] = React.useState<string | null>(null)
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }))
+  const queryClient = useQueryClient()
 
   const grouped = React.useMemo(() => {
     const acc: Record<string, Item[]> = {}
@@ -80,14 +82,23 @@ export default function RoadmapBoard({ workspaceSlug, items: initialItems }: { w
     const target = (overId || "").toLowerCase()
     if (!STATUSES.includes(target as any)) return
     if ((dragged.roadmapStatus || "pending").toLowerCase() === target) return
-    const prev = dragged.roadmapStatus
+    const prev = (dragged.roadmapStatus || "pending").toLowerCase()
     setItems((prevItems) => prevItems.map((i) => (i.id === dragged.id ? { ...i, roadmapStatus: target } : i)))
+    queryClient.setQueryData(["status-counts", workspaceSlug], (prevCounts: any) => {
+      if (!prevCounts) return prevCounts
+      const copy: Record<string, number> = { ...prevCounts }
+      if (typeof copy[prev] === "number") copy[prev] = Math.max(0, (copy[prev] || 0) - 1)
+      copy[target] = ((copy[target] || 0) + 1)
+      return copy
+    })
     setSavingId(dragged.id)
     try {
       await client.board.updatePostMeta.$post({ postId: dragged.id, roadmapStatus: target })
+      queryClient.invalidateQueries({ queryKey: ["status-counts", workspaceSlug] })
       toast.success("Status updated")
     } catch (e: any) {
       setItems((prevItems) => prevItems.map((i) => (i.id === dragged.id ? { ...i, roadmapStatus: prev || null } : i)))
+      queryClient.invalidateQueries({ queryKey: ["status-counts", workspaceSlug] })
       toast.error(e?.message || "Failed to update status")
     } finally {
       setSavingId(null)

@@ -4,6 +4,8 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@feedgot/ui/lib/utils";
 import { Drawer } from "@feedgot/ui/components/drawer";
+import { useQuery } from "@tanstack/react-query";
+import { client } from "@feedgot/api/client";
 import {
   buildTopNav,
   buildMiddleNav,
@@ -19,6 +21,22 @@ export default function MobileSidebar({ className = "", initialCounts, initialTi
   const primaryNav = buildTopNav(slug);
   const middleNav = buildMiddleNav(slug);
   const secondaryNav = buildBottomNav();
+  const { data: statusCounts } = useQuery({
+    queryKey: ["status-counts", slug],
+    queryFn: async () => {
+      if (!slug) return null as any;
+      const res = await client.workspace.statusCounts.$get({ slug });
+      const json = (await res.json()) as { counts?: Record<string, number> };
+      return json.counts || null;
+    },
+    enabled: !!slug,
+    staleTime: 300_000,
+    gcTime: 300_000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    initialData: initialCounts,
+    placeholderData: (prev) => prev ?? initialCounts ?? null,
+  });
 
   return (
     <div className={cn("md:hidden", className)}>
@@ -27,7 +45,7 @@ export default function MobileSidebar({ className = "", initialCounts, initialTi
         <MobileDrawerContent
           pathname={pathname}
           primaryNav={primaryNav}
-          statusCounts={initialCounts}
+          statusCounts={statusCounts}
           initialTimezone={initialTimezone}
           initialServerNow={initialServerNow}
           secondaryNav={secondaryNav}
