@@ -1,6 +1,5 @@
-import { db, workspace, workspaceMember, board, post, postTag, tag } from "@feedgot/db"
+import { db, workspace, workspaceMember, brandingConfig, board, post, postTag, tag } from "@feedgot/db"
 import { eq, and, inArray, desc, asc, sql } from "drizzle-orm"
-import { client } from "@feedgot/api/client"
 
 export async function findFirstAccessibleWorkspaceSlug(userId: string): Promise<string | null> {
   const [owned] = await db
@@ -22,14 +21,15 @@ export async function findFirstAccessibleWorkspaceSlug(userId: string): Promise<
 }
 
 export async function getBrandingColorsBySlug(slug: string): Promise<{ primary: string }> {
-  try {
-    const res = await client.branding.byWorkspaceSlug.$get({ slug })
-    const data = await res.json()
-    const primary = (data?.config?.primaryColor || "#3b82f6") as string
-    return { primary }
-  } catch {
-    return { primary: "#3b82f6" }
-  }
+  let primary = "#3b82f6"
+  const [row] = await db
+    .select({ primaryColor: brandingConfig.primaryColor })
+    .from(workspace)
+    .leftJoin(brandingConfig, eq(brandingConfig.workspaceId, workspace.id))
+    .where(eq(workspace.slug, slug))
+    .limit(1)
+  if (row?.primaryColor) primary = row.primaryColor
+  return { primary }
 }
 
 
@@ -48,23 +48,21 @@ export function normalizeStatus(s: string): string {
 }
 
 export async function getWorkspaceBySlug(slug: string): Promise<{ id: string; name: string; slug: string; logo?: string | null; domain?: string | null } | null> {
-  try {
-    const res = await client.workspace.bySlug.$get({ slug })
-    const data = await res.json()
-    return (data?.workspace || null) as any
-  } catch {
-    return null
-  }
+  const [ws] = await db
+    .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
+    .from(workspace)
+    .where(eq(workspace.slug, slug))
+    .limit(1)
+  return ws || null
 }
 
 export async function getWorkspaceTimezoneBySlug(slug: string): Promise<string | null> {
-  try {
-    const res = await client.workspace.bySlug.$get({ slug })
-    const data = await res.json()
-    return (data?.workspace?.timezone || null) as string | null
-  } catch {
-    return null
-  }
+  const [ws] = await db
+    .select({ timezone: workspace.timezone })
+    .from(workspace)
+    .where(eq(workspace.slug, slug))
+    .limit(1)
+  return (ws as any)?.timezone || null
 }
 
 export async function listUserWorkspaces(userId: string): Promise<Array<{ id: string; name: string; slug: string; logo?: string | null }>> {
@@ -145,14 +143,23 @@ export async function getWorkspacePosts(slug: string, opts?: { statuses?: string
   return rows
 }
 export async function getWorkspaceStatusCounts(slug: string): Promise<Record<string, number>> {
-  try {
-    const res = await client.workspace.statusCounts.$get({ slug })
-    const data = await res.json()
-    const counts = (data?.counts || {}) as Record<string, number>
-    const keys = ["planned", "progress", "review", "completed", "pending", "closed"]
-    for (const k of keys) if (typeof counts[k] !== "number") counts[k] = 0
-    return counts
-  } catch {
-    return { planned: 0, progress: 0, review: 0, completed: 0, pending: 0, closed: 0 }
+  const ws = await getWorkspaceBySlug(slug)
+  if (!ws) return {}
+
+  const rows = await db
+    .select({ status: post.roadmapStatus, count: sql<number>`count(*)` })
+    .from(post)
+    .innerJoin(board, eq(post.boardId, board.id))
+    .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false)))
+    .groupBy(post.roadmapStatus)
+
+  const counts: Record<string, number> = {}
+  for (const r of rows as any[]) {
+    const s = normalizeStatus(String(r.status))
+    counts[s] = (counts[s] || 0) + Number(r.count)
   }
+  for (const key of ["planned", "progress", "review", "completed", "pending", "closed"]) {
+    if (typeof counts[key] !== "number") counts[key] = 0
+  }
+  return counts
 }
