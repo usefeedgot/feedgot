@@ -2,6 +2,7 @@ import { HTTPException } from "hono/http-exception"
 import { and, eq, gt } from "drizzle-orm"
 import { j, privateProcedure, publicProcedure } from "../jstack"
 import { workspace, workspaceMember, workspaceInvite, user } from "@feedgot/db"
+import { sendWorkspaceInvite } from "@feedgot/auth/email"
 import {
   byWorkspaceInputSchema,
   inviteMemberInputSchema,
@@ -50,7 +51,7 @@ export function createTeamRouter() {
       .input(byWorkspaceInputSchema)
       .get(async ({ ctx, input, c }: any) => {
         const [ws] = await ctx.db
-          .select({ id: workspace.id, ownerId: workspace.ownerId })
+          .select({ id: workspace.id, ownerId: workspace.ownerId, name: workspace.name, slug: workspace.slug })
           .from(workspace)
           .where(eq(workspace.slug, input.slug))
           .limit(1)
@@ -129,6 +130,12 @@ export function createTeamRouter() {
           token,
           expiresAt: expires,
         })
+
+        try {
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+          const url = `${baseUrl}/invite/${token}`
+          await sendWorkspaceInvite(input.email.trim().toLowerCase(), ws.name || "Workspace", url)
+        } catch {}
 
         return c.superjson({ ok: true, token })
       }),

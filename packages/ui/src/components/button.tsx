@@ -21,8 +21,8 @@ const interactive =
             cn("bg-secondary text-secondary-foreground hover:bg-secondary/80", interactive, "ring-secondary/50 hover:ring-secondary/60"),
           ghost:
             cn("hover:bg-muted hover:text-accent-foreground", interactive, "ring-border/50 hover:ring-accent/60 dark:hover:bg-muted/50"),
-          link: "text-primary underline-offset-4 hover:underline bg-transparent ring-0 hover:ring-0 focus-visible:ring-0 focus-visible:border-transparent ring-offset-0 shadow-none border-none",
-          quiet: cn("bg-primary text-primary-foreground hover:bg-primary/90", "ring-0 ring-offset-0 focus-visible:ring-0 hover:ring-0 focus-visible:border-transparent"),
+          link: "text-primary underline-offset-4 hover:underline bg-transparent",
+          quiet: "bg-primary text-primary-foreground hover:bg-primary/70",
         },
         size: {
           default: "h-8 px-2 py-2 has-[>svg]:px-3",
