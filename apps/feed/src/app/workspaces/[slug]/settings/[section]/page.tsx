@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import SettingsTabs from "@/components/settings/global/SettingsTabs"
 import { createPageMetadata } from "@/lib/seo"
 import { getSectionMeta } from "@/config/sections"
+import { client } from "@feedgot/api/client"
 
 export const dynamic = "force-dynamic"
 
@@ -19,6 +20,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function SettingsSectionPage({ params }: Props) {
-  const { slug } = await params
+  const { slug, section } = await params
+  if (section === "team") {
+    try {
+      const res = await client.team.membersByWorkspaceSlug.$get({ slug })
+      const data = await res.json()
+      return <SettingsTabs slug={slug} initialTeam={{ members: data?.members || [], invites: data?.invites || [], meId: data?.meId || null }} />
+    } catch {
+      return <SettingsTabs slug={slug} />
+    }
+  }
   return <SettingsTabs slug={slug} />
 }

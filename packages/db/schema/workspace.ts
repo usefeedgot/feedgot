@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer, json, uuid, uniqueIndex } from 'drizzle-orm/pg-core'
+import { pgTable, text, timestamp, boolean, integer, json, uuid, uniqueIndex, index } from 'drizzle-orm/pg-core'
 import { user } from './auth'
 
 export const workspace = pgTable('workspace', {
@@ -72,6 +72,8 @@ export const workspaceMember = pgTable('workspace_member',{
       table.workspaceId,
       table.userId,
     ),
+    workspaceMemberWorkspaceIdx: index('workspace_member_workspace_idx').on(table.workspaceId),
+    workspaceMemberActiveIdx: index('workspace_member_workspace_active_idx').on(table.workspaceId, table.isActive),
   } as const)
 )
 

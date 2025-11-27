@@ -12,13 +12,14 @@ import DomainSection from "../domain/Domain"
 import IntegrationsSection from "../integrations/Integrations"
 import SSOSection from "../sso/SSO"
 import DataSection from "../data/Data"
+import type { Member, Invite } from "../team/types"
 import { SECTIONS } from "../../../config/sections"
 
-type Props = { slug: string }
+type Props = { slug: string; initialTeam?: { members: Member[]; invites: Invite[]; meId: string | null } }
 
 const sections = SECTIONS
 
-export default function SettingsTabs({ slug }: Props) {
+export default function SettingsTabs({ slug, initialTeam }: Props) {
   const router = useRouter()
   const routeParams = useParams()
   const paramSection = typeof routeParams?.section === "string" ? routeParams.section : undefined
@@ -52,7 +53,7 @@ export default function SettingsTabs({ slug }: Props) {
 
         {sections.map((s) => (
           <TabsContent key={s.value} value={s.value} className="mt-2">
-            <SectionRenderer slug={slug} section={s.value} />
+            <SectionRenderer slug={slug} section={s.value} initialTeam={initialTeam} />
           </TabsContent>
         ))}
       </Tabs>
@@ -60,12 +61,12 @@ export default function SettingsTabs({ slug }: Props) {
   )
 }
 
-function SectionRenderer({ slug, section }: { slug: string; section: string }) {
+function SectionRenderer({ slug, section, initialTeam }: { slug: string; section: string; initialTeam?: { members: Member[]; invites: Invite[]; meId: string | null } }) {
   switch (section) {
     case "branding":
       return <BrandingSection slug={slug} />
     case "team":
-      return <TeamSection slug={slug} />
+      return <TeamSection slug={slug} initialMembers={initialTeam?.members} initialInvites={initialTeam?.invites} initialMeId={initialTeam?.meId} />
     case "feedback":
       return <FeedbackSection />
     case "changelog":

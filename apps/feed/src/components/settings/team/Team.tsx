@@ -14,12 +14,17 @@ import type { Member, Invite } from "./types";
 
  
 
-export default function TeamSection({ slug }: { slug: string }) {
-  const [members, setMembers] = React.useState<Member[]>([]);
-  const [invites, setInvites] = React.useState<Invite[]>([]);
-  const [loading, setLoading] = React.useState(true);
+export default function TeamSection({
+  slug,
+  initialMembers,
+  initialInvites,
+  initialMeId,
+}: { slug: string; initialMembers?: Member[]; initialInvites?: Invite[]; initialMeId?: string | null }) {
+  const [members, setMembers] = React.useState<Member[]>(initialMembers || []);
+  const [invites, setInvites] = React.useState<Invite[]>(initialInvites || []);
+  const [loading, setLoading] = React.useState(!initialMembers);
   const [inviteOpen, setInviteOpen] = React.useState(false);
-  const [meId, setMeId] = React.useState<string | null>(null);
+  const [meId, setMeId] = React.useState<string | null>(initialMeId ?? null);
   const [menuFor, setMenuFor] = React.useState<string | null>(null);
 
   React.useEffect(() => {
