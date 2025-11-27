@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@feedgot/auth/client";
 import { Button } from "@feedgot/ui/components/button";
 import { Input } from "@feedgot/ui/components/input";
@@ -18,6 +18,9 @@ import { LoadingButton } from "@/components/loading-button";
 
 export default function SignUp() {
   const router = useRouter();
+  const search = useSearchParams();
+  const rawRedirect = search?.get("redirect") || "";
+  const redirect = rawRedirect.startsWith("/") ? rawRedirect : "/start";
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
@@ -40,10 +43,10 @@ export default function SignUp() {
         name: displayName,
         email: email.trim(),
         password,
-        callbackURL: "/auth/verify?email=" + encodeURIComponent(email.trim()),
+        callbackURL: `/auth/verify?email=${encodeURIComponent(email.trim())}${rawRedirect ? `&redirect=${encodeURIComponent(rawRedirect)}` : ""}`,
       });
       toast.success("Account created. Check your email for the code");
-      router.push(`/auth/verify?email=${encodeURIComponent(email)}`);
+      router.push(`/auth/verify?email=${encodeURIComponent(email)}${rawRedirect ? `&redirect=${encodeURIComponent(rawRedirect)}` : ""}`);
     } catch (e: any) {
       setError(e?.message || "Failed to sign up");
       toast.error(e?.message || "Failed to sign up");
@@ -58,7 +61,7 @@ export default function SignUp() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/start",
+        callbackURL: redirect,
       });
     } catch (err) {
       setError("Failed with Google");
@@ -73,7 +76,7 @@ export default function SignUp() {
     try {
       await authClient.signIn.social({
         provider: "github",
-        callbackURL: "/start",
+        callbackURL: redirect,
       });
     } catch (err) {
       setError("Failed with GitHub");
@@ -190,7 +193,7 @@ export default function SignUp() {
           <p className="text-accent-foreground text-center text-sm sm:text-base">
             Already have an account?
             <Button asChild variant="link" className="px-2">
-              <Link href="/auth/sign-in">Sign in</Link>
+              <Link href={rawRedirect ? `/auth/sign-in?redirect=${encodeURIComponent(rawRedirect)}` : "/auth/sign-in"}>Sign in</Link>
             </Button>
           </p>
         </div>

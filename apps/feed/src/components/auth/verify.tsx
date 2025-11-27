@@ -13,6 +13,8 @@ import { LoadingButton } from "@/components/loading-button";
 export default function Verify() {
   const router = useRouter();
   const params = useSearchParams();
+  const rawRedirect = params.get("redirect") || "";
+  const redirect = rawRedirect.startsWith("/") ? rawRedirect : "/start";
   const initialEmail = useMemo(() => params.get("email") || "", [params]);
   const [email, setEmail] = useState(initialEmail);
   const [code, setCode] = useState("");
@@ -62,7 +64,7 @@ export default function Verify() {
         return;
       }
       toast.success("Email verified");
-      router.push("/start");
+      router.push(redirect);
     } catch (e: any) {
       setError(e?.message || "Invalid or expired code");
       toast.error(e?.message || "Invalid or expired code");
@@ -158,7 +160,7 @@ export default function Verify() {
           <p className="text-accent-foreground text-center text-sm sm:text-base">
             Already verified?
             <Button asChild variant="link" className="px-2">
-              <Link href="/auth/sign-in">Sign in</Link>
+              <Link href={rawRedirect ? `/auth/sign-in?redirect=${encodeURIComponent(rawRedirect)}` : "/auth/sign-in"}>Sign in</Link>
             </Button>
           </p>
         </div>
