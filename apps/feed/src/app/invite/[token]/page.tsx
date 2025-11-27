@@ -12,6 +12,7 @@ export default function InviteAcceptPage({ params }: { params: Promise<{ token: 
   const [token, setToken] = React.useState<string>("")
   const [workspaceName, setWorkspaceName] = React.useState<string | null>(null)
   const [workspaceLogo, setWorkspaceLogo] = React.useState<string | null>(null)
+  const [inviterName, setInviterName] = React.useState<string | null>(null)
   const [user, setUser] = React.useState<any>(null)
   const router = useRouter()
 
@@ -27,6 +28,7 @@ export default function InviteAcceptPage({ params }: { params: Promise<{ token: 
         if (!mounted) return
         setWorkspaceName((data?.invite?.workspaceName as string) || null)
         setWorkspaceLogo((data?.invite?.workspaceLogo as string) || null)
+        setInviterName((data?.invite?.invitedByName as string) || null)
         const s = await authClient.getSession()
         if (mounted) setUser(s?.data?.user || null)
       } catch {}
@@ -40,6 +42,7 @@ export default function InviteAcceptPage({ params }: { params: Promise<{ token: 
     <Invite
       workspaceName={workspaceName}
       workspaceLogo={workspaceLogo}
+      inviterName={inviterName}
       user={user}
       busy={busy}
       onAccept={async () => {

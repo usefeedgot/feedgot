@@ -357,7 +357,7 @@ export function createTeamRouter() {
       .input(acceptInviteInputSchema)
       .get(async ({ ctx, input, c }: any) => {
         const [inv] = await ctx.db
-          .select({ id: workspaceInvite.id, workspaceId: workspaceInvite.workspaceId, email: workspaceInvite.email, role: workspaceInvite.role, expiresAt: workspaceInvite.expiresAt, acceptedAt: workspaceInvite.acceptedAt })
+          .select({ id: workspaceInvite.id, workspaceId: workspaceInvite.workspaceId, email: workspaceInvite.email, role: workspaceInvite.role, expiresAt: workspaceInvite.expiresAt, acceptedAt: workspaceInvite.acceptedAt, invitedBy: workspaceInvite.invitedBy })
           .from(workspaceInvite)
           .where(eq(workspaceInvite.token, input.token))
           .limit(1)
@@ -372,7 +372,12 @@ export function createTeamRouter() {
           .from(workspace)
           .where(eq(workspace.id, inv.workspaceId))
           .limit(1)
-        return c.superjson({ invite: { workspaceName: ws?.name || "Workspace", workspaceLogo: ws?.logo || null, role: inv.role } })
+        const [inviter] = await ctx.db
+          .select({ name: user.name, email: user.email })
+          .from(user)
+          .where(eq(user.id, inv.invitedBy as any))
+          .limit(1)
+        return c.superjson({ invite: { workspaceName: ws?.name || "Workspace", workspaceLogo: ws?.logo || null, role: inv.role, invitedByName: inviter?.name || inviter?.email || null } })
       }),
 
     addExisting: privateProcedure

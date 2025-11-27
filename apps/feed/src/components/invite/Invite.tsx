@@ -5,7 +5,7 @@ import { Button } from "@feedgot/ui/components/button"
 import { Avatar, AvatarImage, AvatarFallback } from "@feedgot/ui/components/avatar"
 import { getInitials } from "@/utils/user-utils"
 
-export default function Invite({ workspaceName, workspaceLogo, user, busy, onAccept, onDecline }: { workspaceName?: string | null; workspaceLogo?: string | null; user?: { name?: string; email?: string; image?: string | null } | null; busy?: boolean; onAccept: () => void; onDecline: () => void }) {
+export default function Invite({ workspaceName, workspaceLogo, inviterName, user, busy, onAccept, onDecline }: { workspaceName?: string | null; workspaceLogo?: string | null; inviterName?: string | null; user?: { name?: string; email?: string; image?: string | null } | null; busy?: boolean; onAccept: () => void; onDecline: () => void }) {
   const name = (user?.name || user?.email?.split("@")[0] || "").trim()
   const email = (user?.email || "").trim()
   const initials = getInitials(name || workspaceName || "U")
@@ -15,7 +15,7 @@ export default function Invite({ workspaceName, workspaceLogo, user, busy, onAcc
         <div className="mx-auto w-full max-w-[380px]">
           <div className="text-left">
             <h1 className="text-4xl font-semibold">You've been invited</h1>
-            <p className="mt-1 text-lg text-accent">{workspaceName ? `Join ${workspaceName}` : "Join this workspace"}</p>
+            <p className="mt-1 text-lg text-accent">{inviterName && workspaceName ? `${inviterName} has invited you to join ${workspaceName}`}</p>
             <div className="mt-4 flex items-center justify-start gap-3">
               <div className="rounded-md border ring-1 ring-border overflow-hidden">
                 <Avatar className="size-8">
@@ -31,7 +31,7 @@ export default function Invite({ workspaceName, workspaceLogo, user, busy, onAcc
           </div>
           <div className="mt-4 flex flex-col items-start gap-2">
             <Button type="button" variant="quiet" size="lg" className="w-full" disabled={busy} onClick={onAccept}>Accept invitation</Button>
-            <Button type="button" variant="quiet" size="lg" className="w-full bg-red-500" disabled={busy} onClick={onDecline}>Decline</Button>
+            <Button type="button" variant="quiet" size="lg" className="w-full" disabled={busy} onClick={onDecline}>Decline</Button>
           </div>
         </div>
       </div>

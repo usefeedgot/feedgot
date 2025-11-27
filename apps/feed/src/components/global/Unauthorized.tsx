@@ -16,11 +16,11 @@ export default function UnauthorizedWorkspace({ slug, fallbackSlug }: { slug: st
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             {fallbackSlug ? (
-              <Button asChild variant="quiet">
+              <Button asChild ize="lg" variant="quiet">
                 <a href={`/workspaces/${fallbackSlug}`}>Go to my workspace</a>
               </Button>
             ) : (
-              <Button asChild variant="quiet">
+              <Button asChild  size="lg" variant="quiet">
                 <a href="/workspaces/new">Create a workspace</a>
               </Button>
             )}
