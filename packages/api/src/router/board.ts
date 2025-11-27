@@ -245,6 +245,61 @@ export function createBoardRouter() {
         return c.superjson({ tags: rows })
       }),
 
+    postCountByWorkspaceSlug: publicProcedure
+      .input(
+        z.object({
+          slug: checkSlugInputSchema.shape.slug,
+          statuses: z.array(z.string()).optional(),
+          boardSlugs: z.array(z.string()).optional(),
+          tagSlugs: z.array(z.string()).optional(),
+          search: z.string().optional(),
+        })
+      )
+      .get(async ({ ctx, input, c }: any) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) return c.superjson({ count: 0 })
+
+        const statuses = Array.isArray(input.statuses) ? input.statuses : []
+        const normalizedStatuses = statuses.map((s: string) => String(s).trim().toLowerCase()).filter(Boolean)
+        const boardSlugs = (input.search ? [] : (input.boardSlugs || []).map((b: string) => String(b).trim().toLowerCase()).filter(Boolean))
+        const tagSlugs = (input.tagSlugs || []).map((t: string) => String(t).trim().toLowerCase()).filter(Boolean)
+
+        let tagPostIds: string[] | null = null
+        if (tagSlugs.length > 0) {
+          const tagRows = await ctx.db
+            .select({ postId: postTag.postId })
+            .from(postTag)
+            .innerJoin(tag, eq(postTag.tagId, tag.id))
+            .innerJoin(post, eq(postTag.postId, post.id))
+            .innerJoin(board, eq(post.boardId, board.id))
+            .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false), sql`${tag.slug} in ${tagSlugs}`))
+          tagPostIds = Array.from(new Set(tagRows.map((r: { postId: string }) => String(r.postId))))
+          if (tagPostIds.length === 0) return c.superjson({ count: 0 })
+        }
+
+        const filters: any[] = [eq(board.workspaceId, ws.id), eq(board.isSystem, false)]
+        if (normalizedStatuses.length > 0) filters.push(sql`${post.roadmapStatus} in ${normalizedStatuses}`)
+        if (boardSlugs.length > 0) filters.push(sql`${board.slug} in ${boardSlugs}`)
+        if (tagPostIds) filters.push(sql`${post.id} in ${tagPostIds}`)
+        if ((input.search || '').trim()) {
+          const q = `%${String(input.search).trim()}%`
+          filters.push(sql`(${post.title} ilike ${q} or ${post.content} ilike ${q})`)
+        }
+
+        const [row] = await ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(post)
+          .innerJoin(board, eq(post.boardId, board.id))
+          .where(and(...filters) as any)
+          .limit(1)
+
+        return c.superjson({ count: Number(row?.count || 0) })
+      }),
+
     updatePostMeta: privateProcedure
       .input(updatePostMetaSchema)
       .post(async ({ ctx, input, c }: any) => {
