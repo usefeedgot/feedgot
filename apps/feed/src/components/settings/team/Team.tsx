@@ -163,7 +163,7 @@ export default function TeamSection({ slug }: { slug: string }) {
                                   <MoreVertical className="size-4" />
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent list className="min-w-[160px]">
+                              <PopoverContent list className="min-w-0 w-fit">
                                 <PopoverList>
                                   {(["admin","member","viewer"] as const).map((r) => (
                                     <PopoverListItem
