@@ -12,7 +12,6 @@ export async function saveBranding(slug: string, input: BrandingConfig & { logoU
     slug,
     logoUrl: input.logoUrl,
     primaryColor: input.primaryColor,
-    accentColor: input.accentColor,
     theme: input.theme,
     hidePoweredBy: input.hidePoweredBy,
   })

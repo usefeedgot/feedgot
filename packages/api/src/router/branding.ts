@@ -12,10 +12,9 @@ export function createBrandingRouter() {
         const [row] = await ctx.db
           .select({
             id: brandingConfig.id,
-            logoUrl: brandingConfig.logoUrl,
-            faviconUrl: brandingConfig.faviconUrl,
+            // expose current workspace logo for convenience
+            logoUrl: workspace.logo,
             primaryColor: brandingConfig.primaryColor,
-            accentColor: brandingConfig.accentColor,
             theme: brandingConfig.theme,
             showLogo: brandingConfig.showLogo,
             showWorkspaceName: brandingConfig.showWorkspaceName,
@@ -41,10 +40,7 @@ export function createBrandingRouter() {
         if (!ws) return c.json({ ok: false })
 
         const update: Record<string, any> = {}
-        if (typeof input.logoUrl !== "undefined") update.logoUrl = input.logoUrl
-        if (typeof input.faviconUrl !== "undefined") update.faviconUrl = input.faviconUrl
         if (typeof input.primaryColor !== "undefined") update.primaryColor = input.primaryColor
-        if (typeof input.accentColor !== "undefined") update.accentColor = input.accentColor
         if (typeof input.theme !== "undefined") update.theme = input.theme
         if (typeof input.showLogo !== "undefined") update.showLogo = input.showLogo
         if (typeof input.showWorkspaceName !== "undefined") update.showWorkspaceName = input.showWorkspaceName
