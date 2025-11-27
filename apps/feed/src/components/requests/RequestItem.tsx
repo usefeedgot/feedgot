@@ -33,10 +33,6 @@ function RequestItemBase({ item, workspaceSlug }: { item: RequestItemData; works
     <li className="rounded-md border bg-card p-3">
       <div className="flex items-center gap-3">
         <StatusIcon status={item.roadmapStatus || undefined} className="w-[18px] h-[18px] text-foreground/80" />
-        <Avatar className="size-6">
-          <AvatarImage src={!item.isAnonymous ? (item.authorImage || randomAvatarUrl(item.id || item.slug)) : randomAvatarUrl(item.id || item.slug)} alt={item.isAnonymous ? "Anonymous" : (item.authorName || "Anonymous")} />
-          <AvatarFallback>{getInitials(item.isAnonymous ? "Anonymous" : (item.authorName || "Anonymous"))}</AvatarFallback>
-        </Avatar>
         <Link href={href} className="text-sm font-medium text-foreground hover:text-primary truncate flex-1">
           {item.title}
         </Link>
@@ -50,6 +46,10 @@ function RequestItemBase({ item, workspaceSlug }: { item: RequestItemData; works
             <span className="tabular-nums">{item.commentCount}</span>
           </span>
           <span>{new Intl.DateTimeFormat(undefined, { month: "short", day: "2-digit" }).format(new Date(item.publishedAt ?? item.createdAt))}</span>
+          <Avatar className="size-6 bg-muted ring-1 ring-border rounded-full">
+            <AvatarImage src={!item.isAnonymous ? (item.authorImage || randomAvatarUrl(item.id || item.slug)) : randomAvatarUrl(item.id || item.slug)} alt={item.isAnonymous ? "Anonymous" : (item.authorName || "Anonymous")} />
+            <AvatarFallback>{getInitials(item.isAnonymous ? "Anonymous" : (item.authorName || "Anonymous"))}</AvatarFallback>
+          </Avatar>
         </div>
       </div>
     </li>
