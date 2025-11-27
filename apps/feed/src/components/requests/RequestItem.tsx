@@ -30,7 +30,7 @@ export type RequestItemData = {
 function RequestItemBase({ item, workspaceSlug }: { item: RequestItemData; workspaceSlug: string }) {
   const href = `/workspaces/${workspaceSlug}/requests/${item.slug}`
   return (
-    <li className="rounded-md border bg-card p-3">
+    <li className="rounded-md border bg-card p-2.5">
       <div className="flex items-center gap-3">
         <StatusIcon status={item.roadmapStatus || undefined} className="w-[18px] h-[18px] text-foreground/80" />
         <Link href={href} className="text-sm font-medium text-foreground hover:text-primary truncate flex-1">
@@ -38,12 +38,12 @@ function RequestItemBase({ item, workspaceSlug }: { item: RequestItemData; works
         </Link>
         <div className="ml-auto flex items-center gap-3 text-xs text-accent">
           <div className="inline-flex items-center gap-2 bg-muted rounded-full ring-1 ring-border px-2 py-1">
-            <span className="inline-flex items-center gap-1.5">
-              <LoveIcon aria-hidden className="w-4 h-4" />
+            <span className="inline-flex items-center gap-1">
+              <LoveIcon aria-hidden className="w-3 h-3" />
               <span className="tabular-nums">{item.upvotes}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5">
-              <CommentsIcon aria-hidden className="w-4 h-4" />
+            <span className="inline-flex items-center gap-1">
+              <CommentsIcon aria-hidden className="w-3 h-3" />
               <span className="tabular-nums">{item.commentCount}</span>
             </span>
           </div>
