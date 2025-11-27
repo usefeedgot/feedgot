@@ -81,7 +81,6 @@ export default async function RequestsPage({ params, searchParams }: Props) {
 
   return (
     <section className="space-y-4">
-      
       <RequestList items={rows as any} workspaceSlug={slug} />
       <RequestPagination workspaceSlug={slug} page={page} pageSize={pageSize} totalCount={totalCount} />
     </section>
