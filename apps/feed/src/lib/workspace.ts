@@ -14,7 +14,7 @@ export async function findFirstAccessibleWorkspaceSlug(userId: string): Promise<
     .select({ slug: workspace.slug })
     .from(workspaceMember)
     .innerJoin(workspace, eq(workspaceMember.workspaceId, workspace.id))
-    .where(eq(workspaceMember.userId, userId))
+    .where(and(eq(workspaceMember.userId, userId), eq(workspaceMember.isActive, true)))
     .limit(1)
 
   return memberWs?.slug || null
@@ -75,7 +75,7 @@ export async function listUserWorkspaces(userId: string): Promise<Array<{ id: st
     .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo })
     .from(workspaceMember)
     .innerJoin(workspace, eq(workspaceMember.workspaceId, workspace.id))
-    .where(eq(workspaceMember.userId, userId))
+    .where(and(eq(workspaceMember.userId, userId), eq(workspaceMember.isActive, true)))
 
   const map = new Map<string, { id: string; name: string; slug: string; logo?: string | null }>()
   for (const w of owned.concat(memberRows)) map.set(w.id, w as any)

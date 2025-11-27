@@ -82,6 +82,26 @@ export function createTeamRouter() {
 
         const members = rawMembers.map((m: any) => ({ ...m, isOwner: m.userId === ws.ownerId }))
 
+        if (!members.some((m: any) => m.userId === ws.ownerId)) {
+          const [owner] = await ctx.db
+            .select({ id: user.id, name: user.name, email: user.email, image: user.image })
+            .from(user)
+            .where(eq(user.id, ws.ownerId))
+            .limit(1)
+          if (owner) {
+            members.unshift({
+              userId: ws.ownerId,
+              role: "admin",
+              joinedAt: null,
+              isActive: true,
+              name: owner.name,
+              email: owner.email,
+              image: owner.image,
+              isOwner: true,
+            } as any)
+          }
+        }
+
         const now = new Date()
         const invites = await ctx.db
           .select({
@@ -247,11 +267,20 @@ export function createTeamRouter() {
         const allowed = isSelf || me?.permissions?.canManageMembers || me?.role === "admin" || ws.ownerId === meId
         if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
 
-        if (input.userId === ws.ownerId && !isSelf) throw new HTTPException(403, { message: "Cannot remove owner" })
+        if (input.userId === ws.ownerId) throw new HTTPException(403, { message: "Owner cannot leave" })
+        const [u] = await ctx.db
+          .select({ email: user.email })
+          .from(user)
+          .where(eq(user.id, input.userId))
+          .limit(1)
         await ctx.db
-          .update(workspaceMember)
-          .set({ isActive: false, updatedAt: new Date() })
+          .delete(workspaceMember)
           .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.userId, input.userId)))
+        if (u?.email) {
+          try {
+            await ctx.db.delete(workspaceInvite).where(and(eq(workspaceInvite.workspaceId, ws.id), eq(workspaceInvite.email, u.email)))
+          } catch {}
+        }
 
         return c.json({ ok: true })
       }),

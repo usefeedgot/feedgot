@@ -54,9 +54,9 @@ export function createWorkspaceRouter() {
           .where(eq(workspace.ownerId, userId)),
         ctx.db
           .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
-          .from(workspace)
-          .innerJoin(workspaceMember, eq(workspaceMember.workspaceId, workspace.id))
-          .where(eq(workspaceMember.userId, userId)),
+          .from(workspaceMember)
+          .innerJoin(workspace, eq(workspaceMember.workspaceId, workspace.id))
+          .where(and(eq(workspaceMember.userId, userId), eq(workspaceMember.isActive, true))),
       ])
 
       const all = [...owned, ...member]

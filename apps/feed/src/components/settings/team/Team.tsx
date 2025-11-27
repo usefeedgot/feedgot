@@ -155,9 +155,9 @@ export default function TeamSection({ slug }: { slug: string }) {
                     <Button
                       variant="ghost"
                       onClick={() => handleRemove(m.userId)}
-                      disabled={m.isOwner === true && m.userId !== meId}
+                      disabled={m.isOwner === true}
                     >
-                      {m.userId === meId ? "Leave" : "Remove"}
+                      {m.isOwner ? "Owner" : m.userId === meId ? "Leave" : "Remove"}
                     </Button>
                   </div>
                 </div>
