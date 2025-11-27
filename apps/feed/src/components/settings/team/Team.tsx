@@ -115,9 +115,9 @@ export default function TeamSection({ slug }: { slug: string }) {
   };
 
   const badgeFor = (m: Member) => {
-    if (m.isOwner) return "bg-muted text-accent";
-    if (m.role === "admin") return "bg-primary/10 text-primary";
-    if (m.role === "viewer") return "bg-muted text-accent";
+    if (m.isOwner) return "bg-primary/20 text-primary";
+    if (m.role === "admin") return "bg-orange-50 text-orange-500";
+    if (m.role === "viewer") return "bg-green-50 text-green-500";
     return "bg-card text-accent";
   };
 
@@ -130,7 +130,7 @@ export default function TeamSection({ slug }: { slug: string }) {
               <TableHeader>
                 <TableRow>
                   <TableHead className="px-4">Name</TableHead>
-                  <TableHead className="px-4 text-right">Role</TableHead>
+                  <TableHead className="px-4 w-48 text-center">Role</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -153,28 +153,36 @@ export default function TeamSection({ slug }: { slug: string }) {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 text-right">
-                        <div className="inline-flex items-center gap-2 justify-end">
-                          <span className={cn("text-xs px-2 py-0.5 rounded-md capitalize", badgeFor(m))}>{m.isOwner ? "owner" : m.role}</span>
-                          <Popover open={menuFor === m.userId} onOpenChange={(v) => setMenuFor(v ? m.userId : null)}>
-                            <PopoverTrigger asChild>
-                              <Button type="button" variant="ghost" size="icon-sm" disabled={m.isOwner === true} aria-label="More">
-                                <MoreVertical className="size-4" />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent list className="min-w-[160px]">
-                              <PopoverList>
-                                {(["admin","member","viewer"] as const).map((r) => (
-                                  <PopoverListItem key={r} role="menuitemradio" aria-checked={m.role === r} onClick={() => handleRoleChange(m.userId, r)}>
-                                    <span className="text-sm capitalize">{r}</span>
-                                    {m.role === r ? <span className="ml-auto text-xs">✓</span> : null}
-                                  </PopoverListItem>
-                                ))}
-                              </PopoverList>
-                            </PopoverContent>
-                          </Popover>
+                      <TableCell className="px-4 w-48">
+                        <div className="relative h-6">
+                          <span className={cn("text-xs px-2 py-0.5 rounded-md capitalize absolute left-1/2 -translate-x-1/2", badgeFor(m))}>{m.isOwner ? "owner" : m.role}</span>
+                          <div className="absolute right-0 top-1/2 -translate-y-1/2">
+                            <Popover open={menuFor === m.userId} onOpenChange={(v) => setMenuFor(v ? m.userId : null)}>
+                              <PopoverTrigger asChild>
+                                <Button type="button" variant="ghost" size="icon-sm" disabled={m.isOwner === true} aria-label="More">
+                                  <MoreVertical className="size-4" />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent list className="min-w-[160px]">
+                                <PopoverList>
+                                  {(["admin","member","viewer"] as const).map((r) => (
+                                    <PopoverListItem
+                                      key={r}
+                                      role="menuitemradio"
+                                      aria-checked={m.role === r}
+                                      onClick={() => handleRoleChange(m.userId, r)}
+                                    >
+                                      <span className="text-sm capitalize">{r}</span>
+                                      {m.role === r ? <span className="ml-auto text-xs">✓</span> : null}
+                                    </PopoverListItem>
+                                  ))}
+                                </PopoverList>
+                              </PopoverContent>
+                            </Popover>
+                          </div>
                         </div>
                       </TableCell>
+                      
                     </TableRow>
                   ))
                 )}
