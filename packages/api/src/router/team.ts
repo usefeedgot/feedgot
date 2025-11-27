@@ -1,5 +1,5 @@
 import { HTTPException } from "hono/http-exception"
-import { and, eq, gt, isNull, sql } from "drizzle-orm"
+import { and, eq, gt, isNull } from "drizzle-orm"
 import { j, privateProcedure, publicProcedure } from "../jstack"
 import { workspace, workspaceMember, workspaceInvite, user, brandingConfig } from "@feedgot/db"
 import { sendWorkspaceInvite } from "@feedgot/auth/email"
@@ -65,23 +65,6 @@ export function createTeamRouter() {
           .limit(1)
         const allowed = me || ws.ownerId === meId
         if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
-
-        const nowMeta = new Date()
-        const [mmeta] = await ctx.db
-          .select({ count: sql<number>`count(*)`, maxUpdatedAt: sql<Date>`max(${workspaceMember.updatedAt})` })
-          .from(workspaceMember)
-          .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.isActive, true)))
-          .limit(1)
-        const [imeta] = await ctx.db
-          .select({ count: sql<number>`count(*)`, maxCreatedAt: sql<Date>`max(${workspaceInvite.createdAt})` })
-          .from(workspaceInvite)
-          .where(and(eq(workspaceInvite.workspaceId, ws.id), gt(workspaceInvite.expiresAt, nowMeta), isNull(workspaceInvite.acceptedAt)))
-          .limit(1)
-        const etag = `W/"${ws.id}:${Number((mmeta as any)?.count || 0)}:${Number((imeta as any)?.count || 0)}:${Number((mmeta as any)?.maxUpdatedAt?.getTime?.() || 0)}:${Number((imeta as any)?.maxCreatedAt?.getTime?.() || 0)}"`
-        const inm = c.req.header("If-None-Match") || c.req.header("if-none-match")
-        c.header("ETag", etag)
-        c.header("Cache-Control", "private, max-age=120, stale-while-revalidate=600")
-        if (inm && inm === etag) return c.text("", 304)
 
         const rawMembers = await ctx.db
           .select({
