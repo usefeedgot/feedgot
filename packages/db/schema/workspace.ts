@@ -101,6 +101,8 @@ export const workspaceInvite = pgTable(
       table.workspaceId,
       table.email,
     ),
+    workspaceInviteWorkspaceIdx: index('workspace_invite_workspace_idx').on(table.workspaceId),
+    workspaceInviteActiveIdx: index('workspace_invite_workspace_active_idx').on(table.workspaceId, table.expiresAt, table.acceptedAt),
   } as const)
 )
 

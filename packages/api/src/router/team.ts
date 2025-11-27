@@ -116,7 +116,7 @@ export function createTeamRouter() {
           .from(workspaceInvite)
           .where(and(eq(workspaceInvite.workspaceId, ws.id), gt(workspaceInvite.expiresAt, now), isNull(workspaceInvite.acceptedAt)))
 
-        c.header("Cache-Control", "private, max-age=15, stale-while-revalidate=120")
+        c.header("Cache-Control", "private, max-age=120, stale-while-revalidate=600")
         return c.superjson({ members, invites, meId })
       }),
 
