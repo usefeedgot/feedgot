@@ -6,6 +6,7 @@ import { LayersIcon } from "@feedgot/ui/icons/layers"
 import { cn } from "@feedgot/ui/lib/utils"
 import { client } from "@feedgot/api/client"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useFilterPopover } from "@/lib/filter-store"
 import { useQuery } from "@tanstack/react-query"
 import { getSlugFromPath, workspaceBase } from "@/config/nav"
 import { parseArrayParam, buildRequestsUrl, toggleValue, isAllSelected as isAllSel } from "@/utils/request-filters"
@@ -14,7 +15,7 @@ export default function BoardsAction({ className = "" }: { className?: string })
   const router = useRouter()
   const pathname = usePathname() || "/"
   const sp = useSearchParams()
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useFilterPopover("boards")
 
 
   const { data: items = [], isLoading } = useQuery({

@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger, PopoverList, PopoverListItem }
 import { ListFilterIcon } from "@feedgot/ui/icons/list-filter"
 import { cn } from "@feedgot/ui/lib/utils"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useFilterPopover } from "@/lib/filter-store"
 import { getSlugFromPath, workspaceBase } from "@/config/nav"
 import { parseArrayParam, buildRequestsUrl, toggleValue, isAllSelected as isAllSel } from "@/utils/request-filters"
 
@@ -21,7 +22,7 @@ export default function StatusAction({ className = "" }: { className?: string })
   const router = useRouter()
   const pathname = usePathname() || "/"
   const sp = useSearchParams()
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useFilterPopover("status")
 
   const slug = React.useMemo(() => getSlugFromPath(pathname), [pathname])
 
