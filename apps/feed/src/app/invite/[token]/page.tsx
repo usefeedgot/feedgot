@@ -15,6 +15,7 @@ export default function InviteAcceptPage() {
   const [inviterName, setInviterName] = React.useState<string | null>(null)
   const [user, setUser] = React.useState<any>(null)
   const [error, setError] = React.useState<string | null>(null)
+  const [loading, setLoading] = React.useState(true)
   const router = useRouter()
 
   const routeParams = useParams() as any
@@ -60,6 +61,7 @@ export default function InviteAcceptPage() {
       } else {
         setError("Could not load invite.")
       }
+      if (mounted) setLoading(false)
     })()
     return () => {
       mounted = false
@@ -81,6 +83,7 @@ export default function InviteAcceptPage() {
         workspaceLogo={workspaceLogo}
         inviterName={inviterName}
         user={user}
+        loading={loading}
         busy={busy}
         onAccept={async () => {
           if (!token || busy) return
