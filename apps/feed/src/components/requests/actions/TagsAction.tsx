@@ -59,14 +59,12 @@ export default function TagsAction({ className = "" }: { className?: string }) {
       const href = workspaceBase(slug)
       React.startTransition(() => {
         router.replace(href, { scroll: false })
-        setOpen(false)
       })
       return
     }
     const href = buildRequestsUrl(slug, sp, { tag: next })
     React.startTransition(() => {
       router.push(href, { scroll: false })
-      setOpen(false)
     })
   }
 
@@ -75,7 +73,6 @@ export default function TagsAction({ className = "" }: { className?: string }) {
       const href = workspaceBase(slug)
       React.startTransition(() => {
         router.replace(href, { scroll: false })
-        setOpen(false)
       })
       return
     }
@@ -83,7 +80,6 @@ export default function TagsAction({ className = "" }: { className?: string }) {
     const href = buildRequestsUrl(slug, sp, { tag: next })
     React.startTransition(() => {
       router.push(href, { scroll: false })
-      setOpen(false)
     })
   }
 

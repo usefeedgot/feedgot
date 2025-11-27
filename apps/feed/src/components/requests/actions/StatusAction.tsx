@@ -35,14 +35,12 @@ export default function StatusAction({ className = "" }: { className?: string })
       const href = workspaceBase(slug)
       React.startTransition(() => {
         router.replace(href, { scroll: false })
-        setOpen(false)
       })
       return
     }
     const href = buildRequestsUrl(slug, sp, { status: next })
     React.startTransition(() => {
       router.push(href, { scroll: false })
-      setOpen(false)
     })
   }
 
@@ -51,7 +49,6 @@ export default function StatusAction({ className = "" }: { className?: string })
       const href = workspaceBase(slug)
       React.startTransition(() => {
         router.replace(href, { scroll: false })
-        setOpen(false)
       })
       return
     }
@@ -59,7 +56,6 @@ export default function StatusAction({ className = "" }: { className?: string })
     const href = buildRequestsUrl(slug, sp, { status: next })
     React.startTransition(() => {
       router.push(href, { scroll: false })
-      setOpen(false)
     })
   }
 
