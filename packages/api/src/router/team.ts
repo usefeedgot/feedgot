@@ -1,6 +1,6 @@
 import { HTTPException } from "hono/http-exception"
-import { and, eq, gt, isNull } from "drizzle-orm"
-import { j, privateProcedure, publicProcedure } from "../jstack"
+import { and, eq, gt, isNull, sql } from "drizzle-orm"
+import { j, privateProcedure } from "../jstack"
 import { workspace, workspaceMember, workspaceInvite, user, brandingConfig } from "@feedgot/db"
 import { sendWorkspaceInvite } from "@feedgot/auth/email"
 import {
@@ -13,6 +13,7 @@ import {
   acceptInviteInputSchema,
   addExistingMemberInputSchema,
 } from "../validators/team"
+import { getPlanLimits } from "../shared/plan"
 
 function mapPermissions(role: "admin" | "member" | "viewer") {
   if (role === "admin") {
@@ -49,7 +50,7 @@ export function createTeamRouter() {
   return j.router({
     membersByWorkspaceSlug: privateProcedure
       .input(byWorkspaceInputSchema)
-      .get(async ({ ctx, input, c }: any) => {
+      .get(async ({ ctx, input, c }) => {
         const [ws] = await ctx.db
           .select({ id: workspace.id, ownerId: workspace.ownerId, name: workspace.name, slug: workspace.slug })
           .from(workspace)
@@ -80,9 +81,9 @@ export function createTeamRouter() {
           .innerJoin(user, eq(workspaceMember.userId, user.id))
           .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.isActive, true)))
 
-        const members = rawMembers.map((m: any) => ({ ...m, isOwner: m.userId === ws.ownerId }))
+        const members = rawMembers.map((m) => ({ ...m, isOwner: m.userId === ws.ownerId }))
 
-        if (!members.some((m: any) => m.userId === ws.ownerId)) {
+        if (!members.some((m) => m.userId === ws.ownerId)) {
           const [owner] = await ctx.db
             .select({ id: user.id, name: user.name, email: user.email, image: user.image })
             .from(user)
@@ -98,7 +99,16 @@ export function createTeamRouter() {
               email: owner.email,
               image: owner.image,
               isOwner: true,
-            } as any)
+            } as {
+              userId: string
+              role: "admin" | "member" | "viewer"
+              joinedAt: Date | null
+              isActive: boolean
+              name: string | null
+              email: string | null
+              image: string | null
+              isOwner: boolean
+            })
           }
         }
 
@@ -122,9 +132,9 @@ export function createTeamRouter() {
 
     invite: privateProcedure
       .input(inviteMemberInputSchema)
-      .post(async ({ ctx, input, c }: any) => {
+      .post(async ({ ctx, input, c }) => {
         const [ws] = await ctx.db
-          .select({ id: workspace.id, ownerId: workspace.ownerId, name: workspace.name })
+          .select({ id: workspace.id, ownerId: workspace.ownerId, name: workspace.name, plan: workspace.plan })
           .from(workspace)
           .where(eq(workspace.slug, input.slug))
           .limit(1)
@@ -138,6 +148,13 @@ export function createTeamRouter() {
           .limit(1)
         const allowed = me?.permissions?.canManageMembers || me?.role === "admin" || ws.ownerId === meId
         if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
+        const limits = getPlanLimits(ws.plan as "free" | "pro" | "enterprise")
+        const [mc] = await ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(workspaceMember)
+          .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.isActive, true)))
+          .limit(1)
+        if (typeof limits.maxMembers === "number" && Number(mc?.count || 0) >= limits.maxMembers) throw new HTTPException(403, { message: "Member limit reached for current plan" })
 
         const token = crypto.randomUUID()
         const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
@@ -212,7 +229,7 @@ export function createTeamRouter() {
       .input(revokeInviteInputSchema)
       .post(async ({ ctx, input, c }: any) => {
         const [ws] = await ctx.db
-          .select({ id: workspace.id, ownerId: workspace.ownerId })
+          .select({ id: workspace.id, ownerId: workspace.ownerId, plan: workspace.plan })
           .from(workspace)
           .where(eq(workspace.slug, input.slug))
           .limit(1)
@@ -226,6 +243,13 @@ export function createTeamRouter() {
           .limit(1)
         const allowed = me?.permissions?.canManageMembers || me?.role === "admin" || ws.ownerId === meId
         if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
+        const limits = getPlanLimits(ws.plan as any)
+        const [mc] = await ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(workspaceMember)
+          .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.isActive, true)))
+          .limit(1)
+        if (typeof limits.maxMembers === "number" && Number(mc?.count || 0) >= limits.maxMembers) throw new HTTPException(403, { message: "Member limit reached for current plan" })
 
         await ctx.db.delete(workspaceInvite).where(eq(workspaceInvite.id, input.inviteId))
         return c.json({ ok: true })
@@ -318,6 +342,18 @@ export function createTeamRouter() {
           .where(and(eq(workspaceMember.workspaceId, inv.workspaceId), eq(workspaceMember.userId, me.id)))
           .limit(1)
         if (!existing) {
+          const [wsp] = await ctx.db
+            .select({ plan: workspace.plan })
+            .from(workspace)
+            .where(eq(workspace.id, inv.workspaceId))
+            .limit(1)
+          const limits = getPlanLimits((wsp?.plan || "free") as any)
+          const [mc] = await ctx.db
+            .select({ count: sql<number>`count(*)` })
+            .from(workspaceMember)
+            .where(and(eq(workspaceMember.workspaceId, inv.workspaceId), eq(workspaceMember.isActive, true)))
+            .limit(1)
+          if (typeof limits.maxMembers === "number" && Number(mc?.count || 0) >= limits.maxMembers) throw new HTTPException(403, { message: "Member limit reached for current plan" })
           await ctx.db.insert(workspaceMember).values({
             workspaceId: inv.workspaceId,
             userId: me.id,

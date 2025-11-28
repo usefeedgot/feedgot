@@ -1,8 +1,10 @@
 import { eq } from "drizzle-orm"
+import { HTTPException } from "hono/http-exception"
 import { j, privateProcedure, publicProcedure } from "../jstack"
 import { workspace, brandingConfig } from "@feedgot/db"
 import { checkSlugInputSchema } from "../validators/workspace"
 import { updateBrandingInputSchema } from "../validators/branding"
+import { getPlanLimits } from "../shared/plan"
 
 export function createBrandingRouter() {
   return j.router({
@@ -33,18 +35,25 @@ export function createBrandingRouter() {
       .input(updateBrandingInputSchema)
       .post(async ({ ctx, input, c }: any) => {
         const [ws] = await ctx.db
-          .select({ id: workspace.id })
+          .select({ id: workspace.id, plan: workspace.plan })
           .from(workspace)
           .where(eq(workspace.slug, input.slug))
           .limit(1)
         if (!ws) return c.json({ ok: false })
+        const limits = getPlanLimits(ws.plan as any)
 
         const update: Record<string, any> = {}
+        if (!limits.allowBranding) {
+          if (typeof input.logoUrl !== "undefined" || typeof input.primaryColor !== "undefined" || typeof input.showLogo !== "undefined" || typeof input.showWorkspaceName !== "undefined") throw new HTTPException(403, { message: "Branding not available on current plan" })
+        }
         if (typeof input.primaryColor !== "undefined") update.primaryColor = input.primaryColor
         if (typeof input.theme !== "undefined") update.theme = input.theme
         if (typeof input.showLogo !== "undefined") update.showLogo = input.showLogo
         if (typeof input.showWorkspaceName !== "undefined") update.showWorkspaceName = input.showWorkspaceName
-        if (typeof input.hidePoweredBy !== "undefined") update.hidePoweredBy = input.hidePoweredBy
+        if (typeof input.hidePoweredBy !== "undefined") {
+          if (!limits.allowHidePoweredBy) throw new HTTPException(403, { message: "Removing 'Powered by' requires a higher plan" })
+          update.hidePoweredBy = input.hidePoweredBy
+        }
         update.updatedAt = new Date()
 
         const [existing] = await ctx.db
@@ -65,6 +74,7 @@ export function createBrandingRouter() {
         }
 
         if (typeof input.logoUrl !== "undefined") {
+          if (!limits.allowBranding) throw new HTTPException(403, { message: "Logo upload not available on current plan" })
           try {
             await ctx.db.update(workspace).set({ logo: input.logoUrl }).where(eq(workspace.id, ws.id))
           } catch {}

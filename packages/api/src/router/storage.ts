@@ -2,6 +2,9 @@ import { j, privateProcedure } from "../jstack"
 import { getUploadUrlInputSchema } from "../validators/storage"
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import { HTTPException } from "hono/http-exception"
+import { eq } from "drizzle-orm"
+import { workspace } from "@feedgot/db"
 
 function getEnv(name: string): string {
   const v = process.env[name]
@@ -17,7 +20,13 @@ export function createStorageRouter() {
   return j.router({
     getUploadUrl: privateProcedure
       .input(getUploadUrlInputSchema)
-      .post(async ({ input, c }: any) => {
+      .post(async ({ ctx, input, c }: any) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) throw new HTTPException(404, { message: "Workspace not found" })
         const accountId = getEnv("R2_ACCOUNT_ID")
         const accessKeyId = getEnv("R2_ACCESS_KEY_ID")
         const secretAccessKey = getEnv("R2_SECRET_ACCESS_KEY")

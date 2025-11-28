@@ -9,7 +9,7 @@ export function createWorkspaceRouter() {
   return j.router({
     bySlug: publicProcedure
       .input(checkSlugInputSchema)
-      .get(async ({ ctx, input, c }: any) => {
+      .get(async ({ ctx, input, c }) => {
         const [ws] = await ctx.db
           .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, domain: workspace.domain, logo: workspace.logo, timezone: workspace.timezone })
           .from(workspace)
@@ -21,7 +21,7 @@ export function createWorkspaceRouter() {
       }),
     checkSlug: privateProcedure
       .input(checkSlugInputSchema)
-      .post(async ({ ctx, input, c }: any) => {
+      .post(async ({ ctx, input, c }) => {
         const existing = await ctx.db
           .select({ id: workspace.id })
           .from(workspace)
@@ -30,7 +30,7 @@ export function createWorkspaceRouter() {
         return c.json({ available: existing.length === 0 })
       }),
 
-    exists: privateProcedure.get(async ({ ctx, c }: any) => {
+    exists: privateProcedure.get(async ({ ctx, c }) => {
       const userId = ctx.session.user.id
       const owned = await ctx.db
         .select({ id: workspace.id })
@@ -45,7 +45,7 @@ export function createWorkspaceRouter() {
       return c.json({ hasWorkspace: owned.length > 0 || member.length > 0 })
     }),
 
-    listMine: privateProcedure.get(async ({ ctx, c }: any) => {
+    listMine: privateProcedure.get(async ({ ctx, c }) => {
       const userId = ctx.session.user.id
       const [owned, member] = await Promise.all([
         ctx.db
@@ -68,7 +68,7 @@ export function createWorkspaceRouter() {
 
     statusCounts: publicProcedure
       .input(checkSlugInputSchema)
-      .get(async ({ ctx, input, c }: any) => {
+      .get(async ({ ctx, input, c }) => {
         const [ws] = await ctx.db
           .select({ id: workspace.id })
           .from(workspace)
@@ -84,7 +84,7 @@ export function createWorkspaceRouter() {
           .groupBy(post.roadmapStatus)
 
         const counts: Record<string, number> = {}
-        for (const r of rows as any[]) {
+        for (const r of rows as { status: string | null; count: string }[]) {
           const key = normalizeStatus(String(r.status || "pending"))
           counts[key] = (counts[key] || 0) + Number(r.count || 0)
         }
@@ -97,7 +97,7 @@ export function createWorkspaceRouter() {
 
     create: privateProcedure
       .input(createWorkspaceInputSchema)
-      .post(async ({ ctx, input, c }: any) => {
+      .post(async ({ ctx, input, c }) => {
         const slug = input.slug.toLowerCase()
         const exists = await ctx.db
           .select({ id: workspace.id })
@@ -117,7 +117,7 @@ export function createWorkspaceRouter() {
         })()
         const favicon = `https://www.google.com/s2/favicons?domain=${host}&sz=128`
 
-        let created: any
+        let created: typeof workspace.$inferSelect | undefined
         try {
           const [ws] = await ctx.db
             .insert(workspace)
@@ -195,7 +195,7 @@ export function createWorkspaceRouter() {
             { workspaceId: ws.id, name: "Bugs", slug: "bugs" },
             { workspaceId: ws.id, name: "Support", slug: "support" },
           ])
-        } catch (err) {
+        } catch {
           if (created?.id) {
             try {
               await ctx.db.delete(workspace).where(eq(workspace.id, created.id))
