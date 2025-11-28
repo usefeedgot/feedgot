@@ -1,5 +1,4 @@
 "use client"
-
 import React, { useMemo } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
@@ -22,6 +21,7 @@ export default function RequestPagination({ workspaceSlug, page, pageSize, total
 
   if (totalCount <= 0) return null
 
+  // biome-ignore lint/correctness/useHookAtTopLevel: <>
   const { totalPages, prevHref, nextHref, firstHref, lastHref } = useMemo(() => {
     const tp = Math.max(1, Math.ceil(Math.max(totalCount, 0) / Math.max(pageSize, 1)))
     const pPrev = Math.max(page - 1, 1)
