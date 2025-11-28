@@ -93,16 +93,16 @@ export default function WorkspaceWizard({ className = "" }: { className?: string
       }
       const res = await client.workspace.create.$post(parsed.data)
       if (!res.ok) {
-        const err = await res.json()
-        toast.error(err?.message || "Failed to create workspace")
+        await res.json()
+        toast.error("Failed to create workspace")
         return
       }
       const data = await res.json()
       toast.success("Workspace created")
       const createdSlug = data?.workspace?.slug || slug
       router.push(`/workspaces/${createdSlug}`)
-    } catch (e: any) {
-      toast.error(e?.message || "Failed to create workspace")
+    } catch (e: unknown) {
+      toast.error((e as { message?: string })?.message || "Failed to create workspace")
     } finally {
       setIsCreating(false)
     }

@@ -27,20 +27,16 @@ import { ArrowIcon } from "@feedgot/ui/icons/arrow";
 
 export default function DomainSection({ slug }: { slug: string }) {
   const [plan, setPlan] = React.useState<string>("free");
-  const [defaultDomain, setDefaultDomain] = React.useState<string>("");
   const [info, setInfo] = React.useState<DomainInfo>(null);
   const [loading, setLoading] = React.useState(true);
-
   const [open, setOpen] = React.useState(false);
-  const [saving, setSaving] = React.useState(false);
   const [verifying, setVerifying] = React.useState(false);
-
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
       const data = await loadDomain(slug);
       setPlan(data.plan);
-      setDefaultDomain(data.defaultDomain);
+
       setInfo(data.info);
     } catch {
     } finally {
@@ -63,17 +59,16 @@ export default function DomainSection({ slug }: { slug: string }) {
       toast.error("Enter a domain");
       return;
     }
-    setSaving(true);
+
     try {
       const result = await createDomain(slug, v);
       if (!result.ok) throw new Error(result.message || "Failed to add domain");
       toast.success("Domain added. Configure DNS and verify.");
       setOpen(false);
       await load();
-    } catch (e: any) {
-      toast.error(e?.message || "Failed to add domain");
+    } catch (e: unknown) {
+      toast.error((e as Error)?.message || "Failed to add domain");
     } finally {
-      setSaving(false);
     }
   };
 
@@ -85,8 +80,8 @@ export default function DomainSection({ slug }: { slug: string }) {
       if (result?.status === "verified") toast.success("Domain verified");
       else toast.info("Records not found yet. Still pending.");
       await load();
-    } catch (e: any) {
-      toast.error(e?.message || "Failed to verify domain");
+    } catch (e: unknown) {
+      toast.error((e as Error)?.message || "Failed to verify domain");
     } finally {
       setVerifying(false);
     }
