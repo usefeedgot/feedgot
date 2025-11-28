@@ -30,6 +30,34 @@ export const workspace = pgTable('workspace', {
   subscriptionEndsAt: timestamp('subscription_ends_at'),
 })
 
+export const workspaceDomain = pgTable(
+  'workspace_domain',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    workspaceId: uuid('workspace_id')
+      .notNull()
+      .references(() => workspace.id, { onDelete: 'cascade' }),
+    // Full host, e.g., "feedback.mantlz.com"
+    host: text('host').notNull().unique(),
+    // Subdomain label, e.g., "feedback"
+    cnameName: text('cname_name').notNull().default('feedback'),
+    // Target to point CNAME to, e.g., "origin.feedgot.com"
+    cnameTarget: text('cname_target').notNull().default('origin.feedgot.com'),
+    // TXT verification record name, e.g., "_acme-challenge.feedback.mantlz.com"
+    txtName: text('txt_name').notNull(),
+    // TXT verification token/value
+    txtValue: text('txt_value').notNull(),
+    status: text('status', { enum: ['pending', 'verified', 'error'] }).notNull().default('pending'),
+    lastVerifiedAt: timestamp('last_verified_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow().$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    workspaceDomainWorkspaceUnique: uniqueIndex('workspace_domain_workspace_unique').on(table.workspaceId),
+    workspaceDomainWorkspaceIdx: index('workspace_domain_workspace_idx').on(table.workspaceId),
+  } as const)
+)
+
 export const workspaceMember = pgTable('workspace_member',{
     id: uuid('id').primaryKey().defaultRandom(),
     workspaceId: uuid('workspace_id')
@@ -109,3 +137,4 @@ export const workspaceInvite = pgTable(
 export type Workspace = typeof workspace.$inferSelect
 export type WorkspaceMember = typeof workspaceMember.$inferSelect
 export type WorkspaceInvite = typeof workspaceInvite.$inferSelect
+export type WorkspaceDomain = typeof workspaceDomain.$inferSelect

@@ -1,8 +1,10 @@
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 import { getSessionCookie } from "better-auth/cookies"
+import { db, workspace } from "@feedgot/db"
+import { eq } from "drizzle-orm"
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname
   const first = pathname.split("/")[1] || ""
 
@@ -15,16 +17,42 @@ export function middleware(req: NextRequest) {
   const subdomain = hasSub ? parts[0] : ""
   const reservedSubdomains = new Set(["www", "app"]) 
 
-  if (subdomain && !reservedSubdomains.has(subdomain)) {
+  if (isMainDomain && subdomain && !reservedSubdomains.has(subdomain)) {
     if (pathname === "/") {
       const url = req.nextUrl.clone()
-      url.pathname = `/${subdomain}/${subdomain}`
+      url.pathname = `/workspaces/${subdomain}`
       return NextResponse.rewrite(url)
     }
-    const publicBoards = new Set(["issues", "roadmap", "changelog"]) 
-    if (publicBoards.has(first)) {
-      return NextResponse.next()
-    }
+    return NextResponse.next()
+  }
+
+  if (!isMainDomain && hostNoPort.startsWith("feedback.")) {
+    const baseHost = hostNoPort.replace(/^feedback\./, "")
+    const protoDomain = `https://${baseHost}`
+    try {
+      const [wsByCustom] = await db
+        .select({ slug: workspace.slug })
+        .from(workspace)
+        .where(eq(workspace.customDomain, hostNoPort))
+        .limit(1)
+      let targetSlug = wsByCustom?.slug
+      if (!targetSlug) {
+        const [wsByDomain] = await db
+          .select({ slug: workspace.slug })
+          .from(workspace)
+          .where(eq(workspace.domain, protoDomain))
+          .limit(1)
+        targetSlug = wsByDomain?.slug
+      }
+      if (targetSlug) {
+        if (pathname === "/") {
+          const url = req.nextUrl.clone()
+          url.pathname = `/workspaces/${targetSlug}`
+          return NextResponse.rewrite(url)
+        }
+        return NextResponse.next()
+      }
+    } catch {}
   }
 
   const needsAuth = pathname.startsWith("/workspaces")

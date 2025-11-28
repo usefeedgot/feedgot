@@ -74,7 +74,7 @@ function SectionRenderer({ slug, section, initialTeam }: { slug: string; section
     case "billing":
       return <BillingSection />
     case "domain":
-      return <DomainSection />
+      return <DomainSection slug={slug} />
     case "integrations":
       return <IntegrationsSection />
     case "sso":

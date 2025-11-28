@@ -14,6 +14,7 @@ export const {
   account,
   verification,
   workspace,
+  workspaceDomain,
   workspaceMember,
   workspaceInvite,
   board,

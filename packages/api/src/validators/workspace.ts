@@ -20,3 +20,23 @@ export const createWorkspaceInputSchema = z.object({
   slug: slugSchema,
   timezone: z.string().min(1),
 })
+
+export const updateCustomDomainInputSchema = z.object({
+  slug: slugSchema,
+  enabled: z.boolean(),
+  customDomain: z.string().trim().optional(),
+})
+
+export const createDomainInputSchema = z.object({
+  slug: slugSchema,
+  domain: z
+    .string()
+    .trim()
+    .transform((v) => (v.startsWith("http://") || v.startsWith("https://") ? v : `https://${v}`))
+    .pipe(z.string().url()),
+})
+
+export const verifyDomainInputSchema = z.object({
+  slug: slugSchema,
+  checkDns: z.boolean().default(true),
+})

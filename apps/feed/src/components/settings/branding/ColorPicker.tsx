@@ -6,7 +6,7 @@ import { DropdownIcon } from "@feedgot/ui/icons/dropdown"
 import { BRANDING_COLORS } from "../../../types/colors"
 import type { ColorOption } from "../../../types/colors"
 
-export default function ColorPicker({ valueKey, valueHex, onSelect }: { valueKey: string; valueHex: string; onSelect: (c: ColorOption) => void }) {
+export default function ColorPicker({ valueHex, onSelect }: { valueHex: string; onSelect: (c: ColorOption) => void }) {
   return (
     <Popover>
       <PopoverTrigger asChild>

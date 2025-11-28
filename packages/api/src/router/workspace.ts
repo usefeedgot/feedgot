@@ -1,8 +1,9 @@
 import { HTTPException } from "hono/http-exception"
 import { eq, and, sql } from "drizzle-orm"
 import { j, privateProcedure, publicProcedure } from "../jstack"
-import { workspace, workspaceMember, board, brandingConfig, tag, post } from "@feedgot/db"
-import { createWorkspaceInputSchema, checkSlugInputSchema } from "../validators/workspace"
+import { workspace, workspaceMember, board, brandingConfig, tag, post, workspaceDomain } from "@feedgot/db"
+import { createWorkspaceInputSchema, checkSlugInputSchema, updateCustomDomainInputSchema, createDomainInputSchema, verifyDomainInputSchema } from "../validators/workspace"
+import { Resolver } from "node:dns/promises"
 import { normalizeStatus } from "../shared/status"
 
 export function createWorkspaceRouter() {
@@ -11,7 +12,7 @@ export function createWorkspaceRouter() {
       .input(checkSlugInputSchema)
       .get(async ({ ctx, input, c }) => {
         const [ws] = await ctx.db
-          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, domain: workspace.domain, logo: workspace.logo, timezone: workspace.timezone, plan: workspace.plan })
+          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, domain: workspace.domain, customDomain: workspace.customDomain, logo: workspace.logo, timezone: workspace.timezone, plan: workspace.plan })
           .from(workspace)
           .where(eq(workspace.slug, input.slug))
           .limit(1)
@@ -49,11 +50,11 @@ export function createWorkspaceRouter() {
       const userId = ctx.session.user.id
       const [owned, member] = await Promise.all([
         ctx.db
-          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
+          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain, customDomain: workspace.customDomain })
           .from(workspace)
           .where(eq(workspace.ownerId, userId)),
         ctx.db
-          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain })
+          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, logo: workspace.logo, domain: workspace.domain, customDomain: workspace.customDomain })
           .from(workspaceMember)
           .innerJoin(workspace, eq(workspaceMember.workspaceId, workspace.id))
           .where(and(eq(workspaceMember.userId, userId), eq(workspaceMember.isActive, true))),
@@ -206,5 +207,146 @@ export function createWorkspaceRouter() {
 
         return c.superjson({ workspace: created })
       }),
+
+      updateCustomDomain: privateProcedure
+        .input(updateCustomDomainInputSchema)
+        .post(async ({ ctx, input, c }) => {
+          const [ws] = await ctx.db
+            .select({ id: workspace.id, plan: workspace.plan, domain: workspace.domain })
+            .from(workspace)
+            .where(eq(workspace.slug, input.slug))
+            .limit(1)
+          if (!ws) return c.json({ ok: false })
+
+          const plan = String(ws.plan || "free").toLowerCase()
+          if (!(plan === "starter" || plan === "professional")) {
+            throw new HTTPException(403, { message: "Custom domain available on Starter or Professional plans" })
+          }
+
+          const host = (() => {
+            try { return new URL(String(ws.domain)).host } catch { return String(ws.domain).replace(/^https?:\/\//, "") }
+          })()
+
+          const desired = input.enabled ? String(input.customDomain || `feedback.${host}`).toLowerCase() : null
+
+          await ctx.db
+            .update(workspace)
+            .set({ customDomain: desired || null, updatedAt: new Date() })
+            .where(eq(workspace.id, ws.id))
+
+          return c.superjson({ ok: true, customDomain: desired })
+        }),
+
+      domainInfo: privateProcedure
+        .input(checkSlugInputSchema)
+        .get(async ({ ctx, input, c }) => {
+          const [ws] = await ctx.db
+            .select({ id: workspace.id, domain: workspace.domain, plan: workspace.plan })
+            .from(workspace)
+            .where(eq(workspace.slug, input.slug))
+            .limit(1)
+          if (!ws) return c.superjson({ domain: null })
+
+          const [d] = await ctx.db
+            .select({ id: workspaceDomain.id, host: workspaceDomain.host, cnameName: workspaceDomain.cnameName, cnameTarget: workspaceDomain.cnameTarget, txtName: workspaceDomain.txtName, txtValue: workspaceDomain.txtValue, status: workspaceDomain.status })
+            .from(workspaceDomain)
+            .where(eq(workspaceDomain.workspaceId, ws.id))
+            .limit(1)
+
+          return c.superjson({ domain: d || null, plan: ws.plan, defaultDomain: ws.domain })
+        }),
+
+      createDomain: privateProcedure
+        .input(createDomainInputSchema)
+        .post(async ({ ctx, input, c }) => {
+          const [ws] = await ctx.db
+            .select({ id: workspace.id, plan: workspace.plan })
+            .from(workspace)
+            .where(eq(workspace.slug, input.slug))
+            .limit(1)
+          if (!ws) return c.json({ ok: false })
+          const plan = String(ws.plan || "free").toLowerCase()
+          if (!(plan === "starter" || plan === "professional")) {
+            throw new HTTPException(403, { message: "Custom domain available on Starter or Professional plans" })
+          }
+
+          const url = new URL(input.domain)
+          const host = url.host.toLowerCase()
+          const parts = host.split('.')
+          if (parts.length < 2) throw new HTTPException(400, { message: "Invalid domain host" })
+          const cnameName = parts[0]
+
+          const DEFAULT_CNAME_TARGET = process.env.CUSTOM_DOMAIN_CNAME_TARGET || 'origin.feedgot.com'
+          const txtName = `_acme-challenge.${host}`
+          const token = crypto.randomUUID()
+
+          const [existing] = await ctx.db
+            .select({ id: workspaceDomain.id })
+            .from(workspaceDomain)
+            .where(eq(workspaceDomain.workspaceId, ws.id))
+            .limit(1)
+          if (existing) throw new HTTPException(409, { message: 'A domain is already configured. Delete it before adding a new one.' })
+          await ctx.db.insert(workspaceDomain).values({ workspaceId: ws.id, host, cnameName, cnameTarget: DEFAULT_CNAME_TARGET, txtName, txtValue: token })
+
+          return c.superjson({ ok: true, host, records: { cname: { name: cnameName, value: DEFAULT_CNAME_TARGET }, txt: { name: txtName, value: token } } })
+        }),
+
+      verifyDomain: privateProcedure
+        .input(verifyDomainInputSchema)
+        .post(async ({ ctx, input, c }) => {
+          const [ws] = await ctx.db
+            .select({ id: workspace.id })
+            .from(workspace)
+            .where(eq(workspace.slug, input.slug))
+            .limit(1)
+          if (!ws) return c.json({ ok: false })
+
+          const [d] = await ctx.db
+            .select({ id: workspaceDomain.id, host: workspaceDomain.host, cnameTarget: workspaceDomain.cnameTarget, txtName: workspaceDomain.txtName, txtValue: workspaceDomain.txtValue })
+            .from(workspaceDomain)
+            .where(eq(workspaceDomain.workspaceId, ws.id))
+            .limit(1)
+          if (!d) throw new HTTPException(404, { message: 'No domain configured' })
+
+          let cnameValid = false
+          let txtValid = false
+          if (input.checkDns) {
+            const resolver = new Resolver()
+            try {
+              const cnames = await resolver.resolveCname(d.host)
+              cnameValid = cnames.includes(d.cnameTarget)
+            } catch {}
+            try {
+              const txts = await resolver.resolveTxt(d.txtName)
+              txtValid = txts.some((arr) => arr.join('') === d.txtValue)
+            } catch {}
+          }
+
+          const status: 'pending' | 'verified' | 'error' = cnameValid && txtValid ? 'verified' : 'pending'
+          await ctx.db.update(workspaceDomain).set({ status, lastVerifiedAt: new Date(), updatedAt: new Date() }).where(eq(workspaceDomain.id, d.id))
+
+          if (status === 'verified') {
+            try {
+              await ctx.db.update(workspace).set({ customDomain: d.host, updatedAt: new Date() }).where(eq(workspace.id, ws.id))
+            } catch {}
+          }
+
+          return c.superjson({ ok: true, cnameValid, txtValid, status })
+        }),
+
+      deleteDomain: privateProcedure
+        .input(checkSlugInputSchema)
+        .post(async ({ ctx, input, c }) => {
+          const [ws] = await ctx.db
+            .select({ id: workspace.id })
+            .from(workspace)
+            .where(eq(workspace.slug, input.slug))
+            .limit(1)
+          if (!ws) return c.json({ ok: false })
+
+          await ctx.db.delete(workspaceDomain).where(eq(workspaceDomain.workspaceId, ws.id))
+          await ctx.db.update(workspace).set({ customDomain: null, updatedAt: new Date() }).where(eq(workspace.id, ws.id))
+          return c.superjson({ ok: true })
+        }),
   })
 }

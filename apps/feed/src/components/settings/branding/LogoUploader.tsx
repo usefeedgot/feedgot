@@ -87,6 +87,13 @@ export default function LogoUploader({ slug, value = "", onChange }: Props) {
       onDrop={onDrop}
       onDragOver={onDragOver}
       role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          pick();
+        }
+      }}
       aria-label="Upload workspace logo"
     >
       {preview ? (
