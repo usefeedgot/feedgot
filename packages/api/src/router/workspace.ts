@@ -11,7 +11,7 @@ export function createWorkspaceRouter() {
       .input(checkSlugInputSchema)
       .get(async ({ ctx, input, c }) => {
         const [ws] = await ctx.db
-          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, domain: workspace.domain, logo: workspace.logo, timezone: workspace.timezone })
+          .select({ id: workspace.id, name: workspace.name, slug: workspace.slug, domain: workspace.domain, logo: workspace.logo, timezone: workspace.timezone, plan: workspace.plan })
           .from(workspace)
           .where(eq(workspace.slug, input.slug))
           .limit(1)
