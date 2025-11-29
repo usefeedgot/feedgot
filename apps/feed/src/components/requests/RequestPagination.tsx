@@ -19,7 +19,7 @@ export default function RequestPagination({ workspaceSlug, page, pageSize, total
 
   const sizes = [10, 20, 50, 100]
 
-  if (totalCount <= 0) return null
+  if (totalCount <= pageSize) return null
 
   // biome-ignore lint/correctness/useHookAtTopLevel: <>
   const { totalPages, prevHref, nextHref, firstHref, lastHref } = useMemo(() => {
