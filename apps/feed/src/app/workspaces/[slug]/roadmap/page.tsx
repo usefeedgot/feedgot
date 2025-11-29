@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { createPageMetadata } from "@/lib/seo"
 import { getWorkspacePosts } from "@/lib/workspace"
 import RoadmapBoard from "@/components/roadmap/RoadmapBoard"
-import { readInitialCollapsedByStatus } from "@/lib/roadmap"
+import { readInitialCollapsedByStatus } from "@/lib/roadmap.server"
 
 export const dynamic = "force-dynamic"
 

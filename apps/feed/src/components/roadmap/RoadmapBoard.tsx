@@ -9,6 +9,8 @@ import RoadmapRequestItem from "@/components/roadmap/RoadmapRequestItem"
 import { useQueryClient } from "@tanstack/react-query"
 import RoadmapColumn from "@/components/roadmap/RoadmapColumn"
 import RoadmapDraggable from "@/components/roadmap/RoadmapDraggable"
+import { ROADMAP_STATUSES, statusLabel, groupItemsByStatus, encodeCollapsed } from "@/lib/roadmap"
+import { STATUSES } from "../../../../../packages/api/src/shared/status"
 
 type Item = {
   id: string
@@ -25,23 +27,13 @@ type Item = {
   boardName: string
 }
 
-const STATUSES = ["planned", "progress", "review", "completed", "pending", "closed"] as const
-
-function statusLabel(s: string) {
-  const t = s.toLowerCase()
-  if (t === "progress") return "Progress"
-  if (t === "review") return "Review"
-  return t.charAt(0).toUpperCase() + t.slice(1)
-}
-
-
 export default function RoadmapBoard({ workspaceSlug, items: initialItems, initialCollapsedByStatus }: { workspaceSlug: string; items: Item[]; initialCollapsedByStatus?: Record<string, boolean> }) {
   const [items, setItems] = React.useState<Item[]>(() => initialItems)
   const [activeId, setActiveId] = React.useState<string | null>(null)
   const [savingId, setSavingId] = React.useState<string | null>(null)
   const [collapsedByStatus, setCollapsedByStatus] = React.useState<Record<string, boolean>>(() => {
     const acc: Record<string, boolean> = {}
-    for (const s of STATUSES) acc[s] = !!initialCollapsedByStatus?.[s]
+    for (const s of ROADMAP_STATUSES) acc[s] = !!initialCollapsedByStatus?.[s]
     return acc
   })
 
@@ -50,7 +42,7 @@ export default function RoadmapBoard({ workspaceSlug, items: initialItems, initi
 
   React.useEffect(() => {
     try {
-      const encoded = STATUSES.map((s) => (collapsedByStatus[s] ? "1" : "0")).join("")
+      const encoded = encodeCollapsed(collapsedByStatus)
       document.cookie = `rdmpc:${workspaceSlug}=${encoded}; path=/; max-age=31536000`
     } catch {}
   }, [collapsedByStatus, workspaceSlug])
@@ -70,16 +62,7 @@ export default function RoadmapBoard({ workspaceSlug, items: initialItems, initi
     }
   }, [activeId])
 
-  const grouped = React.useMemo(() => {
-    const acc: Record<string, Item[]> = {}
-    for (const s of STATUSES) acc[s] = []
-    for (const it of items) {
-      const s = ((it.roadmapStatus || "pending").toLowerCase()) as (typeof STATUSES)[number]
-      const key = STATUSES.includes(s) ? s : "pending"
-      acc[key]?.push(it)
-    }
-    return acc
-  }, [items])
+  const grouped = React.useMemo(() => groupItemsByStatus(items), [items])
 
   const handleDragStart = (id: string) => {
     setActiveId(id)
@@ -129,7 +112,7 @@ export default function RoadmapBoard({ workspaceSlug, items: initialItems, initi
         onDragEnd={({ over }) => onDragEnd(over?.id as string | undefined)}
       >
         <div className="flex flex-col gap-4 md:flex-row md:flex-wrap">
-          {STATUSES.map((s) => {
+          {(ROADMAP_STATUSES as readonly string[]).map((s) => {
             const itemsForStatus = grouped[s]
             return (
               <div
