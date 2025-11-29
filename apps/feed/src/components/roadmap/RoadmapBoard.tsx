@@ -126,7 +126,7 @@ export default function RoadmapBoard({ workspaceSlug, items: initialItems }: { w
             return (
               <div
                 key={s}
-                className={`w-full md:flex-1 md:min-w-0`}
+                className={`w-full ${collapsedByStatus[s] ? "md:basis-20 md:grow-0 md:shrink-0" : "md:flex-1 md:min-w-0"}`}
               >
                 <RoadmapColumn
                   id={s}
