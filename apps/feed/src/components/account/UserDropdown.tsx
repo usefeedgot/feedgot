@@ -106,16 +106,16 @@ export default function UserDropdown({ className = "" }: { className?: string })
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-30 max-w-[40vw] p-2" side="bottom" align="center" sideOffset={8}>
-          <DropdownMenuItem onSelect={onAccount} className="px-2 py-2 rounded-sm flex items-center gap-2">
-            <AccountIcon className="w-[18px] h-[18px] text-foreground/80" />
-            <span>Account</span>
+          <DropdownMenuItem onSelect={onAccount} className="px-2 py-2 rounded-sm flex items-center gap-2 group">
+            <AccountIcon className="w-[18px] h-[18px] text-foreground/80 transition-colors group-hover:text-primary" />
+            <span className="transition-colors group-hover:text-foreground">Account</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={onSettings} className="px-2 py-2 rounded-sm flex items-center gap-2">
-            <SettingIcon className="w-[18px] h-[18px] text-foreground/80" />
-            <span>Settings</span>
+          <DropdownMenuItem onSelect={onSettings} className="px-2 py-2 rounded-sm flex items-center gap-2 group">
+            <SettingIcon className="w-[18px] h-[18px] text-foreground/80 transition-colors group-hover:text-primary" />
+            <span className="transition-colors group-hover:text-foreground">Settings</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={onSignOut} className="px-2 py-2 rounded-sm flex items-center gap-2" aria-disabled={loading}>
-            <LogoutIcon className="w-[18px] h-[18px] text-foreground/80" />
+          <DropdownMenuItem onSelect={onSignOut} className="px-2 py-2 rounded-sm flex items-center gap-2 group" aria-disabled={loading}>
+            <LogoutIcon className="w-[18px] h-[18px] text-foreground/80 group-hover:text-red-500 transition-colors" />
             <span>Sign out</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
