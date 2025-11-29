@@ -4,6 +4,7 @@ import React from "react"
 import { useDroppable } from "@dnd-kit/core"
 import { MoveVertical, MoveHorizontal } from "lucide-react"
 import StatusIcon from "@/components/requests/StatusIcon"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function RoadmapColumn({
   id,
@@ -23,9 +24,11 @@ export default function RoadmapColumn({
   const { setNodeRef, isOver } = useDroppable({ id })
 
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
       className={`rounded-md border overflow-hidden transition-all ${isOver ? "border-green-500 ring-2 ring-green-300" : "bg-card"}`}
+      layout
+      transition={{ type: "tween", ease: "easeOut", duration: 0.12 }}
     >
       <div
         className={`${collapsed ? "px-2 py-2 relative flex flex-col items-center gap-2" : "px-3 py-2 flex items-center justify-between"} cursor-pointer`}
@@ -56,12 +59,29 @@ export default function RoadmapColumn({
           </>
         )}
       </div>
-      {!collapsed ? (
-        <ul className={`p-3 space-y-2 min-h-24`}> 
-          {children}
-          {isOver ? <li className="mt-2 border-t-2 border-green-500 rounded-full" aria-hidden /> : null}
-        </ul>
-      ) : null}
-    </div>
+      <AnimatePresence initial={false}>
+        {!collapsed ? (
+          <motion.ul
+            className={`p-3 space-y-2 min-h-24`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ type: "tween", ease: "easeOut", duration: 0.1 }}
+          >
+            {children}
+            {isOver ? (
+              <motion.li
+                className="mt-2 border-t-2 border-green-500 rounded-full"
+                aria-hidden
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.08 }}
+              />
+            ) : null}
+          </motion.ul>
+        ) : null}
+      </AnimatePresence>
+    </motion.div>
   )
 }

@@ -2,6 +2,7 @@
 
 import React from "react"
 import { DndContext, useSensor, useSensors, PointerSensor, DragOverlay } from "@dnd-kit/core"
+import { motion, AnimatePresence } from "framer-motion"
 import { client } from "@feedgot/api/client"
 import { toast } from "sonner"
 import RoadmapRequestItem from "@/components/roadmap/RoadmapRequestItem"
@@ -135,19 +136,21 @@ export default function RoadmapBoard({ workspaceSlug, items: initialItems }: { w
                   collapsed={!!collapsedByStatus[s]}
                   onToggle={(next) => setCollapsedByStatus((prev) => ({ ...prev, [s]: next }))}
                 >
-                  {(itemsForStatus || []).map((it) => {
-                    const isSaving = savingId === it.id
-                    return (
-                      <RoadmapDraggable key={it.id} id={it.id} isDragging={activeId === it.id}>
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className="flex-1 min-w-0">
-                            <RoadmapRequestItem item={{ id: it.id, title: it.title, slug: it.slug, roadmapStatus: it.roadmapStatus, content: it.content }} workspaceSlug={workspaceSlug} />
+                  <AnimatePresence initial={false}>
+                    {(itemsForStatus || []).map((it) => {
+                      const isSaving = savingId === it.id
+                      return (
+                        <RoadmapDraggable key={it.id} id={it.id} isDragging={activeId === it.id}>
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="flex-1 min-w-0">
+                              <RoadmapRequestItem item={{ id: it.id, title: it.title, slug: it.slug, roadmapStatus: it.roadmapStatus, content: it.content }} workspaceSlug={workspaceSlug} />
+                            </div>
+                            {isSaving ? <span className="ml-2 text-[11px] text-accent">Saving…</span> : null}
                           </div>
-                          {isSaving ? <span className="ml-2 text-[11px] text-accent">Saving…</span> : null}
-                        </div>
-                      </RoadmapDraggable>
-                    )
-                  })}
+                        </RoadmapDraggable>
+                      )
+                    })}
+                  </AnimatePresence>
                 </RoadmapColumn>
               </div>
             )
@@ -155,7 +158,12 @@ export default function RoadmapBoard({ workspaceSlug, items: initialItems }: { w
         </div>
         <DragOverlay dropAnimation={null}>
           {activeId ? (
-            <div className="rounded-md border bg-background px-3 py-2 shadow-lg pointer-events-none">
+            <motion.div
+              className="rounded-md border bg-background px-3 py-2 shadow-lg pointer-events-none"
+              initial={{ scale: 0.995, opacity: 0.97 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 260, damping: 26 }}
+            >
               {(() => {
                 const it = items.find((i) => i.id === activeId)
                 if (!it) return null
@@ -168,7 +176,7 @@ export default function RoadmapBoard({ workspaceSlug, items: initialItems }: { w
                   </div>
                 )
               })()}
-            </div>
+            </motion.div>
           ) : null}
         </DragOverlay>
       </DndContext>
