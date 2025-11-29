@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@feedgot/ui/lib/utils";
 import {
   DropdownMenu,
@@ -9,21 +9,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@feedgot/ui/components/dropdown-menu";
-import { client } from "@feedgot/api/client"
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useWorkspaceSwitcher } from "./useWorkspaceSwitcher";
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image"
 import { getSlugFromPath } from "../../config/nav";
 import { ChevronIcon } from "@feedgot/ui/icons/chevron";
 import { PlusIcon } from "@feedgot/ui/icons/plus";
-import { useWorkspaceLogo } from "@/lib/branding-store";
-
-type Ws = {
-  id: string;
-  name: string;
-  slug: string;
-  logo?: string | null;
-  domain?: string | null;
-};
+import type { Ws } from "./useWorkspaceSwitcher";
 
 export default function WorkspaceSwitcher({
   className = "",
@@ -35,96 +27,30 @@ export default function WorkspaceSwitcher({
   initialWorkspaces?: Ws[];
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const queryClient = useQueryClient();
-  const slug = getSlugFromPath(pathname || "");
-  const { data: workspaces = [] } = useQuery({
-    queryKey: ["workspaces"],
-    queryFn: async () => {
-      const res = await client.workspace.listMine.$get();
-      const data = await res.json();
-      return (data?.workspaces || []) as Ws[];
-    },
-    initialData: initialWorkspaces || [],
-    staleTime: 300_000,
-    gcTime: 300_000,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
-  const { data: wsInfo } = useQuery<Ws | null>({
-    queryKey: ["workspace", slug],
-    queryFn: async () => {
-      if (!slug) return null;
-      const res = await client.workspace.bySlug.$get({ slug });
-      const d = await res.json();
-      const w = (d as { workspace?: Ws | null })?.workspace;
-      return (w || null) as Ws | null;
-    },
-    enabled: !!slug,
-    staleTime: 60_000,
-    gcTime: 300_000,
-    refetchOnMount: false,
-    initialData: initialWorkspace || null,
-  });
   const [open, setOpen] = React.useState(false);
-  const liveLogo = useWorkspaceLogo(slug || "");
-  
-  const current = React.useMemo(() => {
-    return workspaces.find((w) => w.slug === slug) || null;
-  }, [workspaces, slug]);
-  const currentLogo: string | null =
-    liveLogo ?? wsInfo?.logo ?? current?.logo ?? null;
-  const currentName =
-    wsInfo?.name ?? current?.name ?? (slug || "Current");
-  const all = workspaces;
+  const slug = getSlugFromPath(pathname || "");
+  const {
+    all,
+    currentLogo,
+    currentName,
+    handleSelectWorkspace,
+    handleCreateNew,
+  } = useWorkspaceSwitcher(slug, initialWorkspace || null, initialWorkspaces || []);
 
-  const handleSelectWorkspace = React.useCallback(
-    (targetSlug: string) => {
-      setOpen(false);
-      try {
-        router.prefetch(`/workspaces/${targetSlug}`);
-      } catch {}
-      try {
-        queryClient.prefetchQuery({
-          queryKey: ["status-counts", targetSlug],
-          queryFn: async () => {
-            const res = await client.workspace.statusCounts.$get({ slug: targetSlug });
-            const data = await res.json();
-            return (data?.counts || null) as Record<string, number> | null;
-          },
-          staleTime: 300_000,
-          gcTime: 300_000,
-        });
-      } catch {}
-      router.push(`/workspaces/${targetSlug}`);
-    },
-    [router, queryClient]
-  );
-  const handleCreateNew = React.useCallback(() => {
+  const onSelectWorkspace = React.useCallback((targetSlug: string) => {
     setOpen(false);
-    router.push("/workspaces/new");
-  }, [router]);
+    handleSelectWorkspace(targetSlug);
+  }, [handleSelectWorkspace]);
+  const onCreateNew = React.useCallback(() => {
+    setOpen(false);
+    handleCreateNew();
+  }, [handleCreateNew]);
 
   return (
     <div className={cn(className)}>
       <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger
-          className="w-full cursor-pointer"
-          onMouseEnter={() => {
-            try {
-              queryClient.prefetchQuery({
-                queryKey: ["workspaces"],
-                queryFn: async () => {
-                  const res = await client.workspace.listMine.$get();
-                  const data = await res.json();
-                  return (data?.workspaces || []) as Ws[];
-                },
-                staleTime: 300_000,
-                gcTime: 300_000,
-              });
-            } catch {}
-          }}
-        >
+        <DropdownMenuTrigger className="w-full cursor-pointer">
           <div className="group flex items-center gap-2 rounded-sm px-2 py-2 text-md text-accent hover:bg-muted cursor-pointer">
             <div className={cn("relative w-6 h-6 rounded-sm border ring-1 ring-border overflow-hidden", currentLogo ? "bg-transparent" : "bg-muted")}>
               {currentLogo ? (
@@ -158,7 +84,7 @@ export default function WorkspaceSwitcher({
                 return (
                   <DropdownMenuItem
                     key={w.slug}
-                    onSelect={() => handleSelectWorkspace(w.slug)}
+                    onSelect={() => onSelectWorkspace(w.slug)}
                     className={cn(
                       "flex items-center gap-2 px-2 py-2 rounde-sm",
                       isCurrent ? "bg-muted" : "hover:bg-muted"
@@ -182,7 +108,7 @@ export default function WorkspaceSwitcher({
                 );
               })}
               <DropdownMenuItem
-                onSelect={handleCreateNew}
+                onSelect={onCreateNew}
                 className="text-sm flex items-center gap-2 px-2 py-2 rounded-sm hover:bg-muted"
               >
                 <PlusIcon className="size-4" />
