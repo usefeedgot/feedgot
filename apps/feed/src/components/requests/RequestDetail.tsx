@@ -25,7 +25,7 @@ export type RequestDetailData = {
   boardSlug: string
 }
 
-export default function RequestDetail({ post, workspaceSlug }: { post: RequestDetailData; workspaceSlug: string }) {
+export default function RequestDetail({ post, workspaceSlug, readonly = false }: { post: RequestDetailData; workspaceSlug: string; readonly?: boolean }) {
   const date = new Date(post.publishedAt ?? post.createdAt)
   const formatted = new Intl.DateTimeFormat(undefined, { month: "short", day: "2-digit" }).format(date)
   const [meta, setMeta] = React.useState({
@@ -71,19 +71,22 @@ export default function RequestDetail({ post, workspaceSlug }: { post: RequestDe
                 <span className="text-xs text-accent">Date</span>
                 <span className="text-xs text-accent">{formatted}</span>
               </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-xs text-accent">Board</span>
-                <BoardPicker workspaceSlug={workspaceSlug} postId={post.id} value={board} onChange={setBoard} />
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-xs text-accent">Status</span>
-                <StatusPicker postId={post.id} value={meta.roadmapStatus} onChange={(v) => setMeta((m) => ({ ...m, roadmapStatus: v }))} />
-              </div>
-              
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-xs text-accent">Flags</span>
-                <FlagsPicker postId={post.id} value={{ isPinned: meta.isPinned, isLocked: meta.isLocked, isFeatured: meta.isFeatured }} onChange={(v) => setMeta((m) => ({ ...m, ...v }))} />
-              </div>
+              {readonly ? null : (
+                <>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-xs text-accent">Board</span>
+                    <BoardPicker workspaceSlug={workspaceSlug} postId={post.id} value={board} onChange={setBoard} />
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-xs text-accent">Status</span>
+                    <StatusPicker postId={post.id} value={meta.roadmapStatus} onChange={(v) => setMeta((m) => ({ ...m, roadmapStatus: v }))} />
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-xs text-accent">Flags</span>
+                    <FlagsPicker postId={post.id} value={{ isPinned: meta.isPinned, isLocked: meta.isLocked, isFeatured: meta.isFeatured }} onChange={(v) => setMeta((m) => ({ ...m, ...v }))} />
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </aside>

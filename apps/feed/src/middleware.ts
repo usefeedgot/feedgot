@@ -6,8 +6,6 @@ import { eq } from "drizzle-orm"
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname
-  const first = pathname.split("/")[1] || ""
-
   const host = req.headers.get("host") || ""
   const hostNoPort = host.replace(/:\d+$/, "")
   const parts = hostNoPort.split(".")
@@ -17,13 +15,10 @@ export async function middleware(req: NextRequest) {
   const subdomain = hasSub ? parts[0] : ""
   const reservedSubdomains = new Set(["www", "app"]) 
 
-  if (isMainDomain && subdomain && !reservedSubdomains.has(subdomain)) {
-    if (pathname === "/") {
-      const url = req.nextUrl.clone()
-      url.pathname = `/workspaces/${subdomain}`
-      return NextResponse.rewrite(url)
-    }
-    return NextResponse.next()
+  if (subdomain && !reservedSubdomains.has(subdomain)) {
+    const url = req.nextUrl.clone()
+    url.pathname = `/subdomain/${subdomain}${pathname === "/" ? "" : pathname}`
+    return NextResponse.rewrite(url)
   }
 
   if (!isMainDomain && hostNoPort.startsWith("feedback.")) {

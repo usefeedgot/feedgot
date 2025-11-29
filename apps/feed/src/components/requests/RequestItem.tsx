@@ -27,8 +27,9 @@ export type RequestItemData = {
   isAnonymous?: boolean
 }
 
-function RequestItemBase({ item, workspaceSlug }: { item: RequestItemData; workspaceSlug: string }) {
-  const href = `/workspaces/${workspaceSlug}/requests/${item.slug}`
+function RequestItemBase({ item, workspaceSlug, linkBase }: { item: RequestItemData; workspaceSlug: string; linkBase?: string }) {
+  const base = linkBase || `/workspaces/${workspaceSlug}`
+  const href = `${base}/requests/${item.slug}`
   return (
     <li className="rounded-md border bg-card p-2.5">
       <div className="flex items-center gap-3">
