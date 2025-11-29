@@ -3,6 +3,7 @@
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import SectionCard from "../global/SectionCard";
+import PlanNotice from "../global/PlanNotice";
 import { toast } from "sonner";
 import { Button } from "@feedgot/ui/components/button";
 import RecordsTable from "./RecordsTable";
@@ -117,6 +118,7 @@ export default function DomainSection({ slug }: { slug: string }) {
       description="Create a custom domain for your workspace."
     >
       <div className="space-y-6">
+        <PlanNotice slug={slug} feature="domain" plan={plan} />
         <div className="space-y-2">
           {info?.host ? (
             <div className="flex items-center justify-between rounded-md border p-3">

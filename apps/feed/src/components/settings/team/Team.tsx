@@ -2,6 +2,7 @@
 
 import React from "react";
 import SectionCard from "../global/SectionCard";
+import PlanNotice from "../global/PlanNotice";
 import { Button } from "@feedgot/ui/components/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@feedgot/ui/components/table";
 import { Label } from "@feedgot/ui/components/label";
@@ -90,6 +91,7 @@ export default function TeamSection({
   return (
     <SectionCard title="Manage Members" description="Members have access to your workspace.">
       <div className="space-y-6">
+        <PlanNotice slug={slug} feature="team" membersCount={(data.members || []).length} />
         <div className="space-y-2">
           <div className="rounded-md border overflow-hidden">
             <Table>
