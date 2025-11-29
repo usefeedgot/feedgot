@@ -4,7 +4,6 @@ import React from "react"
 import SectionCard from "@/components/settings/global/SectionCard"
 import { Avatar, AvatarImage, AvatarFallback } from "@feedgot/ui/components/avatar"
 import { Input } from "@feedgot/ui/components/input"
-import { Button } from "@feedgot/ui/components/button"
 import { LoadingButton } from "@/components/global/loading-button"
 import { toast } from "sonner"
 import { authClient } from "@feedgot/auth/client"
@@ -44,9 +43,6 @@ export default function Profile() {
     }
   }, [saving])
 
-  const onReset = React.useCallback(() => {
-    setName((d.name || "").trim())
-  }, [d.name])
 
   return (
     <SectionCard title="Profile" description="Update your name and avatar">
@@ -71,13 +67,12 @@ export default function Profile() {
         <div className="flex items-center justify-between p-4">
           <div className="text-sm">Email</div>
           <div className="w-full max-w-md flex items-center justify-end">
-            <Input value={d.email || ""} readOnly className="h-9 w-[220px] text-right" />
+            <Input value={d.email || ""} disabled className="h-9 w-[220px] text-right" />
           </div>
         </div>
       </div>
-      <div className="px-4 pb-4 flex gap-2 justify-end">
+      <div className="px-4 pb-4 flex justify-end">
         <LoadingButton onClick={onSave} loading={saving}>Save</LoadingButton>
-        <Button size="sm" variant="secondary" onClick={onReset}>Reset</Button>
       </div>
     </SectionCard>
   )

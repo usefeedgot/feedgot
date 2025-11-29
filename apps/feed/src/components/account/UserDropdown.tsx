@@ -92,7 +92,7 @@ export default function UserDropdown({ className = "" }: { className?: string })
     <div className={cn(className)}>
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger className="w-full cursor-pointer">
-          <div className="group flex items-center gap-2 rounded-md px-3 py-2 text-xs md:text-sm text-accent hover:bg-muted">
+          <div className="group flex items-center gap-2 rounded-md px-2 py-1.5 text-xs md:text-sm text-accent hover:bg-muted">
             <div className="rounded-md border ring-1 ring-border overflow-hidden">
               <Avatar className="size-6">
                 {d.image ? <AvatarImage src={d.image} alt={d.name} /> : null}
@@ -102,7 +102,7 @@ export default function UserDropdown({ className = "" }: { className?: string })
             <span className="transition-colors">{d.name || "Account"}</span>
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48 max-w-[95vw] p-2" side="bottom" align="center" sideOffset={8}>
+        <DropdownMenuContent className="w-30 max-w-[40vw] p-2" side="bottom" align="center" sideOffset={8}>
           <DropdownMenuItem onSelect={onAccount} className="px-2 py-2 rounded-sm">
             Account
           </DropdownMenuItem>
