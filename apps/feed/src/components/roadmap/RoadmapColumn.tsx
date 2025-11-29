@@ -28,7 +28,7 @@ export default function RoadmapColumn({
       className={`rounded-md border overflow-hidden transition-all ${isOver ? "border-green-500 ring-2 ring-green-300" : "bg-card"}`}
     >
       <div
-        className={`${collapsed ? "px-2 py-1" : "px-3 py-2"} flex items-center justify-between cursor-pointer`}
+        className={`${collapsed ? "px-1 py-0.5" : "px-3 py-2"} flex items-center justify-between cursor-pointer`}
         role="button"
         tabIndex={0}
         aria-expanded={!collapsed}
@@ -37,10 +37,10 @@ export default function RoadmapColumn({
           if (e.key === "Enter" || e.key === " ") onToggle?.(!collapsed)
         }}
       >
-        <div className="flex items-center gap-2 min-w-0">
-          <StatusIcon status={id} className={`${collapsed ? "size-4" : "size-4"} text-foreground/80 shrink-0`} />
+        <div className={`flex items-center ${collapsed ? "gap-1" : "gap-2"} min-w-0`}>
+          <StatusIcon status={id} className={`${collapsed ? "size-5" : "size-4"} text-foreground/80 shrink-0`} />
           {!collapsed ? <div className="text-sm font-medium truncate flex-1">{label}</div> : null}
-          <div className="text-[10px] font-mono tabular-nums rounded-md bg-muted px-2 py-0.5 text-accent shrink-0">{count}</div>
+          <div className="text-[10px] font-mono tabular-nums rounded-md bg-muted px-1 py-0.5 text-accent shrink-0">{count}</div>
         </div>
         <div className="flex items-center gap-2">
           <button
