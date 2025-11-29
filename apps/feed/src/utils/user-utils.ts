@@ -19,12 +19,10 @@ export function getDisplayUser(user: User | null | undefined): DisplayUser {
     }
   }
 
-  // Extract first name only
-  const fullName = user.name || user.email?.split("@")[0] || "User"
-  const firstName = fullName.split(" ")[0]
+  const fullName = (user.name || user.email?.split("@")[0] || "User").trim()
 
   return {
-    name: firstName || "",
+    name: fullName,
     email: user.email || "",
     image: user.image || "",
   }
