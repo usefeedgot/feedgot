@@ -24,6 +24,24 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next()
   }
 
+  if (pathname.startsWith("/auth/sign-in") || pathname.startsWith("/auth/sign-up") || pathname === "/start") {
+    const sessionCookie = getSessionCookie(req)
+    if (sessionCookie) {
+      const raw = req.nextUrl.searchParams.get("redirect") || ""
+      if (raw.startsWith("/")) {
+        const url = new URL(raw, req.url)
+        return NextResponse.redirect(url)
+      }
+      const last = req.cookies.get("lastWorkspaceSlug")?.value || ""
+      if (last) {
+        const url = new URL(`/workspaces/${last}`, req.url)
+        return NextResponse.redirect(url)
+      }
+      const url = new URL("/start", req.url)
+      return NextResponse.redirect(url)
+    }
+  }
+
   if (!isMainDomain && hostNoPort.startsWith("feedback.")) {
     const baseHost = hostNoPort.replace(/^feedback\./, "")
     const protoDomain = `https://${baseHost}`
@@ -67,5 +85,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/workspaces/:path*"],
+  matcher: ["/", "/workspaces/:path*", "/auth/:path*", "/start"],
 }
