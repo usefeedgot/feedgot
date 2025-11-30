@@ -1,13 +1,13 @@
 "use client"
 
 import React from "react"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@feedgot/ui/components/table"
 import SectionCard from "@/components/settings/global/SectionCard"
 import { Button } from "@feedgot/ui/components/button"
 import { useRouter, usePathname } from "next/navigation"
 import { toast } from "sonner"
 import { authClient } from "@feedgot/auth/client"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@feedgot/ui/components/table"
 
 export default function Security() {
   const router = useRouter()
@@ -94,47 +94,49 @@ export default function Security() {
           {isFetching ? (
             <div className="text-sm text-accent">Loading sessions…</div>
           ) : Array.isArray(sessions) && sessions.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Device</TableHead>
-                  <TableHead className="text-center">IP</TableHead>
-                  <TableHead className="text-center">Expires</TableHead>
-                  <TableHead className="text-right">Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {(sessions || []).map((s) => {
-                  const isCurrent = s.token === currentToken
-                  const ua = String(s.userAgent || "").slice(0, 80)
-                  const ip = String(s.ipAddress || "-")
-                  const exp = s.expiresAt ? new Date(s.expiresAt).toLocaleString() : "-"
-                  return (
-                    <TableRow key={s.token}>
-                      <TableCell className="px-3">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="truncate">{ua || "Unknown"}</span>
-                          {isCurrent ? <span className="ml-2 text-xs rounded-md bg-muted px-2 py-0.5">This device</span> : null}
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-3 text-center">{ip}</TableCell>
-                      <TableCell className="px-3 text-center">{exp}</TableCell>
-                      <TableCell className="px-3 text-right">
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant={isCurrent ? "secondary" : "destructive"}
-                          onClick={() => revokeOne(s.token)}
-                          aria-disabled={revoking === s.token}
-                        >
-                          {isCurrent ? "Sign out" : "Remove"}
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
+            <div className="rounded-md border overflow-hidden">
+              <Table className="table-fixed">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[56%]">Device</TableHead>
+                    <TableHead className="w-[16%] text-center">IP</TableHead>
+                    <TableHead className="w-[16%] text-center">Expires</TableHead>
+                    <TableHead className="w-[12%] text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(sessions || []).map((s) => {
+                    const isCurrent = s.token === currentToken
+                    const ua = String(s.userAgent || "").slice(0, 80)
+                    const ip = String(s.ipAddress || "-")
+                    const exp = s.expiresAt ? new Date(s.expiresAt).toLocaleString() : "-"
+                    return (
+                      <TableRow key={s.token}>
+                        <TableCell className="px-3">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="truncate block">{ua || "Unknown"}</span>
+                            {isCurrent ? <span className="ml-2 text-xs rounded-md bg-muted px-2 py-0.5">This device</span> : null}
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-3 text-center">{ip}</TableCell>
+                        <TableCell className="px-3 text-center">{exp}</TableCell>
+                        <TableCell className="px-3 text-right">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant={isCurrent ? "secondary" : "destructive"}
+                            onClick={() => revokeOne(s.token)}
+                            aria-disabled={revoking === s.token}
+                          >
+                            {isCurrent ? "Sign out" : "Remove"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </div>
           ) : (
             <div className="text-sm text-accent">No active sessions</div>
           )}

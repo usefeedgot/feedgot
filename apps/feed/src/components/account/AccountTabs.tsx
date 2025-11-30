@@ -51,12 +51,12 @@ export default function AccountTabs({ selectedSection, initialUser }: Props) {
       <Tabs value={selected} onValueChange={onValueChange} className="space-y-4">
         <TabsList className="w-full">
           {ACCOUNT_SECTIONS.map((item) => (
-            <TabsTrigger key={item.value} value={item.value} className=" px-3 text-accent">{item.label}</TabsTrigger>
+            <TabsTrigger key={item.value} value={item.value} className="px-3 text-accent">{item.label}</TabsTrigger>
           ))}
         </TabsList>
 
         {ACCOUNT_SECTIONS.map((s) => (
-          <TabsContent key={s.value} value={s.value} className="mt-2">
+          <TabsContent key={s.value} value={s.value} className="mt-2 min-h-[420px]">
             <AccountSectionRenderer section={s.value} initialUser={initialUser || undefined} />
           </TabsContent>
         ))}
