@@ -170,7 +170,7 @@ export default function Sidebar({
 
       <SidebarSection className="mt-auto pb-8">
         {secondaryNav.map((item) => (
-          <SidebarItem key={item.label} item={item} pathname={pathname} mutedIcon={false} />
+          <SidebarItem key={item.label} item={item} pathname={pathname} mutedIcon />
         ))}
         <UserDropdown initialUser={initialUser}
         />
