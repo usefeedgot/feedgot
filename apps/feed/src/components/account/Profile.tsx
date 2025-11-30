@@ -1,20 +1,19 @@
 "use client"
 
 import React from "react"
-import SectionCard from "@/components/settings/global/SectionCard"
 import { Avatar, AvatarImage, AvatarFallback } from "@feedgot/ui/components/avatar"
-import { Input } from "@feedgot/ui/components/input"
 import { LoadingButton } from "@/components/global/loading-button"
-import { toast } from "sonner"
-import { authClient } from "@feedgot/auth/client"
+import SectionCard from "@/components/settings/global/SectionCard"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getInitials, getDisplayUser } from "@/utils/user-utils"
+import { Input } from "@feedgot/ui/components/input"
+import { toast } from "sonner"
+import { authClient } from "@feedgot/auth/client"
 
 export default function Profile({ initialUser }: { initialUser?: { name?: string; email?: string; image?: string | null } | null }) {
   const queryClient = useQueryClient()
   const [name, setName] = React.useState("")
   const [saving, setSaving] = React.useState(false)
-
   const { data } = useQuery<{ user: { name?: string; email?: string; image?: string | null } | null }>({
     queryKey: ["me"],
     queryFn: async () => {
