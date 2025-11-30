@@ -52,13 +52,13 @@ export default function MobileDrawerContent({
 
         <SidebarSection title="REQUEST">
           {primaryNav.map((item) => (
-            <SidebarItem key={item.label} item={item} pathname={pathname} count={statusCounts ? statusCounts[statusKey(item.label)] : undefined} />
+            <SidebarItem key={item.label} item={item} pathname={pathname} count={statusCounts ? statusCounts[statusKey(item.label)] : undefined} mutedIcon={false} />
           ))}
         </SidebarSection>
 
         <SidebarSection className="pb-8">
           {secondaryNav.map((item) => (
-            <SidebarItem key={item.label} item={item} pathname={pathname} />
+            <SidebarItem key={item.label} item={item} pathname={pathname} mutedIcon />
           ))}
           <UserDropdown initialUser={initialUser} />
         </SidebarSection>
