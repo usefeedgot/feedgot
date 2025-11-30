@@ -26,5 +26,5 @@ export default async function AccountSectionPage({ params }: Props) {
   if (!session?.user) {
     redirect(`/auth/sign-in?redirect=/workspaces/${slug}/account/${encodeURIComponent(section)}`)
   }
-  return <AccountTabs selectedSection={section} />
+  return <AccountTabs selectedSection={section} initialUser={session.user} />
 }

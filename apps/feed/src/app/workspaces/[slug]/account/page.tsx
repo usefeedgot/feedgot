@@ -24,5 +24,5 @@ export default async function AccountPage({ params }: Props) {
   if (!session?.user) {
     redirect(`/auth/sign-in?redirect=/workspaces/${slug}/account`)
   }
-  return <AccountTabs />
+  return <AccountTabs initialUser={session.user} />
 }

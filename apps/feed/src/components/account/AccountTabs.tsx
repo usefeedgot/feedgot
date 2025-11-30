@@ -9,9 +9,9 @@ import ProfileSection from "./Profile"
 import SecuritySection from "./Security"
 import NotificationsSection from "./Notifications"
 
-type Props = { selectedSection?: string }
+type Props = { selectedSection?: string; initialUser?: { name?: string; email?: string; image?: string | null } | null }
 
-export default function AccountTabs({ selectedSection }: Props) {
+export default function AccountTabs({ selectedSection, initialUser }: Props) {
   const router = useRouter()
   const routeParams = useParams()
   const slugParam = typeof (routeParams as any)?.slug === "string" ? (routeParams as any).slug : undefined
@@ -57,7 +57,7 @@ export default function AccountTabs({ selectedSection }: Props) {
 
         {ACCOUNT_SECTIONS.map((s) => (
           <TabsContent key={s.value} value={s.value} className="mt-2">
-            <AccountSectionRenderer section={s.value} />
+            <AccountSectionRenderer section={s.value} initialUser={initialUser || undefined} />
           </TabsContent>
         ))}
       </Tabs>
@@ -65,10 +65,10 @@ export default function AccountTabs({ selectedSection }: Props) {
   )
 }
 
-function AccountSectionRenderer({ section }: { section: string }) {
+function AccountSectionRenderer({ section, initialUser }: { section: string; initialUser?: { name?: string; email?: string; image?: string | null } }) {
   switch (section) {
     case "profile":
-      return <ProfileSection />
+      return <ProfileSection initialUser={initialUser} />
     case "security":
       return <SecuritySection />
     case "notifications":

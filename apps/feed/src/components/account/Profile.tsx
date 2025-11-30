@@ -7,26 +7,47 @@ import { Input } from "@feedgot/ui/components/input"
 import { LoadingButton } from "@/components/global/loading-button"
 import { toast } from "sonner"
 import { authClient } from "@feedgot/auth/client"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getInitials, getDisplayUser } from "@/utils/user-utils"
 
-export default function Profile() {
-  const [user, setUser] = React.useState<{ name?: string; email?: string; image?: string | null } | null>(null)
+export default function Profile({ initialUser }: { initialUser?: { name?: string; email?: string; image?: string | null } | null }) {
+  const queryClient = useQueryClient()
   const [name, setName] = React.useState("")
   const [saving, setSaving] = React.useState(false)
 
-  React.useEffect(() => {
-    let active = true
-    ;(async () => {
-      try {
-        const s = await authClient.getSession()
-        if (!active) return
-        const u = (s as any)?.data?.user || null
-        setUser(u)
-        setName((u?.name || "").trim())
-      } catch {}
-    })()
-    return () => { active = false }
+  const getInitialStoredUser = React.useCallback(() => {
+    try {
+      const raw = localStorage.getItem("feed_user")
+      if (raw) return JSON.parse(raw)
+    } catch {}
+    return null
   }, [])
+
+  const { data } = useQuery<{ user: { name?: string; email?: string; image?: string | null } | null }>({
+    queryKey: ["me"],
+    queryFn: async () => {
+      const s = await authClient.getSession()
+      const u = (s as any)?.data?.user || null
+      return { user: u }
+    },
+    initialData: () => {
+      const stored = getInitialStoredUser()
+      const u = (initialUser || stored) as any
+      return { user: u || null }
+    },
+    staleTime: 300_000,
+    gcTime: 900_000,
+  })
+
+  const user = data?.user || null
+
+  React.useEffect(() => {
+    if (user) {
+      setName((user?.name || "").trim())
+      try { localStorage.setItem("feed_user", JSON.stringify(user)) } catch {}
+      try { queryClient.setQueryData(["me"], { user }) } catch {}
+    }
+  }, [user, queryClient])
 
   const d = getDisplayUser(user || undefined)
   const initials = getInitials(d.name || "U")
