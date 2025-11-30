@@ -15,14 +15,6 @@ export default function Profile({ initialUser }: { initialUser?: { name?: string
   const [name, setName] = React.useState("")
   const [saving, setSaving] = React.useState(false)
 
-  const getInitialStoredUser = React.useCallback(() => {
-    try {
-      const raw = localStorage.getItem("feed_user")
-      if (raw) return JSON.parse(raw)
-    } catch {}
-    return null
-  }, [])
-
   const { data } = useQuery<{ user: { name?: string; email?: string; image?: string | null } | null }>({
     queryKey: ["me"],
     queryFn: async () => {
@@ -30,13 +22,12 @@ export default function Profile({ initialUser }: { initialUser?: { name?: string
       const u = (s as any)?.data?.user || null
       return { user: u }
     },
-    initialData: () => {
-      const stored = getInitialStoredUser()
-      const u = (initialUser || stored) as any
-      return { user: u || null }
-    },
+    initialData: () => ({ user: (initialUser as any) || null }),
+    placeholderData: (prev) => prev as any,
     staleTime: 300_000,
     gcTime: 900_000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   })
 
   const user = data?.user || null
@@ -44,7 +35,6 @@ export default function Profile({ initialUser }: { initialUser?: { name?: string
   React.useEffect(() => {
     if (user) {
       setName((user?.name || "").trim())
-      try { localStorage.setItem("feed_user", JSON.stringify(user)) } catch {}
       try { queryClient.setQueryData(["me"], { user }) } catch {}
     }
   }, [user, queryClient])
