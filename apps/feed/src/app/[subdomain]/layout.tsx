@@ -40,7 +40,7 @@ export default async function Layout({
         <Container maxWidth="5xl">
           <DomainHeader workspace={ws} subdomain={subdomain} />
         </Container>
-        <Container maxWidth="5xl">{children}</Container>
+        <Container maxWidth="5xl" className="mt-4">{children}</Container>
       </SubdomainThemeProvider>
     </>
   )

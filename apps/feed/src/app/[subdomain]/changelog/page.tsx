@@ -6,12 +6,12 @@ export default async function ChangelogPage({ params }: { params: Promise<{ subd
   const { subdomain } = await params
   const slug = subdomain
   return (
-    <section className="pb-2">
-      <div className="lg:grid lg:grid-cols-[minmax(0,1.5fr)_280px] lg:gap-10">
+    <section>
+      <div className="lg:grid lg:grid-cols-[minmax(0,1.5fr)_250px] lg:gap-6">
         <div>
           <h1 className="text-lg font-semibold mb-4">Changelog</h1>
           {/* TODO: render public changelog content */}
-        </div>
+        </div>  
         <div className="mt-10 lg:mt-0">
           <DomainSidebar subdomain={subdomain} slug={slug} />
         </div>

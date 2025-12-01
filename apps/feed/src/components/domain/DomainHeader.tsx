@@ -22,7 +22,7 @@ export function DomainHeader({ workspace, subdomain }: { workspace: WorkspaceInf
   const isFeedback = pathname === "/"
   const isRoadmap = pathname.startsWith(roadmapBase)
   const isChangelog = pathname.startsWith(changelogBase)
-  const itemCls = (active: boolean) => cn("rounded-md border px-3 py-2", active ? "bg-muted" : "border-transparent hover:bg-muted")
+  const itemCls = (active: boolean) => cn("rounded-md border px-3 py-2", active ? "bg-background/50 border-accent/20" : "border-transparent hover:bg-muted")
   return (
     <header className={cn("flex items-center gap-1 py-3 sm:py-5")}>      
       <div className="flex items-center gap-1">

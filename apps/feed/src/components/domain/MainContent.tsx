@@ -22,7 +22,7 @@ export function MainContent({
   pageSize: number
 }) {
   return (
-    <section className="mt-2">
+    <section>
       <div className="lg:grid lg:grid-cols-[minmax(0,1.5fr)_250px] lg:gap-6">
         <div>
           <div className="mb-4 flex items-center justify-start">

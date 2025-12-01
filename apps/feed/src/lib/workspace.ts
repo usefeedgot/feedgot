@@ -237,3 +237,13 @@ export async function getWorkspaceStatusCounts(slug: string): Promise<Record<str
   }
   return counts
 }
+
+export async function getPlannedRoadmapPosts(
+  slug: string,
+  opts?: { limit?: number; offset?: number; order?: "newest" | "oldest" }
+) {
+  const limit = opts?.limit
+  const offset = opts?.offset
+  const order = opts?.order
+  return getWorkspacePosts(slug, { statuses: ["planned"], limit, offset, order })
+}
