@@ -2,7 +2,9 @@
 
 import * as React from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@feedgot/ui/components/select"
+import { Button } from "@feedgot/ui/components/button"
+import { Popover, PopoverTrigger, PopoverContent, PopoverList, PopoverListItem } from "@feedgot/ui/components/popover"
+import { ChevronDown, ListTree } from "lucide-react"
 import { client } from "@feedgot/api/client"
 
 type Board = { id: string; name: string; slug: string; type?: string | null }
@@ -11,6 +13,7 @@ export function BoardsDropdown({ slug, subdomain }: { slug: string; subdomain: s
   const router = useRouter()
   const search = useSearchParams()
   const selected = search.get("board") || "__all__"
+  const [open, setOpen] = React.useState(false)
   const [boards, setBoards] = React.useState<Board[]>([])
   const [loading, setLoading] = React.useState(true)
 
@@ -32,23 +35,37 @@ export function BoardsDropdown({ slug, subdomain }: { slug: string; subdomain: s
     }
   }, [slug])
 
-  function onChange(value: string) {
+  const label = selected === "__all__" ? "All Feedback" : boards.find((b) => b.slug === selected)?.name || "Select board"
+
+  function go(value: string) {
     const base = `/${subdomain}/${slug}`
     const next = value === "__all__" ? base : `${base}?board=${encodeURIComponent(value)}`
+    setOpen(false)
     router.push(next)
   }
 
   return (
-    <Select value={selected} onValueChange={onChange} disabled={loading}>
-      <SelectTrigger className="h-8 w-44 text-sm">
-        <SelectValue placeholder="Select board" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="__all__">All Feedback</SelectItem>
-        {boards.map((b) => (
-          <SelectItem key={b.id} value={b.slug}>{b.name}</SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button type="button" variant="ghost" className="justify-start gap-2" disabled={loading}>
+          <ListTree className="size-4" />
+          <span className="truncate">{label}</span>
+          <span className="ml-auto" />
+          <ChevronDown className="size-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent list className="min-w-[11rem] w-fit">
+        <PopoverList>
+          <PopoverListItem onClick={() => go("__all__")}> 
+            <span className="text-sm">All Feedback</span>
+          </PopoverListItem>
+          {boards.map((b) => (
+            <PopoverListItem key={b.id} onClick={() => go(b.slug)}>
+              <span className="text-sm">{b.name}</span>
+            </PopoverListItem>
+          ))}
+        </PopoverList>
+      </PopoverContent>
+    </Popover>
   )
 }

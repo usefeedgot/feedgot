@@ -23,11 +23,10 @@ export function MainContent({
   pageSize: number
 }) {
   return (
-    <section className="pb-16">
+    <section className="mt-4">
       <div className="lg:grid lg:grid-cols-[minmax(0,1.5fr)_280px] lg:gap-10">
         <div>
-          <div className="mb-4 flex items-center justify-between">
-            <div className="text-sm font-medium">All Feedback</div>
+          <div className="mb-4 flex items-center justify-start">
             <BoardsDropdown slug={slug} subdomain={subdomain} />
           </div>
           <RequestList items={items as any} workspaceSlug={slug} linkBase={`/${subdomain}/${slug}`} />

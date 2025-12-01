@@ -22,8 +22,8 @@ export function DomainHeader({ workspace, subdomain }: { workspace: WorkspaceInf
   const isChangelog = pathname.startsWith(`${base}/changelog`)
   const itemCls = (active: boolean) => cn("rounded-md border px-3 py-2", active ? "bg-muted" : "border-transparent hover:bg-muted")
   return (
-    <header className={cn("flex items-center gap-2 py-4 sm:py-6")}>      
-      <div className="flex items-center gap-3">
+    <header className={cn("flex items-center gap-1 py-4 sm:py-6")}>      
+      <div className="flex items-center gap-1">
         {workspace.logo ? (
           <Image src={workspace.logo} alt={workspace.name} width={32} height={32} className="rounded-sm object-cover" />
         ) : (
@@ -33,6 +33,7 @@ export function DomainHeader({ workspace, subdomain }: { workspace: WorkspaceInf
         )}
         <div className="text-md font-medium">{workspace.name}</div>
       </div>
+      <span className="mx-2 text-accent" aria-hidden>|</span>
 
       <nav className="flex-1">
         <ul className="flex items-center gap-3 text-sm">
