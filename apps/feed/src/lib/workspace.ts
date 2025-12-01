@@ -33,6 +33,20 @@ export async function getBrandingColorsBySlug(slug: string): Promise<{ primary: 
   return { primary }
 }
 
+export async function getBrandingBySlug(slug: string): Promise<{ primary: string; theme: "light" | "dark" | "system" }> {
+  let primary = "#3b82f6"
+  let theme: "light" | "dark" | "system" = "system"
+  const [row] = await db
+    .select({ primaryColor: brandingConfig.primaryColor, theme: brandingConfig.theme })
+    .from(workspace)
+    .leftJoin(brandingConfig, eq(brandingConfig.workspaceId, workspace.id))
+    .where(eq(workspace.slug, slug))
+    .limit(1)
+  if (row?.primaryColor) primary = row.primaryColor
+  if (row?.theme) theme = row.theme as any
+  return { primary, theme }
+}
+
 
 export function normalizeStatus(s: string): string {
   const raw = (s || "").trim().toLowerCase()
