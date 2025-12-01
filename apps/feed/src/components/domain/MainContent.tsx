@@ -16,6 +16,7 @@ export function MainContent({
   totalCount,
   page,
   pageSize,
+  sidebarPosition = "right",
 }: {
   subdomain: string
   slug: string
@@ -23,10 +24,16 @@ export function MainContent({
   totalCount: number
   page: number
   pageSize: number
+  sidebarPosition?: "left" | "right"
 }) {
   return (
     <section>
-      <div className="lg:grid lg:grid-cols-[minmax(0,1.5fr)_250px] lg:gap-6">
+      <div className={sidebarPosition === "left" ? "lg:grid lg:grid-cols-[250px_minmax(0,1.5fr)] lg:gap-6" : "lg:grid lg:grid-cols-[minmax(0,1.5fr)_250px] lg:gap-6"}>
+        {sidebarPosition === "left" ? (
+          <aside className="hidden lg:block mt-10 lg:mt-0">
+            <DomainSidebar subdomain={subdomain} slug={slug} />
+          </aside>
+        ) : null}
         <div>
           <div className="mb-4">
             <div className="lg:hidden flex items-center justify-between gap-2">
@@ -46,9 +53,11 @@ export function MainContent({
           <RequestList items={items as any} workspaceSlug={slug} linkBase={`/${subdomain}/${slug}`} />
           <PublicRequestPagination subdomain={subdomain} slug={slug} page={page} pageSize={pageSize} totalCount={totalCount} />
         </div>
-        <aside className="hidden lg:block mt-10 lg:mt-0">
-          <DomainSidebar subdomain={subdomain} slug={slug} />
-        </aside>
+        {sidebarPosition === "right" ? (
+          <aside className="hidden lg:block mt-10 lg:mt-0">
+            <DomainSidebar subdomain={subdomain} slug={slug} />
+          </aside>
+        ) : null}
       </div>
     </section>
   )

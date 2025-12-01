@@ -14,6 +14,8 @@ export async function saveBranding(slug: string, input: BrandingConfig & { logoU
     primaryColor: input.primaryColor,
     theme: input.theme,
     hidePoweredBy: input.hidePoweredBy,
+    layoutStyle: input.layoutStyle,
+    sidebarPosition: input.sidebarPosition,
   })
   let message: string | undefined
   try {

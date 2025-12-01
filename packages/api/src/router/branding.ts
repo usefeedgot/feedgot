@@ -21,6 +21,8 @@ export function createBrandingRouter() {
             showLogo: brandingConfig.showLogo,
             showWorkspaceName: brandingConfig.showWorkspaceName,
             hidePoweredBy: brandingConfig.hidePoweredBy,
+            layoutStyle: brandingConfig.layoutStyle,
+            sidebarPosition: brandingConfig.sidebarPosition,
           })
           .from(workspace)
           .leftJoin(brandingConfig, eq(brandingConfig.workspaceId, workspace.id))
@@ -54,6 +56,8 @@ export function createBrandingRouter() {
           if (!limits.allowHidePoweredBy) throw new HTTPException(403, { message: "Removing 'Powered by' requires a higher plan" })
           update.hidePoweredBy = input.hidePoweredBy
         }
+        if (typeof input.layoutStyle !== "undefined") update.layoutStyle = input.layoutStyle
+        if (typeof input.sidebarPosition !== "undefined") update.sidebarPosition = input.sidebarPosition
         update.updatedAt = new Date()
 
         const [existing] = await ctx.db

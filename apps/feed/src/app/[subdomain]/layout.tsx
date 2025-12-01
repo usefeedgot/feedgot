@@ -39,17 +39,22 @@ export default async function Layout({
   return (
     <>
       <SubdomainThemeProvider theme={branding.theme}>
-        <DomainBrandingProvider hidePoweredBy={hidePoweredBy}>
+        <DomainBrandingProvider hidePoweredBy={hidePoweredBy} sidebarPosition={branding.sidebarPosition}>
         <style>{`:root{--primary:${p};--ring:${p};--sidebar-primary:${p};}`}</style>
         <BrandVarsEffect primary={p} />
         <div className="fixed inset-0 -z-10 flex flex-col">
           <div className="bg-background  dark:bg-background dark:border-background/60 border-b border-2 h-44 sm:h-52" />
           <div className="bg-card dark:bg-[#111113] border-b flex-1" />
         </div>
-        <Container maxWidth="5xl">
-          <DomainHeader workspace={ws} subdomain={subdomain} />
-          <div className="mt-4 pb-16 md:pb-0">{children}</div>
-        </Container>
+        {(() => {
+          const maxW = branding.layoutStyle === "compact" ? "4xl" : branding.layoutStyle === "spacious" ? "6xl" : "5xl"
+          return (
+            <Container maxWidth={maxW}>
+              <DomainHeader workspace={ws} subdomain={subdomain} />
+              <div className="mt-4 pb-16 md:pb-0">{children}</div>
+            </Container>
+          )
+        })()}
         <div className="fixed bottom-4 left-0 right-0 z-30 md:static md:mt-6 md:mb-6">
           <div className="mx-auto max-w-5xl px-4 sm:px-8 lg:px-16 xl:px-20">
             <PoweredBy />

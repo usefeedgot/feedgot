@@ -19,6 +19,8 @@ import {
 import ColorPicker from "./ColorPicker";
 import ThemePicker from "./ThemePicker";
 import LogoUploader from "./LogoUploader";
+import LayoutStylePicker from "./LayoutStylePicker";
+import SidebarPositionPicker from "./SidebarPositionPicker";
 import { setWorkspaceLogo } from "@/lib/branding-store";
 import { Input } from "@feedgot/ui/components/input";
 import { useQueryClient } from "@tanstack/react-query";
@@ -34,6 +36,8 @@ export default function BrandingSection({ slug }: { slug: string }) {
     "system"
   );
   const [hidePoweredBy, setHidePoweredBy] = React.useState<boolean>(false);
+  const [layoutStyle, setLayoutStyle] = React.useState<"compact" | "comfortable" | "spacious">("comfortable");
+  const [sidebarPosition, setSidebarPosition] = React.useState<"left" | "right">("left");
   const [saving, setSaving] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [workspaceName, setWorkspaceName] = React.useState("");
@@ -63,6 +67,14 @@ export default function BrandingSection({ slug }: { slug: string }) {
           )
             setTheme(conf.theme);
           setHidePoweredBy(Boolean(conf.hidePoweredBy));
+          if (
+            conf.layoutStyle === "compact" ||
+            conf.layoutStyle === "comfortable" ||
+            conf.layoutStyle === "spacious"
+          )
+            setLayoutStyle(conf.layoutStyle);
+          if (conf.sidebarPosition === "left" || conf.sidebarPosition === "right")
+            setSidebarPosition(conf.sidebarPosition);
         }
         try {
           const res = await client.workspace.bySlug.$get({ slug });
@@ -125,6 +137,8 @@ export default function BrandingSection({ slug }: { slug: string }) {
         brandingInput.primaryColor = p;
       }
       brandingInput.theme = theme;
+      brandingInput.layoutStyle = layoutStyle;
+      brandingInput.sidebarPosition = sidebarPosition;
       if (canHidePoweredBy) brandingInput.hidePoweredBy = hidePoweredBy;
       const result = await saveBranding(slug, brandingInput);
       if (!result.ok) throw new Error(result.message || "Update failed");
@@ -195,6 +209,20 @@ export default function BrandingSection({ slug }: { slug: string }) {
           <div className="text-sm">Theme</div>
           <div className="w-full max-w-md flex items-center justify-end">
             <ThemePicker value={theme} onSelect={(t) => setTheme(t)} />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between p-4">
+          <div className="text-sm">Layout Style</div>
+          <div className="w-full max-w-md flex items-center justify-end">
+            <LayoutStylePicker value={layoutStyle} onSelect={(l) => setLayoutStyle(l)} />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between p-4">
+          <div className="text-sm">Sidebar Position</div>
+          <div className="w-full max-w-md flex items-center justify-end">
+            <SidebarPositionPicker value={sidebarPosition} onSelect={(p) => setSidebarPosition(p)} />
           </div>
         </div>
 

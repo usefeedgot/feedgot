@@ -9,5 +9,6 @@ export const updateBrandingInputSchema = z.object({
   showLogo: z.boolean().optional(),
   showWorkspaceName: z.boolean().optional(),
   hidePoweredBy: z.boolean().optional(),
+  layoutStyle: z.enum(["compact", "comfortable", "spacious"]).optional(),
+  sidebarPosition: z.enum(["left", "right"]).optional(),
 })
-

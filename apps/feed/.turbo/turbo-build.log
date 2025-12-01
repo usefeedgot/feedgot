@@ -6,19 +6,19 @@
 
  [37m[1m [22m[39m Creating an optimized production build ...
 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
- [32m[1m✓[22m[39m Compiled successfully in 6.8s
+ [32m[1m✓[22m[39m Compiled successfully in 5.8s
  [37m[1m [22m[39m Skipping validation of types
-[?25l [37m[1m [22m[39m Collecting page data using 7 workers  [36m.[39m[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-[2K[1G [37m[1m [22m[39m Collecting page data using 7 workers  [36m..[39m[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[?25l [37m[1m [22m[39m Collecting page data using 7 workers  [36m.[39m[2K[1G [37m[1m [22m[39m Collecting page data using 7 workers  [36m..[39m[2K[1G [37m[1m [22m[39m Collecting page data using 7 workers  [36m...[39m[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-[2K[1G [37m[1m [22m[39m Collecting page data using 7 workers  [36m...[39m[2K[1G [37m[1m [22m[39m Collecting page data using 7 workers  [36m.[39m[2K[1G [37m[1m [22m[39m Collecting page data using 7 workers  [36m..[39m[2K[1G[?25h [37m[1m [22m[39m Collecting page data using 7 workers in 812.1ms     [32m[1m✓[22m[39m Collecting page data using 7 workers in 812.1ms 
-[?25l [37m[1m [22m[39m Generating static pages using 7 workers (0/3)  [36m[    ][39m[2K[1G[?25h[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-[?25h [32m[1m✓[22m[39m Generating static pages using 7 workers (3/3) in 315.4ms
-[?25l [37m[1m [22m[39m Finalizing page optimization  [36m.[39m[2K[1G[?25h [37m[1m [22m[39m Finalizing page optimization in 14.4ms     [32m[1m✓[22m[39m Finalizing page optimization in 14.4ms 
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[2K[1G [37m[1m [22m[39m Collecting page data using 7 workers  [36m.[39m[2K[1G [37m[1m [22m[39m Collecting page data using 7 workers  [36m..[39m[2K[1G [37m[1m [22m[39m Collecting page data using 7 workers  [36m...[39m[2K[1G[?25h [37m[1m [22m[39m Collecting page data using 7 workers in 1237.6ms     [32m[1m✓[22m[39m Collecting page data using 7 workers in 1237.6ms 
+[?25l [37m[1m [22m[39m Generating static pages using 7 workers (0/3)  [36m[    ][39m[2K[1G [37m[1m [22m[39m Generating static pages using 7 workers (0/3)  [36m[=   ][39m[2K[1G[?25h[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[?25h [32m[1m✓[22m[39m Generating static pages using 7 workers (3/3) in 426.3ms
+[?25l [37m[1m [22m[39m Finalizing page optimization  [36m.[39m[2K[1G[?25h [37m[1m [22m[39m Finalizing page optimization in 44.2ms     [32m[1m✓[22m[39m Finalizing page optimization in 44.2ms 
 
 [4mRoute (app)[24m
 ┌ ƒ /

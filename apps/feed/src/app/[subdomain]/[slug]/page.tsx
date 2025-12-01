@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { db, workspace } from "@feedgot/db"
 import { eq } from "drizzle-orm"
 import { createWorkspaceSectionMetadata } from "@/lib/seo"
-import { getWorkspacePosts, getWorkspacePostsCount } from "@/lib/workspace"
+import { getWorkspacePosts, getWorkspacePostsCount, getSidebarPositionBySlug } from "@/lib/workspace"
 import { MainContent } from "@/components/domain/MainContent"
 
 export const dynamic = "force-dynamic"
@@ -46,6 +46,7 @@ export default async function SitePage({
   const totalCount = await getWorkspacePostsCount(slug, {
     boardSlugs: boardSlug ? [boardSlug] : undefined,
   })
+  const sidebarPosition = await getSidebarPositionBySlug(slug)
   return (
     <MainContent
       subdomain={subdomain}
@@ -54,6 +55,7 @@ export default async function SitePage({
       totalCount={totalCount}
       page={page}
       pageSize={PAGE_SIZE}
+      sidebarPosition={sidebarPosition}
     />
   )
 }

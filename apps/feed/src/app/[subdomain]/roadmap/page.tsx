@@ -1,9 +1,9 @@
 export const dynamic = "force-dynamic"
 
 import type { Metadata } from "next"
-import { DomainSidebar } from "@/components/domain/DomainSidebar"
+import DomainPageLayout from "@/components/domain/DomainPageLayout"
 import DomainRoadmapItem from "@/components/domain/DomainRoadmapItem"
-import { getPlannedRoadmapPosts } from "@/lib/workspace"
+import { getPlannedRoadmapPosts, getSidebarPositionBySlug } from "@/lib/workspace"
 import { createWorkspaceSectionMetadata } from "@/lib/seo"
 
 export async function generateMetadata({ params }: { params: Promise<{ subdomain: string }> }): Promise<Metadata> {
@@ -15,10 +15,10 @@ export default async function RoadmapPage({ params }: { params: Promise<{ subdom
   const { subdomain } = await params
   const slug = subdomain
   const items = await getPlannedRoadmapPosts(slug, { limit: 100, order: "newest" })
+  const sidebarPosition = await getSidebarPositionBySlug(slug)
   return (
-    <section>
-      <div className="lg:grid lg:grid-cols-[minmax(0,1.5fr)_250px] lg:gap-6">
-        <div>
+    <DomainPageLayout subdomain={subdomain} slug={slug} sidebarPosition={sidebarPosition}>
+      <div>
           <h1 className="text-lg font-semibold mb-4">Roadmap</h1>
           <div className="space-y-3">
             {(items || []).map((it) => (
@@ -34,11 +34,7 @@ export default async function RoadmapPage({ params }: { params: Promise<{ subdom
               <p className="text-sm text-accent">No planned items yet.</p>
             ) : null}
           </div>
-        </div>
-        <div className="mt-10 lg:mt-0">
-          <DomainSidebar subdomain={subdomain} slug={slug} />
-        </div>
       </div>
-    </section>
+    </DomainPageLayout>
   )
 }
