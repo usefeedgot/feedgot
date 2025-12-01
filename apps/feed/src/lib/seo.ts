@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { SITE_URL, DEFAULT_OG_IMAGE, DEFAULT_TITLE } from '@/config/seo'
-import { getWorkspaceBySlug } from '@/lib/workspace'
+import { getWorkspaceBySlug, getBoardByWorkspaceSlug } from '@/lib/workspace'
 
 function normalizePath(path?: string) {
   if (!path) return '/'
@@ -98,14 +98,22 @@ export async function createWorkspaceMetadata(slug: string): Promise<Metadata> {
   }
 }
 
-export async function createWorkspaceSectionMetadata(slug: string, section: 'feedback' | 'roadmap' | 'changelog'): Promise<Metadata> {
+export async function createWorkspaceSectionMetadata(slug: string, section: 'feedback' | 'roadmap' | 'changelog', opts?: { boardSlug?: string }): Promise<Metadata> {
   const ws = await getWorkspaceBySlug(slug)
   const name = ws?.name || slug
   const baseUrl = ws?.customDomain ? `https://${ws.customDomain}` : `https://${slug}.feedgot.com`
-  const path = section === 'feedback' ? '/' : section === 'roadmap' ? '/roadmap' : '/changelog'
-  const label = section === 'feedback' ? 'All Feedback' : section === 'roadmap' ? 'Roadmap' : 'Changelog'
+  const path = section === 'feedback'
+    ? (opts?.boardSlug ? `/?board=${encodeURIComponent(opts.boardSlug)}` : '/')
+    : section === 'roadmap'
+    ? '/roadmap'
+    : '/changelog'
+  let label = section === 'feedback' ? 'All Feedback' : section === 'roadmap' ? 'Roadmap' : 'Changelog'
+  if (section === 'feedback' && opts?.boardSlug) {
+    const b = await getBoardByWorkspaceSlug(slug, opts.boardSlug)
+    if (b?.name) label = b.name
+  }
   const title = `${label} - ${name}`
-  const description = ws?.domain ? `${label} for ${ws.domain}` : title
+  const description = title
   const meta = createPageMetadata({
     title,
     description,

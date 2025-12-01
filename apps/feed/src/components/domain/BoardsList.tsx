@@ -68,12 +68,12 @@ export function BoardsList({ slug, subdomain }: { slug: string; subdomain: strin
         <span className="inline-block h-2 w-2 rounded-full bg-accent" />
         {label}
       </span>
-      <span className="text-xs text-accent">{Number(count) || 0}</span>
+      <span className="text-xs text-accent w-10 text-right tabular-nums font-mono">{Number(count) || 0}</span>
     </button>
   )
 
   return (
-    <div className="rounded-md border bg-card p-4">
+    <div className="rounded-md border bg-card p-4 min-h-[160px]">
       <div className="mb-2 text-sm font-medium">Boards</div>
       <div className="space-y-1">
         <Item active={current === "__all__"} label="All Feedback" count={total} onClick={() => go("__all__")} />

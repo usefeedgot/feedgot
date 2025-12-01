@@ -247,3 +247,17 @@ export async function getPlannedRoadmapPosts(
   const order = opts?.order
   return getWorkspacePosts(slug, { statuses: ["planned"], limit, offset, order })
 }
+export async function getBoardByWorkspaceSlug(slug: string, boardSlug: string): Promise<{ name: string; slug: string } | null> {
+  const [ws] = await db
+    .select({ id: workspace.id })
+    .from(workspace)
+    .where(eq(workspace.slug, slug))
+    .limit(1)
+  if (!ws?.id) return null
+  const [b] = await db
+    .select({ name: board.name, slug: board.slug })
+    .from(board)
+    .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false), eq(board.slug, boardSlug)))
+    .limit(1)
+  return b || null
+}
