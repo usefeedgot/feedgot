@@ -79,6 +79,23 @@ export const auth = betterAuth({
       }
     }),
   },
+
+  trustedOrigins: async () => {
+    const raw = process.env.AUTH_TRUSTED_ORIGINS || ""
+    const list = raw
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+    return list
+  },
+
+  advanced: {
+    useSecureCookies: true,
+    crossSubDomainCookies: {
+      enabled: Boolean(process.env.AUTH_COOKIE_DOMAIN),
+      domain: process.env.AUTH_COOKIE_DOMAIN as string,
+    },
+  },
 })
 
 export type AuthServer = typeof auth

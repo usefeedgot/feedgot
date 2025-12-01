@@ -9,6 +9,10 @@ import { MobileBoardsMenu } from "./MobileBoardsMenu";
 import { CommentsIcon } from "@feedgot/ui/icons/comments";
 import { RoadmapIcon } from "@feedgot/ui/icons/roadmap";
 import { ChangelogIcon } from "@feedgot/ui/icons/changelog";
+import React from "react";
+import { authClient } from "@feedgot/auth/client";
+import UserDropdown from "@/components/account/UserDropdown";
+import { DomainAuthModal } from "./DomainAuthModal";
 
 type WorkspaceInfo = {
   id: string;
@@ -32,6 +36,10 @@ export function DomainHeader({
   const isFeedback = pathname === "/";
   const isRoadmap = pathname.startsWith(roadmapBase);
   const isChangelog = pathname.startsWith(changelogBase);
+  const [authOpen, setAuthOpen] = React.useState(false);
+  const [authMode, setAuthMode] = React.useState<"sign-in" | "sign-up">("sign-in");
+  const [verifying, setVerifying] = React.useState(true);
+  const [user, setUser] = React.useState<{ name?: string; email?: string; image?: string | null } | null>(null);
   const itemCls = (active: boolean) =>
     cn(
       "rounded-md border px-3 py-2 group",
@@ -39,6 +47,31 @@ export function DomainHeader({
         ? "bg-background/50 border-accent/20"
         : "border-transparent hover:bg-muted"
     );
+  React.useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const s = await authClient.getSession();
+        if (!active) return;
+        setUser((s as any)?.data?.user || null);
+      } catch {
+      } finally {
+        if (active) setVerifying(false);
+      }
+    })();
+    const ch = typeof window !== "undefined" ? new BroadcastChannel("auth") : null;
+    ch?.addEventListener("message", async () => {
+      try {
+        const s = await authClient.getSession();
+        setUser((s as any)?.data?.user || null);
+      } catch {}
+    });
+    return () => {
+      active = false;
+      ch?.close();
+    };
+  }, []);
+  const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL || ""}/start`;
   return (
     <header className={cn("py-3 sm:py-5")}>
       <div className="md:hidden grid grid-cols-[1fr_auto_1fr] items-center w-full">
@@ -61,17 +94,21 @@ export function DomainHeader({
           )}
         </div>
         <div className="flex items-center gap-2 justify-self-end">
-          <Button asChild size="xs" variant="nav">
-            <Link href="/auth/sign-in">Sign in</Link>
-          </Button>
-          <Button
-            asChild
-            size="xs"
-            variant="nav"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 ring-ring/60 hover:ring-ring"
-          >
-            <Link href="/auth/sign-up">Sign up</Link>
-          </Button>
+          {verifying ? (
+            <div className="h-7 w-20 rounded-md bg-muted animate-pulse" />
+          ) : user ? (
+            <div className="flex items-center gap-2">
+              <Button asChild size="xs" variant="nav">
+                <Link href={dashboardUrl}>Dashboard</Link>
+              </Button>
+              <UserDropdown />
+            </div>
+          ) : (
+            <>
+              <Button size="xs" variant="nav" onClick={() => { setAuthMode("sign-in"); setAuthOpen(true); }}>Sign in</Button>
+              <Button size="xs" variant="nav" className="bg-primary text-primary-foreground hover:bg-primary/90 ring-ring/60 hover:ring-ring" onClick={() => { setAuthMode("sign-up"); setAuthOpen(true); }}>Sign up</Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -156,19 +193,24 @@ export function DomainHeader({
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button asChild size="xs" variant="nav">
-            <Link href="/auth/sign-in">Sign in</Link>
-          </Button>
-          <Button
-            asChild
-            size="xs"
-            variant="nav"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 ring-ring/60 hover:ring-ring"
-          >
-            <Link href="/auth/sign-up">Sign up</Link>
-          </Button>
+          {verifying ? (
+            <div className="h-8 w-28 rounded-md bg-muted animate-pulse" />
+          ) : user ? (
+            <>
+              <Button asChild size="xs" variant="nav">
+                <Link href={dashboardUrl}>Dashboard</Link>
+              </Button>
+              <UserDropdown />
+            </>
+          ) : (
+            <>
+              <Button size="xs" variant="nav" onClick={() => { setAuthMode("sign-in"); setAuthOpen(true); }}>Sign in</Button>
+              <Button size="xs" variant="nav" className="bg-primary text-primary-foreground hover:bg-primary/90 ring-ring/60 hover:ring-ring" onClick={() => { setAuthMode("sign-up"); setAuthOpen(true); }}>Sign up</Button>
+            </>
+          )}
         </div>
       </div>
+      <DomainAuthModal open={authOpen} onOpenChange={setAuthOpen} mode={authMode} />
     </header>
   );
 }
