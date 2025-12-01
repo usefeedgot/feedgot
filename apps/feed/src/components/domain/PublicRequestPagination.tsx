@@ -22,7 +22,7 @@ export function PublicRequestPagination({
   const router = useRouter()
   const params = useSearchParams()
 
-  const base = `/${subdomain}/${slug}`
+  const base = `/`
 
   const { totalPages, prevHref, nextHref } = useMemo(() => {
     const tp = Math.max(1, Math.ceil(Math.max(totalCount, 0) / Math.max(pageSize, 1)))

@@ -43,16 +43,18 @@ export default async function Layout({
         <style>{`:root{--primary:${p};--ring:${p};--sidebar-primary:${p};}`}</style>
         <BrandVarsEffect primary={p} />
         <div className="fixed inset-0 -z-10 flex flex-col">
-          <div className="bg-background border-b border-2 h-44 sm:h-52" />
-          <div className="bg-card border-b flex-1" />
+          <div className="bg-background  dark:bg-background dark:border-background/60 border-b border-2 h-44 sm:h-52" />
+          <div className="bg-card dark:bg-[#111113] border-b flex-1" />
         </div>
         <Container maxWidth="5xl">
           <DomainHeader workspace={ws} subdomain={subdomain} />
+          <div className="mt-4 pb-16 md:pb-0">{children}</div>
         </Container>
-        <Container maxWidth="5xl" className="mt-4">{children}</Container>
-        <Container maxWidth="5xl" className="mt-6 mb-6">
-          <PoweredBy />
-        </Container>
+        <div className="fixed bottom-4 left-0 right-0 z-30 md:static md:mt-6 md:mb-6">
+          <div className="mx-auto max-w-5xl px-4 sm:px-8 lg:px-16 xl:px-20">
+            <PoweredBy />
+          </div>
+        </div>
         </DomainBrandingProvider>
       </SubdomainThemeProvider>
     </>

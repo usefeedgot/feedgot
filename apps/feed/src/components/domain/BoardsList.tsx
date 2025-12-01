@@ -50,7 +50,7 @@ export function BoardsList({ slug, subdomain }: { slug: string; subdomain: strin
   const total = boards.reduce((sum, b) => sum + (Number(b.postCount) || 0), 0)
 
   function go(value: string) {
-    const base = `/${subdomain}/${slug}`
+    const base = `/`
     const url = value === "__all__" ? base : `${base}?board=${encodeURIComponent(value)}`
     router.push(url)
   }

@@ -12,7 +12,7 @@ export function PoweredBy() {
         href="https://app.feedgot.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-block rounded-md bg-muted px-3 py-1 text-xs text-accent hover:bg-muted/80 transition-colors cursor-pointer"
+        className="inline-block rounded-sm bg-muted px-2 py-1 text-xs text-accent hover:bg-muted/80 transition-colors cursor-pointer"
       >
         Powered by FeedGot
       </a>

@@ -13,7 +13,7 @@ export function SortPopover({ slug, subdomain }: { slug: string; subdomain: stri
   const [open, setOpen] = React.useState(false)
 
   function go(nextOrder: "newest" | "oldest") {
-    const base = `/${subdomain}/${slug}`
+    const base = `/`
     const u = new URL(base, "http://dummy")
     const pageParam = search.get("page")
     const boardParam = search.get("board")

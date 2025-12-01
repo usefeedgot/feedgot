@@ -54,7 +54,7 @@ export function BoardsDropdown({ slug, subdomain }: { slug: string; subdomain: s
   const label = selected === "__all__" ? "All Feedback" : boards.find((b) => b.slug === selected)?.name || "Select board"
 
   function go(value: string) {
-    const base = `/${subdomain}/${slug}`
+    const base = `/`
     const next = value === "__all__" ? base : `${base}?board=${encodeURIComponent(value)}`
     setOpen(false)
     router.push(next)
@@ -70,7 +70,8 @@ export function BoardsDropdown({ slug, subdomain }: { slug: string; subdomain: s
           <ChevronDown className="size-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent id={`popover-${subdomain}-${slug}-boards`} align="start" list className="min-w-[11rem] w-fit">
+      <PopoverContent id={`popover-${subdomain}-${slug}-boards`} align="start" list className="min-w-[9rem] w-fit">
+        <div className="px-3 py-2 text-xs font-medium text-accent">Boards</div>
         <PopoverList>
           <PopoverListItem onClick={() => go("__all__")}> 
             <span className="text-sm">All Feedback</span>

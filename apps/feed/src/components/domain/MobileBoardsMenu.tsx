@@ -20,7 +20,7 @@ export function MobileBoardsMenu({ slug, subdomain }: { slug: string; subdomain:
     const base = `/${subdomain}`
     const next =
       value === "__all__"
-        ? `${base}/${slug}`
+        ? `/`
         : value === "roadmap"
         ? `${base}/roadmap`
         : `${base}/changelog`
@@ -46,7 +46,8 @@ export function MobileBoardsMenu({ slug, subdomain }: { slug: string; subdomain:
           <MenuIcon width={20} height={20} className="text-accent" />
         </button>
       </PopoverTrigger>
-      <PopoverContent id={`popover-${subdomain}-${slug}-mobile-menu`} align="start" list className="min-w-[11rem] w-fit">
+      <PopoverContent id={`popover-${subdomain}-${slug}-mobile-menu`} align="start" list className="min-w-9rem] w-fit">
+        <div className="px-3 py-2 text-xs font-medium text-accent">Boards</div>
         <PopoverList>
           <PopoverListItem onClick={() => go("__all__")}> 
             <AccentBar width={2} className={active === "__all__" ? undefined : "bg-muted ring-0"} />
