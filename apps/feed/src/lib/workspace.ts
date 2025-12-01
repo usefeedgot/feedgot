@@ -1,4 +1,4 @@
-import { db, workspace, workspaceMember, brandingConfig, board, post, postTag, tag } from "@feedgot/db"
+import { db, workspace, workspaceMember, brandingConfig, board, post, postTag, tag, workspaceDomain } from "@feedgot/db"
 import { randomAvatarUrl } from "@/utils/avatar"
 import { eq, and, inArray, desc, asc, sql } from "drizzle-orm"
 
@@ -95,6 +95,22 @@ export async function getWorkspaceBySlug(slug: string): Promise<{ id: string; na
     .where(eq(workspace.slug, slug))
     .limit(1)
   return ws || null
+}
+
+export async function getWorkspaceDomainInfoBySlug(slug: string): Promise<{ domain: { status: string; host?: string } | null } | null> {
+  const [ws] = await db
+    .select({ id: workspace.id })
+    .from(workspace)
+    .where(eq(workspace.slug, slug))
+    .limit(1)
+  if (!ws) return { domain: null }
+  const [d] = await db
+    .select({ status: workspaceDomain.status, host: workspaceDomain.host })
+    .from(workspaceDomain)
+    .where(eq(workspaceDomain.workspaceId, ws.id))
+    .limit(1)
+  if (!d) return { domain: null }
+  return { domain: { status: (d as any).status, host: (d as any).host } }
 }
 
 export async function getWorkspaceTimezoneBySlug(slug: string): Promise<string | null> {
