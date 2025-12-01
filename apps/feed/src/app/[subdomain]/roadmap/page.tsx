@@ -6,7 +6,7 @@ export default async function RoadmapPage({ params }: { params: Promise<{ subdom
   const { subdomain } = await params
   const slug = subdomain
   return (
-    <section className="pb-16">
+    <section className="pb-2">
       <div className="lg:grid lg:grid-cols-[minmax(0,1.5fr)_280px] lg:gap-10">
         <div>
           <h1 className="text-lg font-semibold mb-4">Roadmap</h1>

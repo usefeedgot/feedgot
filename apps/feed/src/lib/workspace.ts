@@ -37,13 +37,20 @@ export async function getBrandingBySlug(slug: string): Promise<{ primary: string
   let primary = "#3b82f6"
   let theme: "light" | "dark" | "system" = "system"
   const [row] = await db
-    .select({ primaryColor: brandingConfig.primaryColor, theme: brandingConfig.theme })
+    .select({
+      primaryColor: brandingConfig.primaryColor,
+      theme: brandingConfig.theme,
+      wsPrimary: workspace.primaryColor,
+      wsTheme: workspace.theme,
+    })
     .from(workspace)
     .leftJoin(brandingConfig, eq(brandingConfig.workspaceId, workspace.id))
     .where(eq(workspace.slug, slug))
     .limit(1)
   if (row?.primaryColor) primary = row.primaryColor
+  else if (row?.wsPrimary) primary = row.wsPrimary
   if (row?.theme) theme = row.theme as any
+  else if (row?.wsTheme) theme = row.wsTheme as any
   return { primary, theme }
 }
 
