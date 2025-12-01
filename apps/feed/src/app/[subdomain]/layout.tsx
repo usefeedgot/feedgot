@@ -45,7 +45,7 @@ export default async function Layout({
           return (
             <Container maxWidth={maxW}>
               <DomainHeader workspace={ws} subdomain={subdomain} />
-              <div className="mt-4 pb-16 md:pb-0">{children}</div>
+              <div className="mt-6 pb-16 md:pb-0">{children}</div>
             </Container>
           )
         })()}

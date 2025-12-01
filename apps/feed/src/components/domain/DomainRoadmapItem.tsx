@@ -17,8 +17,8 @@ function toPlain(s?: string | null): string {
   return s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()
 }
 
-export default function DomainRoadmapItem({ item, subdomain, slug }: { item: RoadmapItemData; subdomain: string; slug: string }) {
-  const href = `/${subdomain}/${slug}/requests/${item.slug}`
+export default function DomainRoadmapItem({ item }: { item: RoadmapItemData }) {
+  const href = `/p/${item.slug}`
   return (
     <div className="py-6 px-6 min-h-[140px]">
       <div className="flex items-start gap-3">

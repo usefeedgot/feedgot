@@ -16,9 +16,8 @@ function toPlain(s?: string | null): string {
   return s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()
 }
 
-function PostCardBase({ item, workspaceSlug, linkBase }: { item: RequestItemData; workspaceSlug: string; linkBase?: string }) {
-  const base = linkBase || `/workspaces/${workspaceSlug}`
-  const href = `${base}/requests/${item.slug}`
+function PostCardBase({ item }: { item: RequestItemData }) {
+  const href = `/p/${item.slug}`
   return (
     <div className="py-6 px-6 min-h-[140px]">
       <div className="flex items-start gap-3">

@@ -75,10 +75,8 @@ export function MainContent({
               <div className="divide-y">
                 {(items as any[]).map((p: any) => (
                   <PostCard
-                    key={p.id}
-                    item={p}
-                    workspaceSlug={slug}
-                    linkBase={`/${subdomain}/${slug}`}
+                  key={p.id}
+                  item={p}
                   />
                 ))}
               </div>

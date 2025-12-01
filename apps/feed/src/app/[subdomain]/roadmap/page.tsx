@@ -79,8 +79,6 @@ export default async function RoadmapPage({
                 <DomainRoadmapItem
                   key={it.id}
                   item={{ id: it.id, title: it.title, slug: it.slug, roadmapStatus: it.roadmapStatus, content: it.content }}
-                  subdomain={subdomain}
-                  slug={slug}
                 />
               ))}
             </div>
