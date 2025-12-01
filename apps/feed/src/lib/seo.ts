@@ -20,14 +20,16 @@ type BaseMetaArgs = {
   absoluteTitle?: boolean
   indexable?: boolean
   baseUrl?: string
+  includeBrand?: boolean
 }
 
-export function createPageMetadata({ title, description, path, image, absoluteTitle, indexable, baseUrl }: BaseMetaArgs): Metadata {
+export function createPageMetadata({ title, description, path, image, absoluteTitle, indexable, baseUrl, includeBrand }: BaseMetaArgs): Metadata {
   const img = image || DEFAULT_OG_IMAGE
   const canonical = normalizePath(path || '/')
   const brand = DEFAULT_TITLE || 'Feedgot'
   const hasBrand = typeof title === 'string' && title.includes(brand)
-  const finalTitle = hasBrand ? title : `${title} - ${brand}`
+  const withBrand = includeBrand ?? true
+  const finalTitle = withBrand ? (hasBrand ? title : `${title} - ${brand}`) : title
   const base = baseUrl || SITE_URL
   const fullUrl = `${base}${canonical}`
   const useAbsolute = absoluteTitle !== false
@@ -88,6 +90,30 @@ export async function createWorkspaceMetadata(slug: string): Promise<Metadata> {
     image: ws?.logo || undefined,
     absoluteTitle: true,
     baseUrl,
+    includeBrand: false,
+  })
+  return {
+    ...meta,
+    ...(ws?.logo ? { icons: { icon: [ws.logo], shortcut: [ws.logo], apple: [ws.logo] } } : {}),
+  }
+}
+
+export async function createWorkspaceSectionMetadata(slug: string, section: 'feedback' | 'roadmap' | 'changelog'): Promise<Metadata> {
+  const ws = await getWorkspaceBySlug(slug)
+  const name = ws?.name || slug
+  const baseUrl = ws?.customDomain ? `https://${ws.customDomain}` : `https://${slug}.feedgot.com`
+  const path = section === 'feedback' ? '/' : section === 'roadmap' ? '/roadmap' : '/changelog'
+  const label = section === 'feedback' ? 'All Feedback' : section === 'roadmap' ? 'Roadmap' : 'Changelog'
+  const title = `${label} - ${name}`
+  const description = ws?.domain ? `${label} for ${ws.domain}` : title
+  const meta = createPageMetadata({
+    title,
+    description,
+    path,
+    image: ws?.logo || undefined,
+    absoluteTitle: true,
+    baseUrl,
+    includeBrand: false,
   })
   return {
     ...meta,

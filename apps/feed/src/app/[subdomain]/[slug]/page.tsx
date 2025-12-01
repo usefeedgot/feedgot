@@ -2,15 +2,15 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db, workspace } from "@feedgot/db"
 import { eq } from "drizzle-orm"
-import { createWorkspaceMetadata } from "@/lib/seo"
-import { getWorkspacePosts, getWorkspacePostsCount } from "@/lib/workspace"
+import { createWorkspaceSectionMetadata } from "@/lib/seo"
+import { getWorkspaceBySlug, getWorkspacePosts, getWorkspacePostsCount } from "@/lib/workspace"
 import { MainContent } from "@/components/domain/MainContent"
 
 export const dynamic = "force-dynamic"
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  return createWorkspaceMetadata(slug)
+  return createWorkspaceSectionMetadata(slug, "feedback")
 }
 
 const PAGE_SIZE = 15

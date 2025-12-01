@@ -1,6 +1,13 @@
 export const dynamic = "force-dynamic"
 
+import type { Metadata } from "next"
 import { DomainSidebar } from "@/components/domain/DomainSidebar"
+import { createWorkspaceSectionMetadata } from "@/lib/seo"
+
+export async function generateMetadata({ params }: { params: Promise<{ subdomain: string }> }): Promise<Metadata> {
+  const { subdomain } = await params
+  return createWorkspaceSectionMetadata(subdomain, "changelog")
+}
 
 export default async function ChangelogPage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params

@@ -1,8 +1,15 @@
 export const dynamic = "force-dynamic"
 
+import type { Metadata } from "next"
 import { DomainSidebar } from "@/components/domain/DomainSidebar"
 import DomainRoadmapItem from "@/components/domain/DomainRoadmapItem"
 import { getPlannedRoadmapPosts } from "@/lib/workspace"
+import { createWorkspaceSectionMetadata } from "@/lib/seo"
+
+export async function generateMetadata({ params }: { params: Promise<{ subdomain: string }> }): Promise<Metadata> {
+  const { subdomain } = await params
+  return createWorkspaceSectionMetadata(subdomain, "roadmap")
+}
 
 export default async function RoadmapPage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params
