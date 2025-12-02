@@ -12,7 +12,6 @@ import { ChangelogIcon } from "@feedgot/ui/icons/changelog";
 import React from "react";
 import { authClient } from "@feedgot/auth/client";
 import UserDropdown from "@/components/account/UserDropdown";
-import { DomainAuthModal } from "./DomainAuthModal";
 import { client } from "@feedgot/api/client";
 
 type WorkspaceInfo = {
@@ -213,13 +212,12 @@ export function DomainHeader({
             </>
           ) : (
             <>
-              <Button size="xs" variant="nav" onClick={() => { setAuthMode("sign-in"); setAuthOpen(true); }}>Sign in</Button>
-              <Button size="xs" variant="nav" className="bg-primary text-primary-foreground hover:bg-primary/90 ring-ring/60 hover:ring-ring" onClick={() => { setAuthMode("sign-up"); setAuthOpen(true); }}>Sign up</Button>
+              <Button size="xs" variant="nav" >Sign in</Button>
+              <Button size="xs" variant="nav" className="bg-primary text-primary-foreground hover:bg-primary/90 ring-ring/60 hover:ring-ring">Sign up</Button>
             </>
           )}
         </div>
       </div>
-      <DomainAuthModal open={authOpen} onOpenChange={setAuthOpen} mode={authMode} />
     </header>
   );
 }

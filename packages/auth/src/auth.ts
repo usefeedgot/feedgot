@@ -2,7 +2,6 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { organization, lastLoginMethod, emailOTP } from "better-auth/plugins"
 import { db, user, session, account, verification } from "@feedgot/db"
-import { buildTrustedOrigins } from "./trust"
 import { sendVerificationOtpEmail, sendWelcome } from "./email"
 import { createAuthMiddleware, APIError } from "better-auth/api"
 import { getPasswordError } from "./password"
@@ -79,23 +78,6 @@ export const auth = betterAuth({
         throw new APIError("BAD_REQUEST", { message: msg })
       }
     }),
-  },
-
-  trustedOrigins: buildTrustedOrigins,
-
-  advanced: {
-    useSecureCookies: process.env.NODE_ENV === "production",
-    crossSubDomainCookies: {
-      enabled: process.env.NODE_ENV === "production" && Boolean(process.env.AUTH_COOKIE_DOMAIN),
-      domain: process.env.AUTH_COOKIE_DOMAIN as string,
-    },
-    cookies: {
-      session_token: {
-        attributes: {
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        },
-      },
-    },
   },
 })
 
