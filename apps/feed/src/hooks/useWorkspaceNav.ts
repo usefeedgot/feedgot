@@ -41,7 +41,7 @@ export function useWorkspaceNav(
     initialData: initialDomainInfo ?? null,
   })
   const verifiedCustomDomain = domainInfo?.domain?.status === "verified" ? (customDomain || domainInfo?.domain?.host || null) : null
-  console.log("[client] verifiedCustomDomain", { slug, customDomain, status: domainInfo?.domain?.status, host: domainInfo?.domain?.host, verifiedCustomDomain })
+  // console.log("[client] verifiedCustomDomain", { slug, customDomain, status: domainInfo?.domain?.status, host: domainInfo?.domain?.host, verifiedCustomDomain })
   const middleNav = React.useMemo(() => buildMiddleNav(slug, verifiedCustomDomain), [slug, verifiedCustomDomain])
   const { data: statusCounts } = useQuery<Record<string, number> | null>({
     queryKey: ["status-counts", slug],
