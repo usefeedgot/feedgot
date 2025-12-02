@@ -213,23 +213,28 @@ export default function BrandingSection({ slug, initialHidePoweredBy, initialPla
           </div>
         </div>
         <div className="flex items-center justify-between p-4">
+          <div className="text-sm">Sidebar Position</div>
+          <div className="w-full max-w-md flex items-center justify-end">
+            <SidebarPositionPicker value={sidebarPosition} onSelect={(p) => setSidebarPosition(p)} disabled={!canEditBranding} />
+
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between p-4">
           <div className="text-sm">Theme</div>
           <div className="w-full max-w-md flex items-center justify-end">
-            <ThemePicker value={theme} onSelect={(t) => setTheme(t)} disabled={!canEditBranding} />
+
+                 <ThemePicker value={theme} onSelect={(t) => setTheme(t)} disabled={!canEditBranding} />
           </div>
         </div>
 
         <div className="flex items-center justify-between p-4">
           <div className="text-sm">Layout Style</div>
           <div className="w-full max-w-md flex items-center justify-end">
-            <LayoutStylePicker value={layoutStyle} onSelect={(l) => setLayoutStyle(l)} disabled={!canEditBranding} />
-          </div>
-        </div>
 
-        <div className="flex items-center justify-between p-4">
-          <div className="text-sm">Sidebar Position</div>
-          <div className="w-full max-w-md flex items-center justify-end">
-            <SidebarPositionPicker value={sidebarPosition} onSelect={(p) => setSidebarPosition(p)} disabled={!canEditBranding} />
+            <LayoutStylePicker value={layoutStyle} onSelect={(l) => setLayoutStyle(l)} disabled={!canEditBranding} />
+
+
           </div>
         </div>
 
