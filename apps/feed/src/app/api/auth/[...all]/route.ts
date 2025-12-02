@@ -1,76 +1,37 @@
-import { auth } from "@feedgot/auth/auth"
-import { toNextJsHandler } from "better-auth/next-js"
-import { db, workspace, workspaceDomain } from "@feedgot/db"
-import { eq, and } from "drizzle-orm"
-
-const handler = toNextJsHandler(auth)
-
-function toRegex(originPattern: string): RegExp | null {
-  try {
-    const trimmed = originPattern.trim()
-    if (!trimmed) return null
-    const hasWildcard = trimmed.includes("*")
-    if (!hasWildcard) return new RegExp(`^${trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`)
-    const esc = trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\\*/g, "[^.]+")
-    return new RegExp(`^${esc}$`)
-  } catch {
-    return null
-  }
-}
+import { auth } from "@feedgot/auth/auth";
+import { toNextJsHandler } from "better-auth/next-js";
+import { isTrustedOrigin, corsHeaders } from "@feedgot/auth/trust";
+const handler = toNextJsHandler(auth);
 
 async function isTrusted(origin: string): Promise<boolean> {
-  const raw = process.env.AUTH_TRUSTED_ORIGINS || ""
-  const patterns = raw.split(",").map((s) => s.trim()).filter(Boolean)
-  for (const p of patterns) {
-    const r = toRegex(p)
-    if (r && r.test(origin)) return true
-  }
-  try {
-    const u = new URL(origin)
-    const host = u.hostname
-    if (!host) return false
-    const [wsByDefaultDomain] = await db.select({ id: workspace.id }).from(workspace).where(eq(workspace.domain, host)).limit(1)
-    if (wsByDefaultDomain?.id) return true
-    const [wsByCustomDomain] = await db.select({ id: workspace.id }).from(workspace).where(eq(workspace.customDomain, host)).limit(1)
-    if (wsByCustomDomain?.id) return true
-    const [verified] = await db
-      .select({ status: workspaceDomain.status })
-      .from(workspaceDomain)
-      .where(and(eq(workspaceDomain.host, host), eq(workspaceDomain.status, "verified")))
-      .limit(1)
-    if (verified?.status === "verified") return true
-  } catch {}
-  return false
-}
-
-function corsHeaders(origin: string): HeadersInit {
-  return {
-    "Access-Control-Allow-Origin": origin,
-    "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "content-type, authorization, x-requested-with",
-  }
+  return isTrustedOrigin(origin);
 }
 
 async function withCors(req: Request, res: Response): Promise<Response> {
-  const origin = req.headers.get("origin") || ""
-  const trusted = await isTrusted(origin)
+  const origin = req.headers.get("origin") || "";
+  const trusted = await isTrusted(origin);
   if (origin && trusted) {
-    const h = new Headers(res.headers)
-    const ch = corsHeaders(origin)
-    Object.entries(ch).forEach(([k, v]) => h.set(k, v))
-    return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h })
+    const h = new Headers(res.headers);
+    const ch = corsHeaders(origin);
+    Object.entries(ch).forEach(([k, v]) => h.set(k, v));
+    return new Response(res.body, {
+      status: res.status,
+      statusText: res.statusText,
+      headers: h,
+    });
   }
-  return res
+  return res;
 }
 
 export const OPTIONS = async (req: Request) => {
-  const origin = req.headers.get("origin") || ""
-  if (origin && (await isTrusted(origin))) {
-    return new Response(null, { status: 204, headers: corsHeaders(origin) })
+  const origin = req.headers.get("origin") || "";
+  if (origin && (await isTrustedOrigin(origin))) {
+    return new Response(null, { status: 204, headers: corsHeaders(origin) });
   }
-  return new Response(null, { status: 204 })
-}
+  return new Response(null, { status: 204 });
+};
 
-export const GET = async (req: Request) => withCors(req, await handler.GET(req))
-export const POST = async (req: Request) => withCors(req, await handler.POST(req))
+export const GET = async (req: Request) =>
+  withCors(req, await handler.GET(req));
+export const POST = async (req: Request) =>
+  withCors(req, await handler.POST(req));

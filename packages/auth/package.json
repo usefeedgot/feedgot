@@ -17,6 +17,7 @@
     "./password": "./src/password.ts",
     "./session": "./src/session.ts",
     "./email": "./src/email.ts",
+    "./trust": "./src/trust.ts",
     "./*": "./src/*"
   },
   "dependencies": {
