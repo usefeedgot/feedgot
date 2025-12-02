@@ -52,3 +52,22 @@ export async function buildTrustedOrigins(request: Request): Promise<string[]> {
   return Array.from(new Set(list))
 }
 
+export async function withCors(req: Request, res: Response): Promise<Response> {
+  const origin = req.headers.get("origin") || ""
+  const trusted = await isTrustedOrigin(origin)
+  if (origin && trusted) {
+    const h = new Headers(res.headers)
+    const ch = corsHeaders(origin)
+    Object.entries(ch).forEach(([k, v]) => h.set(k, v))
+    return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h })
+  }
+  return res
+}
+
+export const handlePreflight = async (req: Request) => {
+  const origin = req.headers.get("origin") || ""
+  if (origin && (await isTrustedOrigin(origin))) {
+    return new Response(null, { status: 204, headers: corsHeaders(origin) })
+  }
+  return new Response(null, { status: 204 })
+}
