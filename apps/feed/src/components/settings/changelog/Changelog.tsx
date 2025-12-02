@@ -5,8 +5,9 @@ import SectionCard from "../global/SectionCard"
 import PlanNotice from "../global/PlanNotice"
 import { Switch } from "@feedgot/ui/components/switch"
 import { Button } from "@feedgot/ui/components/button"
-import { Input } from "@feedgot/ui/components/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@feedgot/ui/components/table"
+import { Popover, PopoverTrigger, PopoverContent, PopoverList, PopoverListItem } from "@feedgot/ui/components/popover"
+import { MoreVertical } from "lucide-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { client } from "@feedgot/api/client"
 import { toast } from "sonner"
@@ -39,7 +40,9 @@ export default function ChangelogSection({ slug, initialIsVisible, initialPlan }
   })
 
   const visible = Boolean((data as any)?.isVisible)
-  const [newTagName, setNewTagName] = React.useState<string>("")
+  const [menuOpenId, setMenuOpenId] = React.useState<string | null>(null)
+  const [tagModalOpen, setTagModalOpen] = React.useState(false)
+  const [savingTag, setSavingTag] = React.useState(false)
 
   
 
@@ -80,48 +83,95 @@ export default function ChangelogSection({ slug, initialIsVisible, initialPlan }
 
         <div className="p-4 space-y-2">
           <div className="text-sm">Changelog Tags</div>
-          <div className="flex gap-2">
-            <Input className="h-9 w-[220px]" placeholder="New tag" value={newTagName} onChange={(e) => setNewTagName(e.target.value)} />
-            <Button type="button" variant="quiet" onClick={async () => {
-              const name = newTagName.trim()
-              if (!name) return
-              try {
-                const res = await client.changelog.tagsCreate.$post({ slug, name })
-                if (!res.ok) {
-                  const err = (await res.json().catch(() => null)) as { message?: string } | null
-                  throw new Error(err?.message || "Create failed")
-                }
-                toast.success("Tag created")
-                setNewTagName("")
-                await refetchTags()
-              } catch (e: unknown) {
-                toast.error((e as { message?: string })?.message || "Failed to create tag")
-              }
-            }}>Add</Button>
-          </div>
+          
           <div className="rounded-md border overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="px-4">Tag</TableHead>
+                  <TableHead className="px-4 w-24 text-center"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {(tagsData || []).length === 0 && !tagsLoading ? (
                   <TableRow>
-                    <TableCell colSpan={1} className="px-4 py-6 text-accent">No tags</TableCell>
+                    <TableCell colSpan={2} className="px-4 py-6 text-accent">No tags</TableCell>
                   </TableRow>
                 ) : (
                   (tagsData || []).map((t: any) => (
                     <TableRow key={t.id}>
-                      <TableCell className="px-4 text-sm">{t.name}</TableCell>
+                      <TableCell className="px-4 text-sm">
+                        <span className="inline-flex items-center gap-2">
+                          <span className="inline-block size-3 rounded-full" style={{ backgroundColor: t.color || "#71717a" }} />
+                          <span>{t.name}</span>
+                        </span>
+                      </TableCell>
+                      <TableCell className="px-4 text-center">
+                        <Popover open={menuOpenId === t.id} onOpenChange={(v) => setMenuOpenId(v ? String(t.id) : null)}>
+                          <PopoverTrigger asChild>
+                            <Button type="button" variant="ghost" size="icon-sm" aria-label="More">
+                              <MoreVertical className="size-4" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent list className="min-w-0 w-fit">
+                            <PopoverList>
+                              <PopoverListItem
+                                role="menuitem"
+                                onClick={async () => {
+                                  try {
+                                    setMenuOpenId(null)
+                                    const res = await client.changelog.tagsDelete.$post({ slug, tagId: String(t.id) })
+                                    if (!res.ok) {
+                                      const err = (await res.json().catch(() => null)) as { message?: string } | null
+                                      throw new Error(err?.message || "Delete failed")
+                                    }
+                                    toast.success("Tag deleted")
+                                    await refetchTags()
+                                  } catch (e: unknown) {
+                                    toast.error((e as { message?: string })?.message || "Failed to delete tag")
+                                  }
+                                }}
+                              >
+                                <span className="text-sm text-red-500">Delete</span>
+                              </PopoverListItem>
+                            </PopoverList>
+                          </PopoverContent>
+                        </Popover>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
               </TableBody>
             </Table>
           </div>
-          <PlanNotice slug={slug} feature="changelog_tags" plan={initialPlan} changelogTagsCount={(tagsData || []).length} />
+            <PlanNotice slug={slug} feature="changelog_tags" plan={initialPlan} changelogTagsCount={(tagsData || []).length} />
+          <div>
+            <Button type="button" variant="quiet" onClick={() => setTagModalOpen(true)}>Add tag</Button>
+          </div>
+          <ModalTags
+            open={tagModalOpen}
+            onOpenChange={setTagModalOpen}
+            saving={savingTag}
+            onSave={async (name) => {
+              const n = String(name || "").trim()
+              if (!n) return
+              try {
+                setSavingTag(true)
+                const res = await client.changelog.tagsCreate.$post({ slug, name: n })
+                if (!res.ok) {
+                  const err = (await res.json().catch(() => null)) as { message?: string } | null
+                  throw new Error(err?.message || "Create failed")
+                }
+                toast.success("Tag created")
+                setTagModalOpen(false)
+                await refetchTags()
+              } catch (e: unknown) {
+                toast.error((e as { message?: string })?.message || "Failed to create tag")
+              } finally {
+                setSavingTag(false)
+              }
+            }}
+          />
         </div>
 
         
@@ -129,3 +179,4 @@ export default function ChangelogSection({ slug, initialIsVisible, initialPlan }
     </SectionCard>
   )
 }
+import ModalTags from "./ModalTags"
