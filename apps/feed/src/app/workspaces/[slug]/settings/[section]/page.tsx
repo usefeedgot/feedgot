@@ -5,7 +5,6 @@ import { and, eq } from "drizzle-orm"
 import { createPageMetadata } from "@/lib/seo"
 import { getSectionMeta } from "@/config/sections"
 import { getBrandingBySlug } from "@/lib/workspace"
-import { client } from "@feedgot/api/client"
 import { getServerSession } from "@feedgot/auth/session"
 
 export const dynamic = "force-dynamic"
@@ -99,6 +98,14 @@ export default async function SettingsSectionPage({ params }: Props) {
         invites,
         meId: session?.user?.id || null,
       }
+
+      const [d] = await db
+        .select({ id: workspaceDomain.id, host: workspaceDomain.host, cnameName: workspaceDomain.cnameName, cnameTarget: workspaceDomain.cnameTarget, txtName: workspaceDomain.txtName, txtValue: workspaceDomain.txtValue, status: workspaceDomain.status })
+        .from(workspaceDomain)
+        .where(eq(workspaceDomain.workspaceId, ws.id))
+        .limit(1)
+      initialDomainInfo = d || null
+      initialDefaultDomain = String((ws as any)?.domain || "")
     }
   } catch {}
   

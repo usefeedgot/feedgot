@@ -37,14 +37,16 @@ export function useDomain(slug: string, initial?: { info: DomainInfo | null; pla
 export async function createDomain(
   slug: string,
   baseDomain: string
-): Promise<{ ok: boolean; message?: string }> {
+): Promise<{ ok: boolean; message?: string; host?: string; records?: { cname?: { name?: string; value?: string }; txt?: { name?: string; value?: string } } }> {
   const res = await client.workspace.createDomain.$post({
     slug,
     domain: `https://feedback.${baseDomain.trim()}`,
   });
-  const data = await safeJson(res);
+  const data = await safeJson<any>(res);
   const message = (data as { message?: string })?.message;
-  return { ok: res.ok, message };
+  const host = (data as { host?: string })?.host;
+  const records = (data as { records?: { cname?: { name?: string; value?: string }; txt?: { name?: string; value?: string } } })?.records;
+  return { ok: res.ok, message, host, records };
 }
 
 export async function verifyDomain(
@@ -96,6 +98,23 @@ export function useDomainActions({ slug, info, canUse, canEditDomain, onCreated 
       }
       toast.success("Domain added. Configure DNS and verify.");
       onCreated?.();
+      try {
+        queryClient.setQueryData(["domain", slug], (prev: any) => {
+          const nextInfo = {
+            id: String(prev?.info?.id || ""),
+            host: String(result.host || prev?.info?.host || ""),
+            cnameName: String(result.records?.cname?.name || prev?.info?.cnameName || ""),
+            cnameTarget: String(result.records?.cname?.value || prev?.info?.cnameTarget || "origin.feedgot.com"),
+            txtName: String(result.records?.txt?.name || prev?.info?.txtName || ""),
+            txtValue: String(result.records?.txt?.value || prev?.info?.txtValue || ""),
+            status: "pending" as const,
+          }
+          return {
+            ...(prev || {}),
+            info: nextInfo,
+          }
+        })
+      } catch {}
       queryClient.invalidateQueries({ queryKey: ["domain", slug] });
     },
     onError: (e: unknown) => {
@@ -141,6 +160,9 @@ export function useDomainActions({ slug, info, canUse, canEditDomain, onCreated 
         return;
       }
       toast.success("Domain deleted");
+      try {
+        queryClient.setQueryData(["domain", slug], (prev: any) => ({ ...(prev || {}), info: null }))
+      } catch {}
       queryClient.invalidateQueries({ queryKey: ["domain", slug] });
     },
     onError: (e: unknown) => {
