@@ -5,6 +5,7 @@ export const SECTIONS: SettingsSection[] = [
   { value: "team", label: "Team", desc: "Manage members and roles" },
   { value: "feedback", label: "Feedback", desc: "Configure boards and feedback" },
   { value: "changelog", label: "Changelog", desc: "Manage product updates" },
+  { value: "board", label: "Board Settings", desc: "Configure board settings" },
   { value: "billing", label: "Billing", desc: "Subscriptions and invoices" },
   { value: "domain", label: "Domain", desc: "Custom domain settings" },
   { value: "integrations", label: "Integrations", desc: "Connect external tools" },

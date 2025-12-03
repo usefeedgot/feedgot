@@ -35,7 +35,7 @@ export default function DomainSection({ slug, initialPlan, initialInfo, initialD
       title="Manage Domain"
       description="Create a custom domain for your workspace."
     >
-      <div className="space-y-6">
+
         <div className="space-y-2">
           {info?.host ? (
             <div className="flex items-center justify-between rounded-md border p-3">
@@ -53,7 +53,7 @@ export default function DomainSection({ slug, initialPlan, initialInfo, initialD
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-between rounded-md border p-3">
+            <div className="flex items-center justify-between rounded-md border p-3 mt-2 mb-3">
               <span className="text-sm">{`https://${slug}.feedgot.com`}</span>
               <Button
                 type="button"
@@ -66,7 +66,7 @@ export default function DomainSection({ slug, initialPlan, initialInfo, initialD
             </div>
           )}
 
-          <div className="flex items-center mt-3 justify-start">
+          <div className="flex items-center mt-3 mb-3 justify-start ">
             <a
               href={
                 info?.host
@@ -75,7 +75,7 @@ export default function DomainSection({ slug, initialPlan, initialInfo, initialD
               }
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-1 py-1 rounded-md bg-muted ring-1 ring-border text-xs hover:bg-muted/80"
+              className="inline-flex items-center gap-1 px-1 py-1 rounded-md bg-muted/70 ring-1 ring-border text-xs hover:bg-muted/80"
             >
               <span>Visit</span>
               <ArrowIcon width={14} height={14} />
@@ -84,7 +84,7 @@ export default function DomainSection({ slug, initialPlan, initialInfo, initialD
         </div>
 
         {info?.host ? (
-          <div className="space-y-2">
+          <div className="space-y-2 mb-3">
             <Label>DNS Records</Label>
             <div className="rounded-md border overflow-hidden">
               <RecordsTable info={info} />
@@ -99,7 +99,7 @@ export default function DomainSection({ slug, initialPlan, initialInfo, initialD
         />
 
         <PlanNotice slug={slug} feature="domain" plan={initialPlan || plan} />
-      </div>
+
     </SectionCard>
   );
 }

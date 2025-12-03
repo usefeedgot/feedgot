@@ -118,6 +118,56 @@ export function createBoardRouter() {
         return c.superjson({ ok: true })
       }),
 
+    updateGlobalSettings: privateProcedure
+      .input(
+        z.object({
+          slug: checkSlugInputSchema.shape.slug,
+          patch: z.object({
+            allowAnonymous: z.boolean().optional(),
+            requireApproval: z.boolean().optional(),
+            allowVoting: z.boolean().optional(),
+            allowComments: z.boolean().optional(),
+            hidePublicMemberIdentity: z.boolean().optional(),
+          }),
+        })
+      )
+      .post(async ({ ctx, input, c }) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id, ownerId: workspace.ownerId })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) throw new HTTPException(404, { message: "Workspace not found" })
+
+        let allowed = ws.ownerId === ctx.session.user.id
+        if (!allowed) {
+          const [member] = await ctx.db
+            .select({ role: workspaceMember.role, permissions: workspaceMember.permissions })
+            .from(workspaceMember)
+            .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.userId, ctx.session.user.id)))
+            .limit(1)
+          const perms = (member?.permissions || {}) as Record<string, boolean>
+          if (member?.role === "admin" || perms?.canManageBoards) allowed = true
+        }
+        if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
+
+        const next: Partial<typeof board.$inferSelect> = {}
+        const p = input.patch || {}
+        if (p.allowAnonymous !== undefined) next.allowAnonymous = p.allowAnonymous
+        if (p.requireApproval !== undefined) next.requireApproval = p.requireApproval
+        if (p.allowVoting !== undefined) next.allowVoting = p.allowVoting
+        if (p.allowComments !== undefined) next.allowComments = p.allowComments
+        if (p.hidePublicMemberIdentity !== undefined) next.hidePublicMemberIdentity = p.hidePublicMemberIdentity
+        if (Object.keys(next).length === 0) return c.superjson({ ok: true })
+        next.updatedAt = new Date()
+
+        await ctx.db
+          .update(board)
+          .set(next)
+          .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false)))
+        return c.superjson({ ok: true })
+      }),
+
     create: privateProcedure
       .input(
         z.object({

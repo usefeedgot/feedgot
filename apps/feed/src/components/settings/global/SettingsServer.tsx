@@ -8,6 +8,7 @@ import DomainSection from "../domain/Domain"
 import IntegrationsSection from "../integrations/Integrations"
 import SSOSection from "../sso/SSO"
 import DataSection from "../data/Data"
+import BoardSettings from "../board/Board"
 import type { Member, Invite } from "../../../types/team"
 import { SECTIONS } from "../../../config/sections"
 import SettingsTabsHeader from "./SettingsTabsHeader"
@@ -24,6 +25,7 @@ type Props = {
   initialWorkspaceName?: string
   initialDomainInfo?: any
   initialDefaultDomain?: string
+  initialFeedbackBoards?: any
 }
 
 export default function SettingsServer({ slug, selectedSection, initialTeam, initialChangelogVisible, initialChangelogTags, initialHidePoweredBy, initialPlan, initialBrandingConfig, initialWorkspaceName, initialDomainInfo, initialDefaultDomain }: Props) {
@@ -61,6 +63,8 @@ function SectionRenderer({ slug, section, initialTeam, initialChangelogVisible, 
       return <TeamSection slug={slug} initialMembers={initialTeam?.members} initialInvites={initialTeam?.invites} initialMeId={initialTeam?.meId} initialPlan={initialPlan} />
     case "feedback":
       return <FeedbackSection slug={slug} plan={initialPlan} />
+    case "board":
+      return <BoardSettings slug={slug} />
     case "changelog":
       return <ChangelogSection slug={slug} initialIsVisible={initialChangelogVisible} initialPlan={initialPlan} initialTags={initialChangelogTags} />
     case "billing":
