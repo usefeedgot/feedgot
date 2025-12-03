@@ -7,7 +7,7 @@ function toRegex(originPattern: string): RegExp | null {
     if (!trimmed) return null
     const hasWildcard = trimmed.includes("*")
     if (!hasWildcard) return new RegExp(`^${trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`)
-    const esc = trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\\*/g, "[^.]+")
+    const esc = trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\\*/g, ".*")
     return new RegExp(`^${esc}$`)
   } catch {
     return null

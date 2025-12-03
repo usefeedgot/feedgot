@@ -42,6 +42,15 @@ export const auth = betterAuth({
     },
   },
 
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: true,
+      domain: process.env.AUTH_COOKIE_DOMAIN,
+    },
+  },
+
+  trustedOrigins: (process.env.AUTH_TRUSTED_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean),
+
   plugins: [
     organization(),
     lastLoginMethod(),
