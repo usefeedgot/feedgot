@@ -60,7 +60,7 @@ function SectionRenderer({ slug, section, initialTeam, initialChangelogVisible, 
     case "team":
       return <TeamSection slug={slug} initialMembers={initialTeam?.members} initialInvites={initialTeam?.invites} initialMeId={initialTeam?.meId} initialPlan={initialPlan} />
     case "feedback":
-      return <FeedbackSection />
+      return <FeedbackSection slug={slug} plan={initialPlan} />
     case "changelog":
       return <ChangelogSection slug={slug} initialIsVisible={initialChangelogVisible} initialPlan={initialPlan} initialTags={initialChangelogTags} />
     case "billing":

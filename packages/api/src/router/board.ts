@@ -5,13 +5,316 @@ import { j, publicProcedure, privateProcedure } from "../jstack"
 import { workspace, board, post, postTag, tag, comment, user, workspaceMember } from "@feedgot/db"
 import { byIdSchema, updatePostMetaSchema, updatePostBoardSchema } from "../validators/post"
 import { HTTPException } from "hono/http-exception"
-import { byBoardInputSchema } from "../validators/board"
+import { byBoardInputSchema, boardSlugSchema } from "../validators/board"
 import { checkSlugInputSchema } from "../validators/workspace"
+import { normalizePlan, getPlanLimits } from "../shared/plan"
 
 
 
 export function createBoardRouter() {
   return j.router({
+    settingsByWorkspaceSlug: privateProcedure
+      .input(checkSlugInputSchema)
+      .get(async ({ ctx, input, c }) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) return c.superjson({ boards: [] })
+
+        const rows = await ctx.db
+          .select({
+            id: board.id,
+            name: board.name,
+            slug: board.slug,
+            isPublic: board.isPublic,
+            isVisible: board.isVisible,
+            isActive: board.isActive,
+            allowAnonymous: board.allowAnonymous,
+            requireApproval: board.requireApproval,
+            allowVoting: board.allowVoting,
+            allowComments: board.allowComments,
+            hidePublicMemberIdentity: board.hidePublicMemberIdentity,
+            sortOrder: board.sortOrder,
+          })
+          .from(board)
+          .where(eq(board.workspaceId, ws.id))
+
+        const withCounts = await Promise.all(
+          rows.map(async (b: any) => {
+            const [row] = await ctx.db
+              .select({ count: sql<number>`count(*)` })
+              .from(post)
+              .where(eq(post.boardId, b.id))
+              .limit(1)
+            return { ...b, postCount: Number(row?.count || 0) }
+          })
+        )
+
+        return c.superjson({ boards: withCounts })
+      }),
+
+    updateSettings: privateProcedure
+      .input(
+        z.object({
+          slug: checkSlugInputSchema.shape.slug,
+          boardSlug: z.string().min(1).max(64),
+          patch: z.object({
+            isPublic: z.boolean().optional(),
+            isVisible: z.boolean().optional(),
+            isActive: z.boolean().optional(),
+            allowAnonymous: z.boolean().optional(),
+            requireApproval: z.boolean().optional(),
+            allowVoting: z.boolean().optional(),
+            allowComments: z.boolean().optional(),
+            hidePublicMemberIdentity: z.boolean().optional(),
+            sortOrder: z.number().int().optional(),
+          }),
+        })
+      )
+      .post(async ({ ctx, input, c }) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id, ownerId: workspace.ownerId })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) throw new HTTPException(404, { message: "Workspace not found" })
+
+        let allowed = ws.ownerId === ctx.session.user.id
+        if (!allowed) {
+          const [member] = await ctx.db
+            .select({ role: workspaceMember.role, permissions: workspaceMember.permissions })
+            .from(workspaceMember)
+            .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.userId, ctx.session.user.id)))
+            .limit(1)
+          const perms = (member?.permissions || {}) as Record<string, boolean>
+          if (member?.role === "admin" || perms?.canManageBoards) allowed = true
+        }
+        if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
+
+        const [b] = await ctx.db
+          .select({ id: board.id })
+          .from(board)
+          .where(and(eq(board.workspaceId, ws.id), eq(board.slug, input.boardSlug)))
+          .limit(1)
+        if (!b) throw new HTTPException(404, { message: "Board not found" })
+
+        const next: Partial<typeof board.$inferSelect> = {}
+        const p = input.patch || {}
+        if (p.isPublic !== undefined) next.isPublic = p.isPublic
+        if (p.isVisible !== undefined) next.isVisible = p.isVisible
+        if (p.isActive !== undefined) next.isActive = p.isActive
+        if (p.allowAnonymous !== undefined) next.allowAnonymous = p.allowAnonymous
+        if (p.requireApproval !== undefined) next.requireApproval = p.requireApproval
+        if (p.allowVoting !== undefined) next.allowVoting = p.allowVoting
+        if (p.allowComments !== undefined) next.allowComments = p.allowComments
+        if (p.hidePublicMemberIdentity !== undefined) next.hidePublicMemberIdentity = p.hidePublicMemberIdentity
+        if (p.sortOrder !== undefined) next.sortOrder = p.sortOrder
+        if (Object.keys(next).length === 0) return c.superjson({ ok: true })
+        next.updatedAt = new Date()
+
+        await ctx.db.update(board).set(next).where(eq(board.id, b.id))
+        return c.superjson({ ok: true })
+      }),
+
+    create: privateProcedure
+      .input(
+        z.object({
+          slug: checkSlugInputSchema.shape.slug,
+          name: z.string().min(1).max(64),
+          boardSlug: boardSlugSchema.optional(),
+          isPublic: z.boolean().optional(),
+        })
+      )
+      .post(async ({ ctx, input, c }) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id, plan: workspace.plan, ownerId: workspace.ownerId })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) throw new HTTPException(404, { message: "Workspace not found" })
+
+        let allowed = ws.ownerId === ctx.session.user.id
+        if (!allowed) {
+          const [member] = await ctx.db
+            .select({ role: workspaceMember.role, permissions: workspaceMember.permissions })
+            .from(workspaceMember)
+            .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.userId, ctx.session.user.id)))
+            .limit(1)
+          const perms = (member?.permissions || {}) as Record<string, boolean>
+          if (member?.role === "admin" || perms?.canManageBoards) allowed = true
+        }
+        if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
+
+        const limits = getPlanLimits(normalizePlan(String(ws.plan || "free")))
+        const [countRow] = await ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(board)
+          .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false)))
+          .limit(1)
+        const current = Number(countRow?.count || 0)
+        const maxBoards = limits.maxNonSystemBoards
+        if (typeof maxBoards === "number" && current >= maxBoards) {
+          throw new HTTPException(403, { message: `Boards limit reached (${maxBoards})` })
+        }
+
+        const desiredSlug = (input.boardSlug || input.name).trim().toLowerCase().replace(/\s+/g, '-')
+
+        const [existing] = await ctx.db
+          .select({ id: board.id })
+          .from(board)
+          .where(and(eq(board.workspaceId, ws.id), eq(board.slug, desiredSlug)))
+          .limit(1)
+        if (existing) throw new HTTPException(409, { message: "Board slug already exists" })
+
+        const [lastOrderRow] = await ctx.db
+          .select({ order: sql<number>`coalesce(max(${board.sortOrder}), 0)` })
+          .from(board)
+          .where(eq(board.workspaceId, ws.id))
+          .limit(1)
+        const nextOrder = Number(lastOrderRow?.order || 0) + 1
+
+        const [created] = await ctx.db
+          .insert(board)
+          .values({
+            workspaceId: ws.id,
+            name: input.name.trim(),
+            slug: desiredSlug,
+            sortOrder: nextOrder,
+            createdBy: ctx.session.user.id,
+            isSystem: false,
+            isPublic: input.isPublic ?? true,
+            isVisible: true,
+          })
+          .returning({ id: board.id, name: board.name, slug: board.slug, isPublic: board.isPublic })
+
+        return c.superjson({ ok: true, board: created })
+      }),
+
+    delete: privateProcedure
+      .input(z.object({ slug: checkSlugInputSchema.shape.slug, boardSlug: z.string().min(1).max(64) }))
+      .post(async ({ ctx, input, c }) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id, ownerId: workspace.ownerId })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) throw new HTTPException(404, { message: "Workspace not found" })
+
+        let allowed = ws.ownerId === ctx.session.user.id
+        if (!allowed) {
+          const [member] = await ctx.db
+            .select({ role: workspaceMember.role, permissions: workspaceMember.permissions })
+            .from(workspaceMember)
+            .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.userId, ctx.session.user.id)))
+            .limit(1)
+          const perms = (member?.permissions || {}) as Record<string, boolean>
+          if (member?.role === "admin" || perms?.canManageBoards) allowed = true
+        }
+        if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
+
+        const [b] = await ctx.db
+          .select({ id: board.id, isSystem: board.isSystem, slug: board.slug, systemType: board.systemType })
+          .from(board)
+          .where(and(eq(board.workspaceId, ws.id), eq(board.slug, input.boardSlug)))
+          .limit(1)
+        if (!b) throw new HTTPException(404, { message: "Board not found" })
+        if (b.isSystem || b.slug === "roadmap" || b.slug === "changelog" || (b as any).systemType != null) {
+          throw new HTTPException(403, { message: "Cannot delete system board" })
+        }
+
+        await ctx.db.delete(board).where(eq(board.id, b.id))
+        return c.superjson({ ok: true })
+      }),
+
+    tagsCreate: privateProcedure
+      .input(
+        z.object({
+          slug: checkSlugInputSchema.shape.slug,
+          name: z.string().min(1).max(64),
+          color: z.string().optional(),
+        })
+      )
+      .post(async ({ ctx, input, c }) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id, plan: workspace.plan, ownerId: workspace.ownerId })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) throw new HTTPException(404, { message: "Workspace not found" })
+
+        let allowed = ws.ownerId === ctx.session.user.id
+        if (!allowed) {
+          const [member] = await ctx.db
+            .select({ role: workspaceMember.role, permissions: workspaceMember.permissions })
+            .from(workspaceMember)
+            .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.userId, ctx.session.user.id)))
+            .limit(1)
+          const perms = (member?.permissions || {}) as Record<string, boolean>
+          if (member?.role === "admin" || perms?.canManageBoards) allowed = true
+        }
+        if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
+
+        const limits = getPlanLimits(normalizePlan(String(ws.plan || "free")))
+        const [countRow] = await ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(tag)
+          .where(eq(tag.workspaceId, ws.id))
+          .limit(1)
+        const current = Number(countRow?.count || 0)
+        const maxTags = limits.maxTags
+        if (typeof maxTags === "number" && current >= maxTags) {
+          throw new HTTPException(403, { message: `Tags limit reached (${maxTags})` })
+        }
+
+        const slugVal = input.name.trim().toLowerCase().replace(/\s+/g, '-')
+        const [existing] = await ctx.db
+          .select({ id: tag.id })
+          .from(tag)
+          .where(and(eq(tag.workspaceId, ws.id), eq(tag.slug, slugVal)))
+          .limit(1)
+        if (existing) throw new HTTPException(409, { message: "Tag slug already exists" })
+
+        await ctx.db
+          .insert(tag)
+          .values({ workspaceId: ws.id, name: input.name.trim(), slug: slugVal, color: input.color || undefined })
+
+        return c.superjson({ ok: true })
+      }),
+
+    tagsDelete: privateProcedure
+      .input(z.object({ slug: checkSlugInputSchema.shape.slug, tagSlug: z.string().min(1).max(64) }))
+      .post(async ({ ctx, input, c }) => {
+        const [ws] = await ctx.db
+          .select({ id: workspace.id, ownerId: workspace.ownerId })
+          .from(workspace)
+          .where(eq(workspace.slug, input.slug))
+          .limit(1)
+        if (!ws) throw new HTTPException(404, { message: "Workspace not found" })
+
+        let allowed = ws.ownerId === ctx.session.user.id
+        if (!allowed) {
+          const [member] = await ctx.db
+            .select({ role: workspaceMember.role, permissions: workspaceMember.permissions })
+            .from(workspaceMember)
+            .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.userId, ctx.session.user.id)))
+            .limit(1)
+          const perms = (member?.permissions || {}) as Record<string, boolean>
+          if (member?.role === "admin" || perms?.canManageBoards) allowed = true
+        }
+        if (!allowed) throw new HTTPException(403, { message: "Forbidden" })
+
+        const [t] = await ctx.db
+          .select({ id: tag.id })
+          .from(tag)
+          .where(and(eq(tag.workspaceId, ws.id), eq(tag.slug, input.tagSlug)))
+          .limit(1)
+        if (!t) throw new HTTPException(404, { message: "Tag not found" })
+
+        await ctx.db.delete(tag).where(eq(tag.id, t.id))
+        return c.superjson({ ok: true })
+      }),
     byWorkspaceSlug: publicProcedure
       .input(checkSlugInputSchema)
       .get(async ({ ctx, input, c }) => {

@@ -123,8 +123,8 @@ export default function ChangelogSection({
       title="Changelog"
       description="Manage product updates and visibility."
     >
-      <div className="divide-y mt-2">
-        <div className="flex items-center justify-between p-4">
+      <div className="space-y-6">
+        <div className="flex items-center border border-border rounded-md p-3 justify-between ">
           <div className="text-sm">Visible on public site</div>
           <div className="w-full max-w-md flex items-center justify-end">
             <Switch
@@ -135,8 +135,9 @@ export default function ChangelogSection({
           </div>
         </div>
 
-        <div className="p-4 space-y-2">
+
           <div className="text-sm">Changelog Tags</div>
+          
 
           <div className="rounded-md border overflow-hidden">
             <Table>
@@ -273,7 +274,7 @@ export default function ChangelogSection({
               }
             }}
           />
-        </div>
+
       </div>
     </SectionCard>
   );

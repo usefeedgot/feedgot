@@ -183,8 +183,8 @@ export default function BrandingSection({ slug, initialHidePoweredBy, initialPla
 
   return (
     <SectionCard title="Branding" description="Change your brand settings.">
-      <div className="divide-y mt-2">
-        <div className="flex items-center justify-between p-4">
+      <div className="space-y-6 ">
+        <div className="flex items-center justify-between ">
           <div className="text-sm">Workspace Name</div>
           <div className="w-full max-w-md flex items-center justify-end">
             <Input
@@ -194,7 +194,7 @@ export default function BrandingSection({ slug, initialHidePoweredBy, initialPla
             />
           </div>
         </div>
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between ">
           <div className="text-sm">Logo</div>
           <div className="w-full max-w-md flex items-center justify-end">
             <LogoUploader
@@ -205,7 +205,7 @@ export default function BrandingSection({ slug, initialHidePoweredBy, initialPla
             />
           </div>
         </div>
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between ">
           <div className="text-sm">Primary Color</div>
           <div className="w-full max-w-md flex items-center justify-end">
             <ColorPicker
@@ -220,7 +220,7 @@ export default function BrandingSection({ slug, initialHidePoweredBy, initialPla
             />
           </div>
         </div>
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between ">
           <div className="text-sm">Sidebar Position</div>
           <div className="w-full max-w-md flex items-center justify-end">
             <SidebarPositionPicker value={sidebarPosition} onSelect={(p) => setSidebarPosition(p)} disabled={!canEditBranding} />
@@ -228,7 +228,7 @@ export default function BrandingSection({ slug, initialHidePoweredBy, initialPla
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between ">
           <div className="text-sm">Theme</div>
           <div className="w-full max-w-md flex items-center justify-end">
 
@@ -236,7 +236,7 @@ export default function BrandingSection({ slug, initialHidePoweredBy, initialPla
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between ">
           <div className="text-sm">Layout Style</div>
           <div className="w-full max-w-md flex items-center justify-end">
 
@@ -246,7 +246,7 @@ export default function BrandingSection({ slug, initialHidePoweredBy, initialPla
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between ">
           <div className="text-sm text-muted-foreground">
             Hide "Powered by" Branding
           </div>
@@ -259,16 +259,13 @@ export default function BrandingSection({ slug, initialHidePoweredBy, initialPla
             />
           </div>
         </div>
-      </div>
-      <div className="p-4">
-        <PlanNotice slug={slug} feature="branding" plan={plan} />
-      </div>
 
-      <div className="px-4 pb-4">
+        <PlanNotice slug={slug} feature="branding" plan={plan} />
         <LoadingButton onClick={handleSave} loading={saving} disabled={loading || brandingAccessLoading || !canEditBranding}>
           Save
         </LoadingButton>
       </div>
+
     </SectionCard>
   );
 }

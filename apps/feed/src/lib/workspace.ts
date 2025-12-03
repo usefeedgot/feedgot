@@ -496,6 +496,7 @@ export async function getSettingsInitialData(
   initialBrandingConfig?: any;
   initialDomainInfo?: any;
   initialDefaultDomain?: string;
+  initialFeedbackBoards?: any[];
 }> {
   const [ws] = await db
     .select({
@@ -575,6 +576,50 @@ export async function getSettingsInitialData(
     .where(eq(workspaceDomain.workspaceId, ws.id))
     .limit(1);
 
+  const feedbackBoardsNonSystem = await db
+    .select({
+      id: board.id,
+      name: board.name,
+      slug: board.slug,
+      isPublic: board.isPublic,
+      isVisible: board.isVisible,
+      isActive: board.isActive,
+      allowAnonymous: board.allowAnonymous,
+      requireApproval: board.requireApproval,
+      allowVoting: board.allowVoting,
+      allowComments: board.allowComments,
+      hidePublicMemberIdentity: board.hidePublicMemberIdentity,
+      sortOrder: board.sortOrder,
+      postCount: sql<number>`count(${post.id})`,
+    })
+    .from(board)
+    .leftJoin(post, eq(post.boardId, board.id))
+    .where(and(eq(board.workspaceId, ws.id), eq(board.isSystem, false)))
+    .groupBy(board.id);
+
+  const feedbackRoadmap = await db
+    .select({
+      id: board.id,
+      name: board.name,
+      slug: board.slug,
+      isPublic: board.isPublic,
+      isVisible: board.isVisible,
+      isActive: board.isActive,
+      allowAnonymous: board.allowAnonymous,
+      requireApproval: board.requireApproval,
+      allowVoting: board.allowVoting,
+      allowComments: board.allowComments,
+      hidePublicMemberIdentity: board.hidePublicMemberIdentity,
+      sortOrder: board.sortOrder,
+      postCount: sql<number>`count(${post.id})`,
+    })
+    .from(board)
+    .leftJoin(post, eq(post.boardId, board.id))
+    .where(and(eq(board.workspaceId, ws.id), eq(board.systemType, "roadmap" as any)))
+    .groupBy(board.id);
+
+  const feedbackBoards = [...feedbackRoadmap, ...feedbackBoardsNonSystem]
+
   return {
     initialPlan: String((ws as any)?.plan || "free"),
     initialWorkspaceName: String((ws as any)?.name || ""),
@@ -603,5 +648,20 @@ export async function getSettingsInitialData(
     },
     initialDomainInfo: d || null,
     initialDefaultDomain: String((ws as any)?.domain || ""),
+    initialFeedbackBoards: feedbackBoards.map((b: any) => ({
+      id: b.id,
+      name: b.name,
+      slug: b.slug,
+      isPublic: Boolean(b.isPublic),
+      isVisible: Boolean(b.isVisible),
+      isActive: Boolean(b.isActive),
+      allowAnonymous: Boolean(b.allowAnonymous),
+      requireApproval: Boolean(b.requireApproval),
+      allowVoting: Boolean(b.allowVoting),
+      allowComments: Boolean(b.allowComments),
+      hidePublicMemberIdentity: Boolean(b.hidePublicMemberIdentity),
+      sortOrder: Number(b.sortOrder || 0),
+      postCount: Number(b.postCount || 0),
+    })),
   };
 }

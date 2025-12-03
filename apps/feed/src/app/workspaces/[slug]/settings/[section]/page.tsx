@@ -32,6 +32,7 @@ export default async function SettingsSectionPage({ params }: Props) {
     initialBrandingConfig,
     initialDomainInfo,
     initialDefaultDomain,
+    initialFeedbackBoards,
   } = await getSettingsInitialData(slug, session?.user?.id)
   
   return (
@@ -47,6 +48,7 @@ export default async function SettingsSectionPage({ params }: Props) {
       initialBrandingConfig={initialBrandingConfig}
       initialDomainInfo={initialDomainInfo}
       initialDefaultDomain={initialDefaultDomain}
+      initialFeedbackBoards={initialFeedbackBoards}
     />
   )
 }
