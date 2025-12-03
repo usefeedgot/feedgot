@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import SettingsServer from "@/components/settings/global/SettingsServer"
-import { db, workspace, board, brandingConfig, workspaceMember, workspaceInvite, user } from "@feedgot/db"
+import { db, workspace, board, brandingConfig, workspaceMember, workspaceInvite, user, workspaceDomain } from "@feedgot/db"
 import { and, eq } from "drizzle-orm"
 import { createPageMetadata } from "@/lib/seo"
 import { getSectionMeta } from "@/config/sections"
@@ -38,7 +38,7 @@ export default async function SettingsSectionPage({ params }: Props) {
   let wsOwnerId: string | undefined
   try {
     const [ws] = await db
-      .select({ id: workspace.id, plan: workspace.plan, name: workspace.name, logo: workspace.logo, ownerId: workspace.ownerId })
+      .select({ id: workspace.id, plan: workspace.plan, name: workspace.name, logo: workspace.logo, ownerId: workspace.ownerId, domain: workspace.domain })
       .from(workspace)
       .where(eq(workspace.slug, slug))
       .limit(1)
@@ -102,12 +102,7 @@ export default async function SettingsSectionPage({ params }: Props) {
     }
   } catch {}
   
-  try {
-    const resDomain = await client.workspace.domainInfo.$get({ slug })
-    const dDomain = await resDomain.json()
-    initialDomainInfo = (dDomain as any)?.domain || null
-    initialDefaultDomain = String((dDomain as any)?.defaultDomain || "")
-  } catch {}
+  
   return (
     <SettingsServer
       slug={slug}
