@@ -28,8 +28,6 @@ export const board = pgTable(
     isSystem: boolean('is_system').notNull().default(false),
     isActive: boolean('is_active').notNull().default(true),
     allowAnonymous: boolean('allow_anonymous').notNull().default(true),
-    requireApproval: boolean('require_approval').notNull().default(false),
-    allowVoting: boolean('allow_voting').notNull().default(true),
     allowComments: boolean('allow_comments').notNull().default(true),
     hidePublicMemberIdentity: boolean('hide_public_member_identity').notNull().default(false),
     sortOrder: integer('sort_order').notNull().default(0),

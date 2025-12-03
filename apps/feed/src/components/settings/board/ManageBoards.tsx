@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { client } from "@feedgot/api/client"
 import { toast } from "sonner"
 import PlanNotice from "../global/PlanNotice"
-import ModalCreateBoard from "./ModalCreateBoard"
+import ModalCreateBoard from "../feedback/ModalCreateBoard"
 import { MoreVertical } from "lucide-react"
 
 export default function ManageBoards({ slug, plan }: { slug: string; plan?: string }) {

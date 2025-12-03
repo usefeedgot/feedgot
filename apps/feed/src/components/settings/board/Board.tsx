@@ -3,20 +3,19 @@
 import React from "react"
 import SectionCard from "../global/SectionCard"
 import AllowAnonymousToggle from "./AllowAnonymousToggle"
-import RequireApprovalToggle from "./RequireApprovalToggle"
-import AllowVotingToggle from "./AllowVotingToggle"
 import AllowCommentsToggle from "./AllowCommentsToggle"
+import ManageBoards from "./ManageBoards"
 import HidePublicMemberIdentityToggle from "./HidePublicMemberIdentityToggle"
 
-export default function BoardSettings({ slug }: { slug: string }) {
+export default function BoardSettings({ slug, plan }: { slug: string; plan?: string }) {
   return (
     <SectionCard title="Board Settings" description="Configure board settings">
-      <div className="space-y-6">
+      <div className="space-y-3">
+
         <AllowAnonymousToggle slug={slug} />
-        <RequireApprovalToggle slug={slug} />
-        <AllowVotingToggle slug={slug} />
         <AllowCommentsToggle slug={slug} />
         <HidePublicMemberIdentityToggle slug={slug} />
+        <ManageBoards slug={slug} plan={plan} />
       </div>
     </SectionCard>
   )

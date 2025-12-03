@@ -1,38 +1,51 @@
-import React from "react"
-import BrandingSection from "../branding/Branding"
-import TeamSection from "../team/Team"
-import FeedbackSection from "../feedback/Feedback"
-import ChangelogSection from "../changelog/Changelog"
-import BillingSection from "../billing/Billing"
-import DomainSection from "../domain/Domain"
-import IntegrationsSection from "../integrations/Integrations"
-import SSOSection from "../sso/SSO"
-import DataSection from "../data/Data"
-import BoardSettings from "../board/Board"
-import type { Member, Invite } from "../../../types/team"
-import { SECTIONS } from "../../../config/sections"
-import SettingsTabsHeader from "./SettingsTabsHeader"
+import React from "react";
+import BrandingSection from "../branding/Branding";
+import TeamSection from "../team/Team";
+import FeedbackSection from "../feedback/Feedback";
+import ChangelogSection from "../changelog/Changelog";
+import BillingSection from "../billing/Billing";
+import DomainSection from "../domain/Domain";
+import IntegrationsSection from "../integrations/Integrations";
+import SSOSection from "../sso/SSO";
+import DataSection from "../data/Data";
+import BoardSettings from "../board/Board";
+import type { Member, Invite } from "../../../types/team";
+import { SECTIONS } from "../../../config/sections";
+import SettingsTabsHeader from "./SettingsTabsHeader";
 
 type Props = {
-  slug: string
-  selectedSection?: string
-  initialTeam?: { members: Member[]; invites: Invite[]; meId: string | null }
-  initialChangelogVisible?: boolean
-  initialChangelogTags?: any[]
-  initialHidePoweredBy?: boolean
-  initialPlan?: string
-  initialBrandingConfig?: any
-  initialWorkspaceName?: string
-  initialDomainInfo?: any
-  initialDefaultDomain?: string
-  initialFeedbackBoards?: any
-}
+  slug: string;
+  selectedSection?: string;
+  initialTeam?: { members: Member[]; invites: Invite[]; meId: string | null };
+  initialChangelogVisible?: boolean;
+  initialChangelogTags?: any[];
+  initialHidePoweredBy?: boolean;
+  initialPlan?: string;
+  initialBrandingConfig?: any;
+  initialWorkspaceName?: string;
+  initialDomainInfo?: any;
+  initialDefaultDomain?: string;
+  initialFeedbackBoards?: any;
+};
 
-export default function SettingsServer({ slug, selectedSection, initialTeam, initialChangelogVisible, initialChangelogTags, initialHidePoweredBy, initialPlan, initialBrandingConfig, initialWorkspaceName, initialDomainInfo, initialDefaultDomain }: Props) {
-  const sections = SECTIONS
-  const selected: string = typeof selectedSection === "string" && selectedSection
-    ? selectedSection
-    : (sections[0]?.value || "branding")
+export default function SettingsServer({
+  slug,
+  selectedSection,
+  initialTeam,
+  initialChangelogVisible,
+  initialChangelogTags,
+  initialHidePoweredBy,
+  initialPlan,
+  initialBrandingConfig,
+  initialWorkspaceName,
+  initialDomainInfo,
+  initialDefaultDomain,
+}: Props) {
+  const sections = SECTIONS;
+  const selected: string =
+    typeof selectedSection === "string" && selectedSection
+      ? selectedSection
+      : sections[0]?.value || "branding";
   return (
     <section className="space-y-4">
       <SettingsTabsHeader slug={slug} selected={selected} />
@@ -52,32 +65,88 @@ export default function SettingsServer({ slug, selectedSection, initialTeam, ini
         />
       </div>
     </section>
-  )
+  );
 }
 
-function SectionRenderer({ slug, section, initialTeam, initialChangelogVisible, initialChangelogTags, initialHidePoweredBy, initialPlan, initialBrandingConfig, initialWorkspaceName, initialDomainInfo, initialDefaultDomain }: { slug: string; section: string; initialTeam?: { members: Member[]; invites: Invite[]; meId: string | null }; initialChangelogVisible?: boolean; initialChangelogTags?: any[]; initialHidePoweredBy?: boolean; initialPlan?: string; initialBrandingConfig?: any; initialWorkspaceName?: string; initialDomainInfo?: any; initialDefaultDomain?: string }) {
+function SectionRenderer({
+  slug,
+  section,
+  initialTeam,
+  initialChangelogVisible,
+  initialChangelogTags,
+  initialHidePoweredBy,
+  initialPlan,
+  initialBrandingConfig,
+  initialWorkspaceName,
+  initialDomainInfo,
+  initialDefaultDomain,
+}: {
+  slug: string;
+  section: string;
+  initialTeam?: { members: Member[]; invites: Invite[]; meId: string | null };
+  initialChangelogVisible?: boolean;
+  initialChangelogTags?: any[];
+  initialHidePoweredBy?: boolean;
+  initialPlan?: string;
+  initialBrandingConfig?: any;
+  initialWorkspaceName?: string;
+  initialDomainInfo?: any;
+  initialDefaultDomain?: string;
+}) {
   switch (section) {
     case "branding":
-      return <BrandingSection slug={slug} initialHidePoweredBy={initialHidePoweredBy} initialPlan={initialPlan} initialConfig={initialBrandingConfig} initialWorkspaceName={initialWorkspaceName} />
+      return (
+        <BrandingSection
+          slug={slug}
+          initialHidePoweredBy={initialHidePoweredBy}
+          initialPlan={initialPlan}
+          initialConfig={initialBrandingConfig}
+          initialWorkspaceName={initialWorkspaceName}
+        />
+      );
     case "team":
-      return <TeamSection slug={slug} initialMembers={initialTeam?.members} initialInvites={initialTeam?.invites} initialMeId={initialTeam?.meId} initialPlan={initialPlan} />
+      return (
+        <TeamSection
+          slug={slug}
+          initialMembers={initialTeam?.members}
+          initialInvites={initialTeam?.invites}
+          initialMeId={initialTeam?.meId}
+          initialPlan={initialPlan}
+        />
+      );
     case "feedback":
-      return <FeedbackSection slug={slug} plan={initialPlan} />
+      return <FeedbackSection slug={slug} plan={initialPlan} />;
     case "board":
-      return <BoardSettings slug={slug} />
+      return <BoardSettings slug={slug} />;
     case "changelog":
-      return <ChangelogSection slug={slug} initialIsVisible={initialChangelogVisible} initialPlan={initialPlan} initialTags={initialChangelogTags} />
+      return (
+        <ChangelogSection
+          slug={slug}
+          initialIsVisible={initialChangelogVisible}
+          initialPlan={initialPlan}
+          initialTags={initialChangelogTags}
+        />
+      );
     case "billing":
-      return <BillingSection />
+      return <BillingSection />;
     case "domain":
-      return <DomainSection slug={slug} initialPlan={initialPlan} initialInfo={initialDomainInfo} initialDefaultDomain={initialDefaultDomain} />
+      return (
+        <DomainSection
+          slug={slug}
+          initialPlan={initialPlan}
+          initialInfo={initialDomainInfo}
+          initialDefaultDomain={initialDefaultDomain}
+        />
+      );
     case "integrations":
-      return <IntegrationsSection />
+      return <IntegrationsSection />;
     case "sso":
-      return <SSOSection />
+      return <SSOSection />;
     case "data":
-      return <DataSection />
+      return <DataSection />;
     default:
-      return <div className="bg-card rounded-md border p-4">Unknown section</div>
+      return (
+        <div className="bg-card rounded-md border p-4">Unknown section</div>
+      );
   }
 }

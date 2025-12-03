@@ -32,8 +32,6 @@ export function createBoardRouter() {
             isVisible: board.isVisible,
             isActive: board.isActive,
             allowAnonymous: board.allowAnonymous,
-            requireApproval: board.requireApproval,
-            allowVoting: board.allowVoting,
             allowComments: board.allowComments,
             hidePublicMemberIdentity: board.hidePublicMemberIdentity,
             sortOrder: board.sortOrder,
@@ -106,8 +104,6 @@ export function createBoardRouter() {
         if (p.isVisible !== undefined) next.isVisible = p.isVisible
         if (p.isActive !== undefined) next.isActive = p.isActive
         if (p.allowAnonymous !== undefined) next.allowAnonymous = p.allowAnonymous
-        if (p.requireApproval !== undefined) next.requireApproval = p.requireApproval
-        if (p.allowVoting !== undefined) next.allowVoting = p.allowVoting
         if (p.allowComments !== undefined) next.allowComments = p.allowComments
         if (p.hidePublicMemberIdentity !== undefined) next.hidePublicMemberIdentity = p.hidePublicMemberIdentity
         if (p.sortOrder !== undefined) next.sortOrder = p.sortOrder
@@ -154,8 +150,6 @@ export function createBoardRouter() {
         const next: Partial<typeof board.$inferSelect> = {}
         const p = input.patch || {}
         if (p.allowAnonymous !== undefined) next.allowAnonymous = p.allowAnonymous
-        if (p.requireApproval !== undefined) next.requireApproval = p.requireApproval
-        if (p.allowVoting !== undefined) next.allowVoting = p.allowVoting
         if (p.allowComments !== undefined) next.allowComments = p.allowComments
         if (p.hidePublicMemberIdentity !== undefined) next.hidePublicMemberIdentity = p.hidePublicMemberIdentity
         if (Object.keys(next).length === 0) return c.superjson({ ok: true })
@@ -382,7 +376,6 @@ export function createBoardRouter() {
             slug: board.slug,
             isPublic: board.isPublic,
             allowAnonymous: board.allowAnonymous,
-            allowVoting: board.allowVoting,
             allowComments: board.allowComments,
             roadmapStatuses: board.roadmapStatuses,
           })
@@ -521,7 +514,6 @@ export function createBoardRouter() {
             slug: board.slug,
             isPublic: board.isPublic,
             allowAnonymous: board.allowAnonymous,
-            allowVoting: board.allowVoting,
             allowComments: board.allowComments,
             roadmapStatuses: board.roadmapStatuses,
           })
