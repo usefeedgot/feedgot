@@ -1,15 +1,15 @@
 export const dynamic = "force-dynamic"
 
 import type { Metadata } from "next"
-import DomainPageLayout from "@/components/domain/DomainPageLayout"
-import DomainRoadmapItem from "@/components/domain/DomainRoadmapItem"
+import DomainPageLayout from "@/components/subdomain/DomainPageLayout"
+import DomainRoadmapItem from "@/components/subdomain/DomainRoadmapItem"
 import { getPlannedRoadmapPosts, getSidebarPositionBySlug, getWorkspacePostsCount } from "@/lib/workspace"
 import { createWorkspaceSectionMetadata } from "@/lib/seo"
-import EmptyDomainPosts from "@/components/domain/EmptyPosts"
-import { SortPopover } from "@/components/domain/SortPopover"
-import { SearchAction } from "@/components/domain/SearchAction"
-import { SubmitIdeaCard } from "@/components/domain/SubmitIdeaCard"
-import { PublicRequestPagination } from "@/components/domain/PublicRequestPagination"
+import EmptyDomainPosts from "@/components/subdomain/EmptyPosts"
+import { SortPopover } from "@/components/subdomain/SortPopover"
+import { SearchAction } from "@/components/subdomain/SearchAction"
+import { SubmitIdeaCard } from "@/components/subdomain/SubmitIdeaCard"
+import { PublicRequestPagination } from "@/components/subdomain/PublicRequestPagination"
 
 export async function generateMetadata({ params }: { params: Promise<{ subdomain: string }> }): Promise<Metadata> {
   const { subdomain } = await params

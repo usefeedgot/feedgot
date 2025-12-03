@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic"
 
 import type { Metadata } from "next"
-import DomainPageLayout from "@/components/domain/DomainPageLayout"
+import DomainPageLayout from "@/components/subdomain/DomainPageLayout"
 import { createWorkspaceSectionMetadata } from "@/lib/seo"
 import { getSidebarPositionBySlug } from "@/lib/workspace"
 import { client } from "@feedgot/api/client"

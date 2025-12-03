@@ -3,12 +3,12 @@ import { notFound } from "next/navigation"
 import { db, workspace, board } from "@feedgot/db"
 import { eq, and } from "drizzle-orm"
 import { Container } from "@/components/global/container"
-import { DomainHeader } from "@/components/domain/DomainHeader"
+import { DomainHeader } from "@/components/subdomain/DomainHeader"
 import BrandVarsEffect from "@/components/global/BrandVarsEffect"
 import { getBrandingBySlug } from "@/lib/workspace"
-import SubdomainThemeProvider from "@/components/domain/SubdomainThemeProvider"
-import { DomainBrandingProvider } from "@/components/domain/DomainBrandingProvider"
-import { PoweredBy } from "@/components/domain/PoweredBy"
+import SubdomainThemeProvider from "@/components/subdomain/SubdomainThemeProvider"
+import { DomainBrandingProvider } from "@/components/subdomain/DomainBrandingProvider"
+import { PoweredBy } from "@/components/subdomain/PoweredBy"
 
 
 export default async function Layout({

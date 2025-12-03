@@ -4,7 +4,7 @@ import { db, workspace } from "@feedgot/db"
 import { eq } from "drizzle-orm"
 import { createWorkspaceSectionMetadata } from "@/lib/seo"
 import { getWorkspacePosts, getWorkspacePostsCount, getSidebarPositionBySlug } from "@/lib/workspace"
-import { MainContent } from "@/components/domain/MainContent"
+import { MainContent } from "@/components/subdomain/MainContent"
 
 export const dynamic = "force-dynamic"
 
