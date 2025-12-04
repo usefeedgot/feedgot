@@ -307,11 +307,11 @@ export default function CommentItem({
 
             <div className="opacity-0 group-hover:opacity-100 transition-opacity">
               <CommentActions
+                commentId={comment.id}
                 isAuthor={!!isAuthor}
                 canDelete={canDelete}
                 onEdit={() => setIsEditing(true)}
-                onDelete={handleDelete}
-                onReport={handleReport}
+                onDeleteSuccess={onUpdate}
               />
             </div>
           </div>

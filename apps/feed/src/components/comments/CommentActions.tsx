@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { MoreHorizontal, Pencil, Trash2, Flag } from "lucide-react"
+import { MoreHorizontal, Pencil } from "lucide-react"
 import {
   Popover,
   PopoverTrigger,
@@ -9,21 +9,23 @@ import {
   PopoverList,
   PopoverListItem,
 } from "@feedgot/ui/components/popover"
+import CommentDeleteAction from "./CommentDeleteAction"
+import CommentReportAction from "./CommentReportAction"
 
 interface CommentActionsProps {
+  commentId: string
   isAuthor: boolean
   canDelete?: boolean
   onEdit?: () => void
-  onDelete?: () => void
-  onReport?: () => void
+  onDeleteSuccess?: () => void
 }
 
 export default function CommentActions({
+  commentId,
   isAuthor,
   canDelete = false,
   onEdit,
-  onDelete,
-  onReport,
+  onDeleteSuccess,
 }: CommentActionsProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -47,33 +49,27 @@ export default function CommentActions({
                   <span className="text-sm">Edit</span>
                 </PopoverListItem>
               )}
-              {canDelete && onDelete && (
-                <PopoverListItem
-                  onClick={() => { onDelete(); setOpen(false); }}
-                  className="text-destructive"
-                >
-                  <Trash2 className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span className="text-sm">Delete</span>
-                </PopoverListItem>
+              {canDelete && (
+                <CommentDeleteAction 
+                  commentId={commentId} 
+                  onSuccess={onDeleteSuccess} 
+                  onCloseMenu={() => setOpen(false)} 
+                />
               )}
             </>
           ) : (
             <>
-              {canDelete && onDelete && (
-                <PopoverListItem
-                  onClick={() => { onDelete(); setOpen(false); }}
-                  className="text-destructive"
-                >
-                  <Trash2 className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span className="text-sm">Delete</span>
-                </PopoverListItem>
+              {canDelete && (
+                <CommentDeleteAction 
+                  commentId={commentId} 
+                  onSuccess={onDeleteSuccess} 
+                  onCloseMenu={() => setOpen(false)} 
+                />
               )}
-              {onReport && (
-                <PopoverListItem onClick={() => { onReport(); setOpen(false); }}>
-                  <Flag className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span className="text-sm">Report</span>
-                </PopoverListItem>
-              )}
+              <CommentReportAction 
+                commentId={commentId} 
+                onCloseMenu={() => setOpen(false)} 
+              />
             </>
           )}
         </PopoverList>
