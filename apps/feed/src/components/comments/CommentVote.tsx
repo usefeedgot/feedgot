@@ -26,6 +26,17 @@ export default function CommentVote({ commentId, initialUpvotes, initialHasVoted
     prevVotedRef.current = initialHasVoted
   }, [initialUpvotes, initialHasVoted])
 
+  React.useEffect(() => {
+    try {
+      if (!initialHasVoted) {
+        const cached = typeof window !== "undefined" ? window.localStorage.getItem(`comment_vote:${commentId}`) : null
+        if (cached === "1") {
+          setHasVoted(true)
+        }
+      }
+    } catch {}
+  }, [commentId, initialHasVoted])
+
   const handleUpvote = () => {
     const previousUpvotes = upvotes
     const previousHasVoted = hasVoted
@@ -34,6 +45,12 @@ export default function CommentVote({ commentId, initialUpvotes, initialHasVoted
 
     setHasVoted(nextHasVoted)
     setUpvotes(nextUpvotes)
+
+    try {
+      const key = `comment_vote:${commentId}`
+      if (nextHasVoted) window.localStorage.setItem(key, "1")
+      else window.localStorage.removeItem(key)
+    } catch {}
 
     if (nextHasVoted) {
       setBurstId((id) => id + 1)
@@ -81,7 +98,10 @@ export default function CommentVote({ commentId, initialUpvotes, initialHasVoted
           transition={{ duration: 0.25 }}
         >
           <Heart
-            className={cn("h-3.5 w-3.5", !hasVoted && "group-hover/vote:scale-110 transition-transform")}
+            className={cn(
+              "h-3.5 w-3.5",
+              hasVoted ? "fill-current" : "group-hover/vote:scale-110 transition-transform"
+            )}
             fill={hasVoted ? "currentColor" : "none"}
           />
         </motion.span>

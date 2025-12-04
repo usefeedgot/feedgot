@@ -155,7 +155,7 @@ export default function CommentForm({
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder={placeholder}
-        className="min-h-[60px] resize-none text-sm shadow-none bg-background"
+        className="min-h-[60px] resize-none text-sm shadow-none bg-background  placeholder:text-accent"
         autoFocus={autoFocus}
         disabled={isPending || uploadingImage}
       />
