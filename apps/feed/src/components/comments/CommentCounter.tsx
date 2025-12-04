@@ -65,7 +65,7 @@ export default function CommentCounter({ postId, initialCount = 0, className }: 
 
   return (
     <span className={cn("inline-flex items-center gap-1.5", className)}>
-      <CommentsIcon aria-hidden className="w-4 h-4" />
+      <CommentsIcon aria-hidden className="size-4" />
       <span className="tabular-nums">{count}</span>
     </span>
   )
