@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { MoreHorizontal, Pencil } from "lucide-react"
+import { MoreHorizontal } from "lucide-react"
 import {
   Popover,
   PopoverTrigger,
@@ -11,6 +11,7 @@ import {
 } from "@feedgot/ui/components/popover"
 import CommentDeleteAction from "./CommentDeleteAction"
 import CommentReportAction from "./CommentReportAction"
+import CommentEditAction from "./CommentEditAction"
 
 interface CommentActionsProps {
   commentId: string
@@ -44,10 +45,7 @@ export default function CommentActions({
           {isAuthor ? (
             <>
               {onEdit && (
-                <PopoverListItem onClick={() => { onEdit(); setOpen(false); }}>
-                  <Pencil className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span className="text-sm">Edit</span>
-                </PopoverListItem>
+                <CommentEditAction onEdit={onEdit} onCloseMenu={() => setOpen(false)} />
               )}
               {canDelete && (
                 <CommentDeleteAction 
@@ -77,4 +75,3 @@ export default function CommentActions({
     </Popover>
   )
 }
-

@@ -9,7 +9,7 @@ import {
   TooltipContent,
 } from "@feedgot/ui/components/tooltip";
 import { StarIcon } from "@feedgot/ui/icons/star";
-import { roleBadgeClass } from "@/components/settings/team/role-badge";
+
 
 interface RoleBadgeProps {
   role?: Role | null;

@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { MessageSquare } from "lucide-react"
+import { ReplyIcon } from "@feedgot/ui/icons/reply"
 import { cn } from "@feedgot/ui/lib/utils"
 
 interface CommentReplyButtonProps {
@@ -18,7 +18,7 @@ export default function CommentReplyButton({ onClick, className }: CommentReplyB
         className
       )}
     >
-      <MessageSquare className="h-3.5 w-3.5" />
+      <ReplyIcon className="h-3.5 w-3.5" />
       Reply
     </button>
   )

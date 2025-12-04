@@ -14,9 +14,9 @@ import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@feedgot/ui/lib/utils";
 import CommentForm from "./CommentForm";
 import CommentImage from "./CommentImage";
-import CommentActions from "./CommentActions";
+import CommentActions from "./actions/CommentActions";
 import CommentVote from "./CommentVote";
-import CommentReplyButton from "./CommentReplyButton";
+import CommentReplyButton from "./actions/CommentReplyAction";
 import { useWorkspaceRole } from "@/hooks/useWorkspaceAccess";
 import RoleBadge from "./RoleBadge";
 
@@ -76,23 +76,19 @@ export default function CommentItem({
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [isPending, startTransition] = useTransition();
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const { isOwner } = useWorkspaceRole(workspaceSlug || "");
   const isAuthor = currentUserId && comment.authorId === currentUserId;
   const canDelete = isAuthor || (workspaceSlug ? isOwner : false);
   const canReply = depth < 3; // Limit nesting to 3 levels
-
   const handleEdit = () => {
     if (!editContent.trim() || isPending) return;
-
     startTransition(async () => {
       try {
         const res = await client.comment.update.$post({
           commentId: comment.id,
           content: editContent.trim(),
         });
-
         if (res.ok) {
           setIsEditing(false);
           toast.success("Comment updated");
