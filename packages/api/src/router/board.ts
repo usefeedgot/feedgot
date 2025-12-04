@@ -505,8 +505,8 @@ export function createBoardRouter() {
         const withAvatars = postsList.map((p: any) => {
           const isOwner = p.workspaceOwnerId === p.authorId
           return {
-            ...p,
-            authorImage: p.authorImage || toAvatar(p.id || p.slug),
+          ...p,
+          authorImage: p.authorImage || toAvatar(p.id || p.slug),
             role: isOwner ? null : (p.memberRole || null),
             isOwner: Boolean(isOwner),
           }

@@ -25,7 +25,7 @@ export default function RoleBadge({ role, isOwner, className }: RoleBadgeProps) 
   return (
     <div
       className={cn(
-        "absolute -top-0.5 -right-0.5 rounded-full bg-background p-0.5 shadow-sm border border-border/50 z-10 pointer-events-none",
+        "absolute -bottom-2 -right-1 ml-4 rounded-full bg-background p-0.5   z-10 pointer-events-none",
         className
       )}
     >
