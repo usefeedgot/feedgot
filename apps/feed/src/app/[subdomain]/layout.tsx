@@ -11,6 +11,8 @@ import { DomainBrandingProvider } from "@/components/subdomain/DomainBrandingPro
 import { PoweredBy } from "@/components/subdomain/PoweredBy"
 import { getServerSession } from "@feedgot/auth/session"
 
+export const dynamic = "force-dynamic"
+
 
 export default async function Layout({
   children,

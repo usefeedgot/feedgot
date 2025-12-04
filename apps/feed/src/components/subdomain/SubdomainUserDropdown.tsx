@@ -32,19 +32,7 @@ export default function SubdomainUserDropdown({
   const { theme = "system", setTheme } = useTheme()
   const [open, setOpen] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
-  const [user, setUser] = React.useState<User>(initialUser ?? null)
-
-  React.useEffect(() => {
-    let active = true
-    ;(async () => {
-      try {
-        const s = await authClient.getSession()
-        if (!active) return
-        setUser((s as any)?.data?.user || null)
-      } catch {}
-    })()
-    return () => { active = false }
-  }, [])
+  const user = initialUser ?? null
 
   const d = getDisplayUser(user || undefined)
   const initials = getInitials(d.name || "U")
@@ -103,8 +91,7 @@ export default function SubdomainUserDropdown({
           <div className="group flex items-center gap-2 rounded-md px-2 py-1.5 text-xs md:text-sm text-accent hover:bg-muted">
             <div className="rounded-md border ring-1 ring-border overflow-hidden">
               <Avatar className="size-5.5">
-                {d.image ? <AvatarImage src={d.image} alt={d.name} /> : null}
-                <AvatarFallback>{initials}</AvatarFallback>
+                {d.image ? <AvatarImage src={d.image} alt={d.name} loading="eager" /> : <AvatarFallback>{initials}</AvatarFallback>}
               </Avatar>
             </div>
           </div>
