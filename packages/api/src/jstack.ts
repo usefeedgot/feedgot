@@ -12,9 +12,9 @@ const databaseMiddleware = j.middleware(async ({ next }) => {
   return await next({ db: db as any })
 })
 
-const authMiddleware = j.middleware(async ({ next }) => {
+const authMiddleware = j.middleware(async ({ next, c }) => {
   const session = await auth.api.getSession({
-    headers: await headers(),
+    headers: (c as any)?.req?.raw?.headers || (await headers()),
   })
   if (!session || !session.user) {
     throw new HTTPException(401, { message: "Unauthorized" })

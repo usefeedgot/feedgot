@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { db, workspace, board, post } from "@feedgot/db"
 import { eq, and, sql } from "drizzle-orm"
 import RequestDetail from "@/components/requests/RequestDetail"
+import { readHasVotedForPost } from "@/lib/vote.server"
 
 export const revalidate = 30
 
@@ -39,6 +40,7 @@ export default async function PublicRequestDetailPage({ params }: Props) {
     .limit(1)
   if (!p) return notFound()
 
-  return <RequestDetail post={p as any} workspaceSlug={subdomain} readonly />
-}
+  const hasVoted = await readHasVotedForPost(p.id)
 
+  return <RequestDetail post={{ ...p, hasVoted } as any} workspaceSlug={subdomain} readonly />
+}

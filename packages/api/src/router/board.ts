@@ -424,7 +424,7 @@ export function createBoardRouter() {
         return c.superjson({ posts: rows })
       }),
 
-    postsByBoard: publicProcedure
+    postsByBoard: privateProcedure
       .input(byBoardInputSchema)
       .get(async ({ ctx, input, c }) => {
         const [ws] = await ctx.db
@@ -489,7 +489,7 @@ export function createBoardRouter() {
         return c.superjson({ posts: withAvatars })
       }),
 
-    postDetail: publicProcedure
+    postDetail: privateProcedure
       .input(byIdSchema)
       .get(async ({ ctx, input, c }) => {
         const userId = ctx.session?.user?.id

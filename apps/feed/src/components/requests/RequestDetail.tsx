@@ -2,11 +2,11 @@
 
 import React from "react"
 import StatusIcon from "./StatusIcon"
-import { LoveIcon } from "@feedgot/ui/icons/love"
 import { CommentsIcon } from "@feedgot/ui/icons/comments"
 import StatusPicker from "./meta/StatusPicker"
 import FlagsPicker from "./meta/FlagsPicker"
 import BoardPicker from "./meta/BoardPicker"
+import { UpvoteButton } from "../global/UpvoteButton"
 
 export type RequestDetailData = {
   id: string
@@ -23,6 +23,7 @@ export type RequestDetailData = {
   createdAt: string
   boardName: string
   boardSlug: string
+  hasVoted?: boolean
 }
 
 export default function RequestDetail({ post, workspaceSlug, readonly = false }: { post: RequestDetailData; workspaceSlug: string; readonly?: boolean }) {
@@ -42,10 +43,7 @@ export default function RequestDetail({ post, workspaceSlug, readonly = false }:
           <div className="flex items-center justify-between gap-3">
             <h1 className="text-xl font-semibold">{post.title}</h1>
             <div className="flex items-center gap-3 text-xs text-accent">
-              <span className="inline-flex items-center gap-1.5">
-                <LoveIcon aria-hidden className="w-4 h-4" />
-                <span className="tabular-nums">{post.upvotes}</span>
-              </span>
+              <UpvoteButton postId={post.id} upvotes={post.upvotes} hasVoted={post.hasVoted} className="text-xs" activeBg />
               <span className="inline-flex items-center gap-1.5">
                 <CommentsIcon aria-hidden className="w-4 h-4" />
                 <span className="tabular-nums">{post.commentCount}</span>
