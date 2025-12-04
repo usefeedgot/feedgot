@@ -6,17 +6,20 @@ import { client } from "@feedgot/api/client";
 import CommentForm from "./CommentForm";
 import CommentThread from "./CommentThread";
 import { useSession } from "@feedgot/auth/client";
+import type { CommentData } from "./CommentItem";
 
 interface CommentListProps {
   postId: string;
   initialCount?: number;
   workspaceSlug?: string;
+  initialComments?: CommentData[];
 }
 
 export default function CommentList({
   postId,
   initialCount = 0,
   workspaceSlug,
+  initialComments,
 }: CommentListProps) {
   const queryClient = useQueryClient();
   const { data: session } = useSession() as any;
@@ -43,6 +46,7 @@ export default function CommentList({
     placeholderData: (previousData) => previousData,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    initialData: initialComments ? { comments: initialComments } : undefined,
   });
 
   const comments = commentsData?.comments || [];

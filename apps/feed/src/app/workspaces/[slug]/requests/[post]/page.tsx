@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { db, workspace, board, post } from "@feedgot/db"
 import { eq, and, sql } from "drizzle-orm"
 import RequestDetail from "@/components/requests/RequestDetail"
+import { client } from "@feedgot/api/client"
 import { readHasVotedForPost } from "@/lib/vote.server"
 
 export const revalidate = 30
@@ -41,6 +42,9 @@ export default async function RequestDetailPage({ params }: Props) {
   if (!p) return notFound()
 
   const hasVoted = await readHasVotedForPost(p.id)
+  const commentsRes = await client.comment.list.$get({ postId: p.id })
+  const commentsJson = await commentsRes.json().catch(() => ({ comments: [] }))
+  const initialComments = Array.isArray((commentsJson as any)?.comments) ? (commentsJson as any).comments : []
 
-  return <RequestDetail post={{ ...p, hasVoted } as any} workspaceSlug={slug} />
+  return <RequestDetail post={{ ...p, hasVoted } as any} workspaceSlug={slug} initialComments={initialComments as any} />
 }

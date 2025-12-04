@@ -8,6 +8,7 @@ import FlagsPicker from "./meta/FlagsPicker"
 import BoardPicker from "./meta/BoardPicker"
 import { UpvoteButton } from "../global/UpvoteButton"
 import CommentList from "../comments/CommentList"
+import type { CommentData } from "../comments/CommentItem"
 
 export type RequestDetailData = {
   id: string
@@ -27,7 +28,7 @@ export type RequestDetailData = {
   hasVoted?: boolean
 }
 
-export default function RequestDetail({ post, workspaceSlug, readonly = false }: { post: RequestDetailData; workspaceSlug: string; readonly?: boolean }) {
+export default function RequestDetail({ post, workspaceSlug, readonly = false, initialComments }: { post: RequestDetailData; workspaceSlug: string; readonly?: boolean; initialComments?: CommentData[] }) {
   const date = new Date(post.publishedAt ?? post.createdAt)
   const formatted = new Intl.DateTimeFormat(undefined, { month: "short", day: "2-digit" }).format(date)
   const [meta, setMeta] = React.useState({
@@ -56,7 +57,7 @@ export default function RequestDetail({ post, workspaceSlug, readonly = false }:
           ) : null}
           {post.content ? <div className="prose dark:prose-invert text-sm">{post.content}</div> : null}
           <div className="mt-6">
-            <CommentList postId={post.id} initialCount={post.commentCount} workspaceSlug={workspaceSlug} />
+            <CommentList postId={post.id} initialCount={post.commentCount} workspaceSlug={workspaceSlug} initialComments={initialComments} />
           </div>
         </article>
         <aside className="space-y-4">
