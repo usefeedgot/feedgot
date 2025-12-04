@@ -291,7 +291,7 @@ export default function CommentItem({
                         key={idx}
                         url={att.url}
                         alt={att.name}
-                        size="small"
+                        className="max-w-[120px] max-h-20"
                       />
                     ))}
                 </div>

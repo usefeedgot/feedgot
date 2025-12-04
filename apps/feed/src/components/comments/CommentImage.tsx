@@ -14,24 +14,16 @@ interface CommentImageProps {
   url: string
   alt: string
   className?: string
-  size?: "small" | "medium" | "large"
 }
 
-export default function CommentImage({ url, alt, className, size = "small" }: CommentImageProps) {
+export default function CommentImage({ url, alt, className }: CommentImageProps) {
   const [isOpen, setIsOpen] = useState(false)
-
-  const sizeClasses = {
-    small: "max-w-[120px] max-h-20",
-    medium: "max-w-[200px] max-h-32",
-    large: "max-w-xs max-h-40",
-  }
 
   return (
     <>
       <div
         className={cn(
           "relative rounded-md border overflow-hidden bg-muted cursor-pointer hover:opacity-90 transition-opacity",
-          sizeClasses[size],
           className
         )}
         onClick={() => setIsOpen(true)}
@@ -58,18 +50,15 @@ export default function CommentImage({ url, alt, className, size = "small" }: Co
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-4xl w-full p-0">
+        <DialogContent className="max-w-4xl w-auto p-0 bg-transparent border-none shadow-none ring-0 outline-none">
           <DialogHeader className="sr-only">
             <DialogTitle>{alt}</DialogTitle>
           </DialogHeader>
-          <div className="relative w-full aspect-video max-h-[85vh] bg-muted">
-            <Image
+          <div className="relative w-full h-auto max-h-[85vh] flex items-center justify-center">
+            <img
               src={url}
               alt={alt}
-              fill
-              className="object-contain"
-              unoptimized
-              loader={({ src }) => src}
+              className="max-w-full max-h-[85vh] object-contain rounded-md"
             />
           </div>
         </DialogContent>

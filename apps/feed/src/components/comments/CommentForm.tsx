@@ -160,7 +160,7 @@ export default function CommentForm({
             <CommentImage
               url={uploadedImage.url}
               alt={uploadedImage.name}
-              size="small"
+              className="max-w-[120px] max-h-20"
             />
             <button
               type="button"
