@@ -14,7 +14,6 @@ export default function SubdomainRequestDetail({
   initialComments,
   initialCollapsedIds,
   navigation,
-  initialCanEdit,
 }: {
   post: SubdomainRequestDetailData;
   workspaceSlug: string;
@@ -24,7 +23,6 @@ export default function SubdomainRequestDetail({
     prev: { slug: string; title: string } | null;
     next: { slug: string; title: string } | null;
   };
-  initialCanEdit?: boolean;
 }) {
   const { sidebarPosition = "right" } = useDomainBranding();
 
@@ -42,7 +40,7 @@ export default function SubdomainRequestDetail({
       >
         {/* Left Sidebar */}
         {sidebarPosition === "left" ? (
-          <PostSidebar post={post} workspaceSlug={workspaceSlug} initialCanEdit={initialCanEdit} />
+          <PostSidebar post={post} workspaceSlug={workspaceSlug} />
         ) : null}
 
         <RequestContent
@@ -54,7 +52,7 @@ export default function SubdomainRequestDetail({
 
         {/* Right Sidebar */}
         {sidebarPosition === "right" ? (
-          <PostSidebar post={post} workspaceSlug={workspaceSlug} initialCanEdit={initialCanEdit} />
+          <PostSidebar post={post} workspaceSlug={workspaceSlug} />
         ) : null}
       </div>
     </section>

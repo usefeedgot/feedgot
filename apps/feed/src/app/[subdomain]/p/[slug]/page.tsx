@@ -1,11 +1,10 @@
 import { notFound } from "next/navigation"
-import { db, workspace, board, post, user, workspaceMember } from "@feedgot/db"
+import { db, workspace, board, post, user } from "@feedgot/db"
 import { eq, and, sql } from "drizzle-orm"
 import SubdomainRequestDetail from "@/components/subdomain/SubdomainRequestDetail"
 import { client } from "@feedgot/api/client"
 import { readHasVotedForPost } from "@/lib/vote.server"
 import { readInitialCollapsedCommentIds } from "@/lib/comments.server"
-import { getServerSession } from "@feedgot/auth/session"
 
 export const revalidate = 30
 
@@ -14,7 +13,7 @@ type Props = { params: Promise<{ subdomain: string; slug: string }> }
 export default async function PublicRequestDetailPage({ params }: Props) {
   const { subdomain, slug: postSlug } = await params
   const [ws] = await db
-    .select({ id: workspace.id, name: workspace.name, ownerId: workspace.ownerId })
+    .select({ id: workspace.id, name: workspace.name })
     .from(workspace)
     .where(eq(workspace.slug, subdomain))
     .limit(1)
@@ -55,25 +54,5 @@ export default async function PublicRequestDetailPage({ params }: Props) {
   const initialComments = Array.isArray((commentsJson as any)?.comments) ? (commentsJson as any).comments : []
   const initialCollapsedIds = await readInitialCollapsedCommentIds(p.id)
 
-  // Server-side permission check
-  let canEdit = false
-  const session = await getServerSession()
-  const userId = session?.user?.id
-
-  if (userId) {
-    if (ws.ownerId === userId) {
-      canEdit = true
-    } else {
-      const [member] = await db
-        .select({ role: workspaceMember.role })
-        .from(workspaceMember)
-        .where(and(eq(workspaceMember.workspaceId, ws.id), eq(workspaceMember.userId, userId)))
-        .limit(1)
-      if (member?.role === "admin") {
-        canEdit = true
-      }
-    }
-  }
-
-  return <SubdomainRequestDetail post={{ ...p, hasVoted } as any} workspaceSlug={subdomain} initialComments={initialComments as any} initialCollapsedIds={initialCollapsedIds} initialCanEdit={canEdit} />
+  return <SubdomainRequestDetail post={{ ...p, hasVoted } as any} workspaceSlug={subdomain} initialComments={initialComments as any} initialCollapsedIds={initialCollapsedIds} />
 }

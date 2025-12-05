@@ -9,28 +9,34 @@ import StatusPicker from "../requests/meta/StatusPicker"
 import FlagsPicker from "../requests/meta/FlagsPicker"
 import StatusIcon from "../requests/StatusIcon"
 import { PoweredBy } from "./PoweredBy"
-import { SubdomainRequestDetailData } from "./request-detail/types"
 
 export type PostSidebarProps = {
-  post: SubdomainRequestDetailData
+  post: {
+    id: string
+    publishedAt: string | null
+    createdAt: string
+    boardName: string
+    boardSlug: string
+    roadmapStatus: string | null
+    isPinned?: boolean
+    isLocked?: boolean
+    isFeatured?: boolean
+    author?: {
+      name: string | null
+      image: string | null
+      email: string | null
+    } | null
+  }
   workspaceSlug: string
-  initialCanEdit?: boolean
 }
 
-export default function PostSidebar({ post, workspaceSlug, initialCanEdit }: PostSidebarProps) {
+export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
   const date = new Date(post.publishedAt ?? post.createdAt)
   const formatted = new Intl.DateTimeFormat(undefined, { month: "short", day: "2-digit" }).format(date)
 
-  // Permission check: Owner OR Admin can edit
-  // Use initialCanEdit from server if available, otherwise fetch client-side
-  const { isOwner, role, loading } = useWorkspaceRole(workspaceSlug)
-  
-  // If initialCanEdit is provided (server-side check), use it.
-  // Otherwise fall back to client-side check.
-  // This avoids the skeleton/loading state for the initial render if server passed the prop.
-  const canEdit = initialCanEdit !== undefined 
-    ? initialCanEdit 
-    : (!loading && (isOwner || role === "admin"))
+  // Permission check: Only owner (creator) can edit
+  const { isOwner } = useWorkspaceRole(workspaceSlug)
+  const canEdit = isOwner
 
   const [meta, setMeta] = React.useState({
     roadmapStatus: post.roadmapStatus || undefined,
@@ -41,13 +47,15 @@ export default function PostSidebar({ post, workspaceSlug, initialCanEdit }: Pos
   const [board, setBoard] = React.useState({ name: post.boardName, slug: post.boardSlug })
 
   const displayAuthor = getDisplayUser(
-    post.author ? { name: post.author.name ?? undefined, image: post.author.image ?? undefined, email: post.author.email ?? undefined } : undefined
+    post.author
+      ? {
+          name: post.author.name ?? undefined,
+          image: post.author.image ?? undefined,
+          email: post.author.email ?? undefined,
+        }
+      : undefined
   )
   const authorInitials = getInitials(displayAuthor.name)
-
-  // If we are strictly client-side and still loading, we might show read-only or nothing.
-  // But with server-side prop, we should have a value immediately.
-  // We'll keep the logic simple: if canEdit is true, show pickers.
 
   return (
     <aside className="space-y-4">
