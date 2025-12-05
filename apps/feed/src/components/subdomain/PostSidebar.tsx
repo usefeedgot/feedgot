@@ -3,6 +3,7 @@
 import React from "react"
 import { useWorkspaceRole } from "@/hooks/useWorkspaceAccess"
 import { Avatar, AvatarImage, AvatarFallback } from "@feedgot/ui/components/avatar"
+import { Skeleton } from "@feedgot/ui/components/skeleton"
 import { getDisplayUser, getInitials } from "@/utils/user-utils"
 import BoardPicker from "../requests/meta/BoardPicker"
 import StatusPicker from "../requests/meta/StatusPicker"
@@ -34,9 +35,10 @@ export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
   const date = new Date(post.publishedAt ?? post.createdAt)
   const formatted = new Intl.DateTimeFormat(undefined, { month: "short", day: "2-digit" }).format(date)
 
-  // Permission check: Only owner (creator) can edit
-  const { isOwner } = useWorkspaceRole(workspaceSlug)
-  const canEdit = isOwner
+  // Permission check: Owner OR Admin can edit
+  // Added `loading` and `role` to handle state correctly
+  const { isOwner, role, loading } = useWorkspaceRole(workspaceSlug)
+  const canEdit = isOwner || role === "admin"
 
   const [meta, setMeta] = React.useState({
     roadmapStatus: post.roadmapStatus || undefined,
@@ -76,7 +78,9 @@ export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
         {/* Board */}
         <div className="flex items-center justify-between gap-4">
           <span className="text-xs text-accent">Board</span>
-          {canEdit ? (
+          {loading ? (
+            <Skeleton className="h-5 w-24" />
+          ) : canEdit ? (
             <BoardPicker workspaceSlug={workspaceSlug} postId={post.id} value={board} onChange={setBoard} />
           ) : (
             <span className="text-xs font-medium">{board.name}</span>
@@ -86,7 +90,9 @@ export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
         {/* Status */}
         <div className="flex items-center justify-between gap-4">
           <span className="text-xs text-accent">Status</span>
-          {canEdit ? (
+          {loading ? (
+            <Skeleton className="h-5 w-24" />
+          ) : canEdit ? (
             <StatusPicker
               postId={post.id}
               value={meta.roadmapStatus}
@@ -103,7 +109,9 @@ export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
         {/* Flags */}
         <div className="flex items-center justify-between gap-4">
           <span className="text-xs text-accent">Flags</span>
-          {canEdit ? (
+          {loading ? (
+            <Skeleton className="h-5 w-24" />
+          ) : canEdit ? (
             <FlagsPicker
               postId={post.id}
               value={meta}
