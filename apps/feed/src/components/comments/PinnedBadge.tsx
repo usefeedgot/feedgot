@@ -13,8 +13,7 @@ export default function PinnedBadge({ className, size = 12 }: { className?: stri
           <PinIcon width={size} height={size} className="text-primary" />
         </span>
       </TooltipTrigger>
-      <TooltipContent side="top" sideOffset={4}>Pinned</TooltipContent>
+      <TooltipContent side="top" sideOffset={4} className="w-auto whitespace-nowrap px-2 py-1">Pinned</TooltipContent>
     </Tooltip>
   )
 }
-
