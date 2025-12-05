@@ -70,7 +70,7 @@ export default function NotificationsBell() {
           ) : null}
         </Button>
       </PopoverTrigger>
-      <PopoverContent asChild side="bottom" align="end" sideOffset={8} className="bg-transparent p-0 border-none shadow-none w-auto">
+      <PopoverContent asChild side="top" align="end" sideOffset={8} className="bg-transparent p-0 border-none shadow-none w-auto">
         <NotificationsPanel notifications={notifications} markRead={markRead} onMarkAllRead={markAllRead} />
       </PopoverContent>
     </Popover>
