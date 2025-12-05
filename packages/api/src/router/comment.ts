@@ -10,6 +10,7 @@ import {
   listCommentsInputSchema,
   upvoteCommentInputSchema,
   reportCommentInputSchema,
+  pinCommentInputSchema,
 } from "../validators/comment"
 import { HTTPException } from "hono/http-exception"
 
@@ -434,6 +435,49 @@ export function createCommentRouter() {
 
         return c.superjson({ success: true })
       }),
+
+    // Pin or unpin a comment (workspace owner only)
+    pin: privateProcedure
+      .input(pinCommentInputSchema)
+      .post(async ({ ctx, input, c }) => {
+        const { commentId, isPinned } = input
+        const userId = ctx.session.user.id
+
+        // Load comment and associated workspace owner
+        const [target] = await ctx.db
+          .select({
+            id: comment.id,
+            postId: post.id,
+            workspaceOwnerId: workspace.ownerId,
+          })
+          .from(comment)
+          .innerJoin(post, eq(comment.postId, post.id))
+          .innerJoin(board, eq(post.boardId, board.id))
+          .innerJoin(workspace, eq(board.workspaceId, workspace.id))
+          .where(eq(comment.id, commentId))
+          .limit(1)
+
+        if (!target) {
+          throw new HTTPException(404, { message: "Comment not found" })
+        }
+
+        // Check owner rights
+        const isWorkspaceOwner = target.workspaceOwnerId === userId
+        if (!isWorkspaceOwner) {
+          throw new HTTPException(403, { message: "Only the workspace owner can pin comments" })
+        }
+
+        const [updated] = await ctx.db
+          .update(comment)
+          .set({
+            isPinned,
+            moderatedBy: userId,
+            moderatedAt: new Date(),
+          })
+          .where(eq(comment.id, commentId))
+          .returning({ id: comment.id, isPinned: comment.isPinned })
+
+        return c.superjson({ id: updated?.id, isPinned: updated?.isPinned || false })
+      }),
   })
 }
-

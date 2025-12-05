@@ -51,10 +51,15 @@ export const reportCommentInputSchema = z.object({
   description: z.string().max(1000).optional(),
 })
 
+export const pinCommentInputSchema = z.object({
+  commentId: z.string().uuid(),
+  isPinned: z.boolean(),
+})
+
 export type CreateCommentInput = z.infer<typeof createCommentInputSchema>
 export type UpdateCommentInput = z.infer<typeof updateCommentInputSchema>
 export type DeleteCommentInput = z.infer<typeof deleteCommentInputSchema>
 export type ListCommentsInput = z.infer<typeof listCommentsInputSchema>
 export type UpvoteCommentInput = z.infer<typeof upvoteCommentInputSchema>
 export type ReportCommentInput = z.infer<typeof reportCommentInputSchema>
-
+export type PinCommentInput = z.infer<typeof pinCommentInputSchema>

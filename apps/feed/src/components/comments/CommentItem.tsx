@@ -237,6 +237,8 @@ export default function CommentItem({
                 postId={comment.postId}
                 isAuthor={!!isAuthor}
                 canDelete={canDelete}
+                canPin={!!isOwner}
+                isPinned={!!comment.isPinned}
                 onEdit={() => setIsEditing(true)}
                 onDeleteSuccess={onUpdate}
               />

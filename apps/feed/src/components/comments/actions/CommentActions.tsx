@@ -12,12 +12,15 @@ import {
 import CommentDeleteAction from "./CommentDeleteAction"
 import CommentReportAction from "./CommentReportAction"
 import CommentEditAction from "./CommentEditAction"
+import CommentPinAction from "./CommentPinAction"
 
 interface CommentActionsProps {
   commentId: string
   postId: string
   isAuthor: boolean
   canDelete?: boolean
+  canPin?: boolean
+  isPinned?: boolean
   onEdit?: () => void
   onDeleteSuccess?: () => void
 }
@@ -27,6 +30,8 @@ export default function CommentActions({
   postId,
   isAuthor,
   canDelete = false,
+  canPin = false,
+  isPinned = false,
   onEdit,
   onDeleteSuccess,
 }: CommentActionsProps) {
@@ -44,6 +49,14 @@ export default function CommentActions({
       </PopoverTrigger>
       <PopoverContent align="end" list>
         <PopoverList>
+          {canPin && (
+            <CommentPinAction
+              commentId={commentId}
+              isPinned={isPinned}
+              onSuccess={onDeleteSuccess}
+              onCloseMenu={() => setOpen(false)}
+            />
+          )}
           {isAuthor ? (
             <>
               {onEdit && (
