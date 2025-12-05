@@ -11,6 +11,8 @@ import {
   upvoteCommentInputSchema,
   reportCommentInputSchema,
   pinCommentInputSchema,
+  mentionsListInputSchema,
+  mentionsMarkReadInputSchema,
 } from "../validators/comment"
 import { HTTPException } from "hono/http-exception"
 
@@ -522,6 +524,59 @@ export function createCommentRouter() {
           .returning({ id: comment.id, isPinned: comment.isPinned })
 
         return c.superjson({ id: updated?.id, isPinned: updated?.isPinned || false })
+      }),
+
+    // List mention notifications for current user
+    mentionsList: privateProcedure
+      .input(mentionsListInputSchema.optional())
+      .get(async ({ ctx, input, c }) => {
+        const userId = ctx.session.user.id
+        const limit = Math.min(Math.max(Number(input?.limit || 50), 1), 100)
+        const rows = await ctx.db
+          .select({
+            id: commentMention.id,
+            isRead: commentMention.isRead,
+            createdAt: commentMention.createdAt,
+            commentId: comment.id,
+            commentContent: comment.content,
+            postSlug: post.slug,
+            postTitle: post.title,
+            workspaceSlug: workspace.slug,
+            authorName: comment.authorName,
+          })
+          .from(commentMention)
+          .innerJoin(comment, eq(commentMention.commentId, comment.id))
+          .innerJoin(post, eq(comment.postId, post.id))
+          .innerJoin(board, eq(post.boardId, board.id))
+          .innerJoin(workspace, eq(board.workspaceId, workspace.id))
+          .where(eq(commentMention.mentionedUserId, userId))
+          .orderBy(desc(commentMention.createdAt))
+          .limit(limit)
+        return c.superjson({ notifications: rows })
+      }),
+
+    // Count unread mention notifications
+    mentionsCount: privateProcedure
+      .get(async ({ ctx, c }) => {
+        const userId = ctx.session.user.id
+        const [{ count }] = await ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(commentMention)
+          .where(and(eq(commentMention.mentionedUserId, userId), eq(commentMention.isRead, false)))
+        return c.superjson({ unread: Number(count || 0) })
+      }),
+
+    // Mark a mention notification as read
+    mentionsMarkRead: privateProcedure
+      .input(mentionsMarkReadInputSchema)
+      .post(async ({ ctx, input, c }) => {
+        const userId = ctx.session.user.id
+        const { id } = input
+        await ctx.db
+          .update(commentMention)
+          .set({ isRead: true })
+          .where(and(eq(commentMention.id, id), eq(commentMention.mentionedUserId, userId)))
+        return c.superjson({ success: true })
       }),
   })
 }
