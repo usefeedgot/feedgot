@@ -13,6 +13,7 @@ interface CommentListProps {
   initialCount?: number;
   workspaceSlug?: string;
   initialComments?: CommentData[];
+  initialCollapsedIds?: string[];
 }
 
 export default function CommentList({
@@ -20,6 +21,7 @@ export default function CommentList({
   initialCount = 0,
   workspaceSlug,
   initialComments,
+  initialCollapsedIds,
 }: CommentListProps) {
   const queryClient = useQueryClient();
   const { data: session } = useSession() as any;
@@ -72,10 +74,12 @@ export default function CommentList({
         <div className="space-y-4 relative">
           {comments.length > 0 && (
             <CommentThread
+              postId={postId}
               comments={comments}
               currentUserId={currentUserId}
               onUpdate={handleCommentSuccess}
               workspaceSlug={workspaceSlug}
+              initialCollapsedIds={initialCollapsedIds}
             />
           )}
         </div>

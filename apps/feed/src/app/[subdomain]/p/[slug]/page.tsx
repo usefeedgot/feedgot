@@ -4,6 +4,7 @@ import { eq, and, sql } from "drizzle-orm"
 import RequestDetail from "@/components/requests/RequestDetail"
 import { client } from "@feedgot/api/client"
 import { readHasVotedForPost } from "@/lib/vote.server"
+import { readInitialCollapsedCommentIds } from "@/lib/comments.server"
 
 export const revalidate = 30
 
@@ -45,6 +46,7 @@ export default async function PublicRequestDetailPage({ params }: Props) {
   const commentsRes = await client.comment.list.$get({ postId: p.id })
   const commentsJson = await commentsRes.json().catch(() => ({ comments: [] }))
   const initialComments = Array.isArray((commentsJson as any)?.comments) ? (commentsJson as any).comments : []
+  const initialCollapsedIds = await readInitialCollapsedCommentIds(p.id)
 
-  return <RequestDetail post={{ ...p, hasVoted } as any} workspaceSlug={subdomain} readonly initialComments={initialComments as any} />
+  return <RequestDetail post={{ ...p, hasVoted } as any} workspaceSlug={subdomain} readonly initialComments={initialComments as any} initialCollapsedIds={initialCollapsedIds} />
 }

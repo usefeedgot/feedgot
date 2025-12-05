@@ -5,6 +5,7 @@ import RequestDetail from "@/components/requests/RequestDetail"
 import { client } from "@feedgot/api/client"
 import { readHasVotedForPost } from "@/lib/vote.server"
 import { getPostNavigation, normalizeStatus } from "@/lib/workspace"
+import { readInitialCollapsedCommentIds } from "@/lib/comments.server"
 import { parseArrayParam } from "@/utils/request-filters"
 
 export const revalidate = 30
@@ -47,6 +48,7 @@ export default async function RequestDetailPage({ params, searchParams }: Props)
   const commentsRes = await client.comment.list.$get({ postId: p.id })
   const commentsJson = await commentsRes.json().catch(() => ({ comments: [] }))
   const initialComments = Array.isArray((commentsJson as any)?.comments) ? (commentsJson as any).comments : []
+  const initialCollapsedIds = await readInitialCollapsedCommentIds(p.id)
 
   let sp: any = {}
   if (searchParams) {
@@ -74,6 +76,7 @@ export default async function RequestDetailPage({ params, searchParams }: Props)
       post={{ ...p, hasVoted } as any}
       workspaceSlug={slug}
       initialComments={initialComments as any}
+      initialCollapsedIds={initialCollapsedIds}
       navigation={{
         prev: navigation.prev ? { slug: navigation.prev.slug, title: navigation.prev.title } : null,
         next: navigation.next ? { slug: navigation.next.slug, title: navigation.next.title } : null,

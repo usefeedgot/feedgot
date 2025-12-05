@@ -31,7 +31,7 @@ export type RequestDetailData = {
   hasVoted?: boolean
 }
 
-export default function RequestDetail({ post, workspaceSlug, readonly = false, initialComments, navigation }: { post: RequestDetailData; workspaceSlug: string; readonly?: boolean; initialComments?: CommentData[]; navigation?: { prev: { slug: string; title: string } | null; next: { slug: string; title: string } | null } }) {
+export default function RequestDetail({ post, workspaceSlug, readonly = false, initialComments, initialCollapsedIds, navigation }: { post: RequestDetailData; workspaceSlug: string; readonly?: boolean; initialComments?: CommentData[]; initialCollapsedIds?: string[]; navigation?: { prev: { slug: string; title: string } | null; next: { slug: string; title: string } | null } }) {
   const date = new Date(post.publishedAt ?? post.createdAt)
   const formatted = new Intl.DateTimeFormat(undefined, { month: "short", day: "2-digit" }).format(date)
   const { prevHref, nextHref } = useRequestNavigation(workspaceSlug, navigation)
@@ -59,7 +59,7 @@ export default function RequestDetail({ post, workspaceSlug, readonly = false, i
             <CommentCounter postId={post.id} initialCount={post.commentCount} />
           </div>
           <div className="mt-6">
-            <CommentList postId={post.id} initialCount={post.commentCount} workspaceSlug={workspaceSlug} initialComments={initialComments} />
+            <CommentList postId={post.id} initialCount={post.commentCount} workspaceSlug={workspaceSlug} initialComments={initialComments} initialCollapsedIds={initialCollapsedIds} />
           </div>
         </article>
         <aside className="space-y-4">

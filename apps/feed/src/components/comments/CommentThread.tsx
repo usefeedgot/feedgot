@@ -1,19 +1,23 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import CommentItem, { CommentData } from "./CommentItem"
+
 import { cn } from "@feedgot/ui/lib/utils"
 import AnimatedReplies from "./AnimatedReplies"
+import { encodeCollapsedIds } from "@/lib/comments"
 
 interface CommentThreadProps {
+  postId: string
   comments: CommentData[]
   currentUserId?: string | null
   onUpdate?: () => void
   workspaceSlug?: string
+  initialCollapsedIds?: string[]
 }
 
-export default function CommentThread({ comments, currentUserId, onUpdate, workspaceSlug }: CommentThreadProps) {
-  const [collapsedComments, setCollapsedComments] = useState<Set<string>>(new Set())
+export default function CommentThread({ postId, comments, currentUserId, onUpdate, workspaceSlug, initialCollapsedIds }: CommentThreadProps) {
+  const [collapsedComments, setCollapsedComments] = useState<Set<string>>(() => new Set(initialCollapsedIds || []))
 
   const toggleCollapse = (commentId: string) => {
     setCollapsedComments((prev) => {
@@ -26,6 +30,13 @@ export default function CommentThread({ comments, currentUserId, onUpdate, works
       return next
     })
   }
+
+  useEffect(() => {
+    try {
+      const encoded = encodeCollapsedIds(collapsedComments)
+      document.cookie = `cmc:${postId}=${encoded}; path=/; max-age=31536000`
+    } catch {}
+  }, [collapsedComments, postId])
   // Build a tree structure from flat comments list
   const buildCommentTree = (comments: CommentData[]) => {
     const commentMap = new Map<string, CommentData & { replies: CommentData[] }>()
