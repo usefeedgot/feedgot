@@ -3,7 +3,6 @@
 import React from "react"
 import { useWorkspaceRole } from "@/hooks/useWorkspaceAccess"
 import { Avatar, AvatarImage, AvatarFallback } from "@feedgot/ui/components/avatar"
-import { Skeleton } from "@feedgot/ui/components/skeleton"
 import { getDisplayUser, getInitials } from "@/utils/user-utils"
 import BoardPicker from "../requests/meta/BoardPicker"
 import StatusPicker from "../requests/meta/StatusPicker"
@@ -29,16 +28,23 @@ export type PostSidebarProps = {
     } | null
   }
   workspaceSlug: string
+  initialCanEdit?: boolean
 }
 
-export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
+export default function PostSidebar({ post, workspaceSlug, initialCanEdit }: PostSidebarProps) {
   const date = new Date(post.publishedAt ?? post.createdAt)
   const formatted = new Intl.DateTimeFormat(undefined, { month: "short", day: "2-digit" }).format(date)
 
   // Permission check: Owner OR Admin can edit
-  // Added `loading` and `role` to handle state correctly
+  // Use initialCanEdit from server if available, otherwise fetch client-side
   const { isOwner, role, loading } = useWorkspaceRole(workspaceSlug)
-  const canEdit = isOwner || role === "admin"
+  
+  // If initialCanEdit is provided (server-side check), use it.
+  // Otherwise fall back to client-side check.
+  // This avoids the skeleton/loading state for the initial render if server passed the prop.
+  const canEdit = initialCanEdit !== undefined 
+    ? initialCanEdit 
+    : (!loading && (isOwner || role === "admin"))
 
   const [meta, setMeta] = React.useState({
     roadmapStatus: post.roadmapStatus || undefined,
@@ -48,8 +54,14 @@ export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
   })
   const [board, setBoard] = React.useState({ name: post.boardName, slug: post.boardSlug })
 
-  const displayAuthor = getDisplayUser(post.author ? { ...post.author, id: "" } : undefined)
+  const displayAuthor = getDisplayUser(
+    post.author ? { name: post.author.name ?? undefined, image: post.author.image ?? undefined, email: post.author.email ?? undefined } : undefined
+  )
   const authorInitials = getInitials(displayAuthor.name)
+
+  // If we are strictly client-side and still loading, we might show read-only or nothing.
+  // But with server-side prop, we should have a value immediately.
+  // We'll keep the logic simple: if canEdit is true, show pickers.
 
   return (
     <aside className="space-y-4">
@@ -78,9 +90,7 @@ export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
         {/* Board */}
         <div className="flex items-center justify-between gap-4">
           <span className="text-xs text-accent">Board</span>
-          {loading ? (
-            <Skeleton className="h-5 w-24" />
-          ) : canEdit ? (
+          {canEdit ? (
             <BoardPicker workspaceSlug={workspaceSlug} postId={post.id} value={board} onChange={setBoard} />
           ) : (
             <span className="text-xs font-medium">{board.name}</span>
@@ -90,9 +100,7 @@ export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
         {/* Status */}
         <div className="flex items-center justify-between gap-4">
           <span className="text-xs text-accent">Status</span>
-          {loading ? (
-            <Skeleton className="h-5 w-24" />
-          ) : canEdit ? (
+          {canEdit ? (
             <StatusPicker
               postId={post.id}
               value={meta.roadmapStatus}
@@ -109,9 +117,7 @@ export default function PostSidebar({ post, workspaceSlug }: PostSidebarProps) {
         {/* Flags */}
         <div className="flex items-center justify-between gap-4">
           <span className="text-xs text-accent">Flags</span>
-          {loading ? (
-            <Skeleton className="h-5 w-24" />
-          ) : canEdit ? (
+          {canEdit ? (
             <FlagsPicker
               postId={post.id}
               value={meta}
