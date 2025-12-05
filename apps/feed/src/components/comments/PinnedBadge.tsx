@@ -1,0 +1,20 @@
+"use client"
+
+import React from "react"
+import { cn } from "@feedgot/ui/lib/utils"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@feedgot/ui/components/tooltip"
+import { PinIcon } from "@feedgot/ui/icons/pin"
+
+export default function PinnedBadge({ className, size = 12 }: { className?: string; size?: number }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className={cn("inline-flex items-center rounded-full bg-background p-0.5", className)} aria-label="Pinned">
+          <PinIcon width={size} height={size} className="text-primary" />
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="top" sideOffset={4}>Pinned</TooltipContent>
+    </Tooltip>
+  )
+}
+
