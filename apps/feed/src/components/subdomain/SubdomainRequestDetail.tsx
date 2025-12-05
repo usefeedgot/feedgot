@@ -1,8 +1,8 @@
 "use client"
 
 import React from "react"
-import RequestNavigation from "../requests/RequestNavigation"
-import { useRequestNavigation } from "@/hooks/useRequestNavigation"
+import Link from "next/link"
+import { ChevronLeft } from "lucide-react"
 import { UpvoteButton } from "../global/UpvoteButton"
 import CommentList from "../comments/CommentList"
 import type { CommentData } from "../comments/CommentItem"
@@ -49,7 +49,6 @@ export default function SubdomainRequestDetail({
   initialCollapsedIds?: string[]
   navigation?: { prev: { slug: string; title: string } | null; next: { slug: string; title: string } | null }
 }) {
-  const { prevHref, nextHref } = useRequestNavigation(workspaceSlug, navigation)
   const displayAuthor = getDisplayUser(
     post.author
       ? {
@@ -62,6 +61,18 @@ export default function SubdomainRequestDetail({
 
   return (
     <section className="mt-4 md:mt-6">
+      {/* Header Row: Back Button & Title */}
+      <div className="mb-6 flex items-center gap-3">
+        <Link
+          href="/"
+          className="inline-flex items-center justify-center rounded-md border border-border bg-card p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          aria-label="Back to board"
+        >
+          <ChevronLeft className="size-4" />
+        </Link>
+        <h1 className="text-xl font-semibold text-foreground">Submission</h1>
+      </div>
+
       <div className="grid md:grid-cols-[0.7fr_0.3fr] gap-6">
         {/* Main Content */}
         <div className="space-y-6">
@@ -72,11 +83,8 @@ export default function SubdomainRequestDetail({
               <span className="text-sm text-accent">{statusLabel(String(post.roadmapStatus || "pending"))}</span>
             </div>
 
-            {/* Title & Navigation */}
-            <div className="flex items-start justify-between gap-3 mb-4">
-              <h1 className="text-xl font-semibold">{post.title}</h1>
-              <RequestNavigation prev={navigation?.prev} next={navigation?.next} prevHref={prevHref} nextHref={nextHref} />
-            </div>
+            {/* Post Title */}
+            <h1 className="text-xl font-semibold text-foreground mb-4">{post.title}</h1>
 
             {/* Image */}
             {post.image ? (
