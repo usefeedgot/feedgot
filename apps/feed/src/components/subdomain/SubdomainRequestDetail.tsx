@@ -12,6 +12,7 @@ import { statusLabel } from "@/lib/roadmap"
 import { Avatar, AvatarImage, AvatarFallback } from "@feedgot/ui/components/avatar"
 import { getInitials, getDisplayUser } from "@/utils/user-utils"
 import { randomAvatarUrl } from "@/utils/avatar"
+import { useDomainBranding } from "./DomainBrandingProvider"
 
 export type SubdomainRequestDetailData = {
   id: string
@@ -58,6 +59,7 @@ export default function SubdomainRequestDetail({
         }
       : undefined
   )
+  const { sidebarPosition = "right" } = useDomainBranding()
 
   return (
     <section className="mt-4 md:mt-6">
@@ -73,7 +75,16 @@ export default function SubdomainRequestDetail({
         <h1 className="text-xl font-semibold text-foreground">Submission</h1>
       </div>
 
-      <div className="grid md:grid-cols-[0.7fr_0.3fr] gap-6">
+      <div
+        className={
+          sidebarPosition === "left"
+            ? "grid md:grid-cols-[0.3fr_0.7fr] gap-6"
+            : "grid md:grid-cols-[0.7fr_0.3fr] gap-6"
+        }
+      >
+        {/* Left Sidebar */}
+        {sidebarPosition === "left" ? <PostSidebar post={post} workspaceSlug={workspaceSlug} /> : null}
+
         {/* Main Content */}
         <div className="space-y-6">
           <div className="rounded-lg border bg-card p-6 shadow-sm">
@@ -120,7 +131,7 @@ export default function SubdomainRequestDetail({
                 />
               </div>
             </div>
-            
+
             {/* Comments */}
             <div className="mt-6 pt-6 border-t">
               <CommentList
@@ -134,8 +145,8 @@ export default function SubdomainRequestDetail({
           </div>
         </div>
 
-        {/* Post Sidebar */}
-        <PostSidebar post={post} workspaceSlug={workspaceSlug} />
+        {/* Right Sidebar */}
+        {sidebarPosition === "right" ? <PostSidebar post={post} workspaceSlug={workspaceSlug} /> : null}
       </div>
     </section>
   )

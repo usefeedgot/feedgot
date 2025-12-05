@@ -306,7 +306,7 @@ export default function CommentForm({
             {uploadingImage ? (
               <LoaderIcon className="h-4 w-4 animate-spin" />
             ) : (
-              <ImageIcon className="size-4" />
+              <ImageIcon className="size-4 " />
             )}
           </Button>
         </div>

@@ -15,12 +15,12 @@ import { cn } from "@feedgot/ui/lib/utils"
           outline:
             cn("border bg-background shadow-xs hover:bg-muted hover:text-accent-foreground ring-border/60 hover:ring-accent/60 dark:bg-input/30 dark:border-input dark:hover:bg-input/50"),
           secondary:    
-            cn("bg-secondary text-secondary-foreground hover:bg-secondary/80 ring-secondary/50 hover:ring-secondary/60"),
+            cn("bg-secondary text-secondary-foreground hover:bg-secondary/80 ring-secondary/50 hover:ring-secondary/60 dark:bg-black/40"),
           ghost:
-            cn("hover:bg-muted hover:text-accent-foreground ring-border/50 hover:ring-accent/60 dark:hover:bg-muted/50"),
+            cn("hover:bg-muted hover:text-accent-foreground ring-border/50 hover:ring-accent/60 dark:hover:bg-muted/50 dark:bg-black/40"),
           link: "text-primary underline-offset-4 hover:underline bg-transparent",
           quiet: cn("bg-primary text-primary-foreground hover:bg-primary/70"),
-          nav: cn("border bg-card text-foreground border-muted hover:bg-muted hover:text-accent-foreground hover:border-accent/20 dark:bg-black/40"),
+          nav: cn("border bg-card text-foreground border-muted hover:bg-muted hover:text-accent-foreground hover:border-accent/20 dark:bg-black/40 dark:hover:bg-black/50"),
         },
         size: {
           default: "h-8 px-2 py-2 rounded-sm has-[>svg]:px-3",
