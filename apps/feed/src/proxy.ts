@@ -6,6 +6,13 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/roadmap", "/changelog", "/workspaces/:path*", "/auth/:path*", "/start"],
+  matcher: [
+    "/",
+    "/roadmap",
+    "/changelog",
+    "/workspaces/:path*",
+    "/auth/:path*",
+    "/start",
+    "/p/:path*", // Added to support post detail pages
+  ],
 }
-

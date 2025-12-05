@@ -8,10 +8,10 @@ import { readInitialCollapsedCommentIds } from "@/lib/comments.server"
 
 export const revalidate = 30
 
-type Props = { params: Promise<{ subdomain: string; post: string }> }
+type Props = { params: Promise<{ subdomain: string; slug: string }> }
 
 export default async function PublicRequestDetailPage({ params }: Props) {
-  const { subdomain, post: postSlug } = await params
+  const { subdomain, slug: postSlug } = await params
   const [ws] = await db
     .select({ id: workspace.id, name: workspace.name })
     .from(workspace)
