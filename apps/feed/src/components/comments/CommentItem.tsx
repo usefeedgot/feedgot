@@ -191,24 +191,41 @@ export default function CommentItem({
 
       <div className="flex-1 min-w-0 pt-1">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 flex-wrap leading-none">
-            <span className="text-sm font-semibold text-foreground">
-              {comment.authorName}
-            </span>
-            <span className="text-xs text-muted-foreground/60">
-              {relativeTime(comment.createdAt)}
-            </span>
-            {comment.isEdited && (
-              <span className="text-xs text-muted-foreground/60">(edited)</span>
-            )}
-            {comment.isPinned && <PinnedBadge />}
-            {hasReplies && onToggleCollapse && (
-              <CommentCollapseToggle
-                isCollapsed={isCollapsed}
-                replyCount={comment.replyCount}
-                onToggle={onToggleCollapse!}
-                className="ml-auto sm:ml-0"
-              />
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-2 flex-wrap leading-none">
+              <span className="text-sm font-semibold text-foreground">
+                {comment.authorName}
+              </span>
+              <span className="text-xs text-muted-foreground/60">
+                {relativeTime(comment.createdAt)}
+              </span>
+              {comment.isEdited && (
+                <span className="text-xs text-muted-foreground/60">(edited)</span>
+              )}
+              {comment.isPinned && <PinnedBadge />}
+              {hasReplies && onToggleCollapse && (
+                <CommentCollapseToggle
+                  isCollapsed={isCollapsed}
+                  replyCount={comment.replyCount}
+                  onToggle={onToggleCollapse!}
+                  className="ml-auto sm:ml-0"
+                />
+              )}
+            </div>
+
+            {!isEditing && (
+              <div>
+                <CommentActions
+                  commentId={comment.id}
+                  postId={comment.postId}
+                  isAuthor={!!isAuthor}
+                  canDelete={canDelete}
+                  canPin={!!isOwner}
+                  isPinned={!!comment.isPinned}
+                  onEdit={() => setIsEditing(true)}
+                  onDeleteSuccess={onUpdate}
+                />
+              </div>
             )}
           </div>
 
@@ -257,7 +274,7 @@ export default function CommentItem({
         </div>
 
         {!isEditing && (
-          <div className="flex items-center gap-4 mt-2">
+          <div className="flex items-center justify-between mt-2">
             <CommentVote
               commentId={comment.id}
               postId={comment.postId}
@@ -268,21 +285,9 @@ export default function CommentItem({
             {canReply && (
               <CommentReplyButton
                 onClick={() => setShowReplyForm(!showReplyForm)}
+                className="rounded-full bg-secondary/10 hover:bg-secondary/20 px-3 py-1.5 h-auto"
               />
             )}
-
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-              <CommentActions
-                commentId={comment.id}
-                postId={comment.postId}
-                isAuthor={!!isAuthor}
-                canDelete={canDelete}
-                canPin={!!isOwner}
-                isPinned={!!comment.isPinned}
-                onEdit={() => setIsEditing(true)}
-                onDeleteSuccess={onUpdate}
-              />
-            </div>
           </div>
         )}
 
@@ -307,7 +312,6 @@ export default function CommentItem({
         )}
       </div>
       </div>
-
     
   );
 }
