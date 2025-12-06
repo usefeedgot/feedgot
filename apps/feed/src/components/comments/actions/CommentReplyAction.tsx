@@ -25,10 +25,10 @@ export default function CommentReplyButton({ onClick, isActive, className }: Com
         {isActive ? (
            <motion.span
             key="cancel"
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.1 }}
             className="flex items-center gap-1.5"
           >
             Cancel
@@ -36,10 +36,10 @@ export default function CommentReplyButton({ onClick, isActive, className }: Com
         ) : (
           <motion.span
             key="reply"
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 5 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.1 }}
             className="flex items-center gap-1.5"
           >
             Reply

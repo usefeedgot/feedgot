@@ -23,7 +23,7 @@ export default function CommentList({
   initialComments,
   initialCollapsedIds,
 }: CommentListProps) {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const { data: session } = useSession() as any;
   const currentUserId = session?.user?.id || null;
 
